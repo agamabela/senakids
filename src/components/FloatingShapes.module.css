@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════════════════
+   FloatingShapes – Decorative background layer
+   ═══════════════════════════════════════════════════ */
+
+/* ─── Full-viewport fixed container ─── */
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ─── Base shape styles ─── */
+.shape {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.2;
+  will-change: transform;
+}
+
+/* ─── CSS-drawn circle ─── */
+.circle {
+  border-radius: 50%;
+  opacity: 0.18;
+}
+
+/* ─── CSS-drawn blob ─── */
+.blob {
+  border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%;
+  opacity: 0.15;
+}
+
+/* ═══════════════════════════════════════════════════
+   Animations
+   ═══════════════════════════════════════════════════ */
+
+/* ─── Gentle vertical float ─── */
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-18px) rotate(3deg);
+  }
+  66% {
+    transform: translateY(12px) rotate(-2deg);
+  }
+}
+
+/* ─── Slow continuous rotation ─── */
+.spinSlow {
+  animation: spinSlow 14s linear infinite;
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Blob morph + float ─── */
+.blobMorph {
+  animation: blobMorph 8s ease-in-out infinite, float 7s ease-in-out infinite;
+}
+
+@keyframes blobMorph {
+  0%, 100% {
+    border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%;
+  }
+  25% {
+    border-radius: 55% 45% 40% 60% / 45% 60% 40% 55%;
+  }
+  50% {
+    border-radius: 45% 55% 60% 40% / 60% 45% 55% 40%;
+  }
+  75% {
+    border-radius: 60% 40% 45% 55% / 40% 55% 45% 60%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   Reduced-motion preference
+   ═══════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .spinSlow,
+  .blobMorph {
+    animation: none;
+  }
+}

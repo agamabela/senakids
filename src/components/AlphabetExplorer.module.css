@@ -1,0 +1,202 @@
+/* ===================================
+   AlphabetExplorer – CSS Module
+   Interactive A-Z learning tool
+   =================================== */
+
+/* ── Container ── */
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+}
+
+/* ── Title ── */
+.title {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  background: linear-gradient(135deg, var(--color-purple), var(--color-teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-sm);
+}
+
+.subtitle {
+  font-family: var(--font-body), 'Nunito', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 600;
+  color: var(--color-text-light);
+  margin-bottom: var(--space-xl);
+}
+
+/* ── Letter Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 10px;
+  margin-bottom: var(--space-xl);
+}
+
+/* ── Individual Tile ── */
+.tile {
+  aspect-ratio: 1;
+  min-width: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--tile-color);
+  border: 3px solid transparent;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition:
+    transform var(--transition-bounce),
+    box-shadow var(--transition-normal),
+    border-color var(--transition-fast);
+  user-select: none;
+}
+
+.tile:hover {
+  transform: scale(1.12);
+  box-shadow: var(--shadow-hover);
+}
+
+.tile:active {
+  transform: scale(0.94);
+}
+
+/* ── Selected Tile ── */
+.tileSelected {
+  transform: scale(1.18);
+  border-color: #fff;
+  box-shadow:
+    0 0 0 3px var(--tile-color),
+    0 0 20px color-mix(in srgb, var(--tile-color) 50%, transparent),
+    0 0 40px color-mix(in srgb, var(--tile-color) 25%, transparent);
+  animation: tileGlow 1.2s ease-in-out infinite alternate;
+  z-index: 2;
+  position: relative;
+}
+
+@keyframes tileGlow {
+  0% {
+    box-shadow:
+      0 0 0 3px var(--tile-color),
+      0 0 14px color-mix(in srgb, var(--tile-color) 40%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 3px var(--tile-color),
+      0 0 28px color-mix(in srgb, var(--tile-color) 60%, transparent),
+      0 0 50px color-mix(in srgb, var(--tile-color) 25%, transparent);
+  }
+}
+
+/* ── Detail Panel ── */
+.detailPanel {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-xl) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  animation: panelSlideUp 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes panelSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Detail Emoji ── */
+.detailEmoji {
+  font-size: clamp(3rem, 10vw, 5rem);
+  animation: emojiWiggle 1.6s ease-in-out infinite;
+}
+
+@keyframes emojiWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-8deg); }
+  40% { transform: rotate(8deg); }
+  60% { transform: rotate(-4deg); }
+  80% { transform: rotate(4deg); }
+}
+
+/* ── Uppercase / Lowercase ── */
+.detailLetters {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+}
+
+.detailUpper {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-purple), var(--color-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.detailLower {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  font-weight: 700;
+  color: var(--color-teal);
+  line-height: 1;
+}
+
+/* ── Word ── */
+.detailWord {
+  font-family: var(--font-body), 'Nunito', sans-serif;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.detailWordHighlight {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.1em;
+  background: linear-gradient(135deg, var(--color-orange), var(--color-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+  }
+
+  .tile {
+    font-size: 1.2rem;
+    min-width: 44px;
+    border-radius: var(--radius-sm);
+  }
+
+  .detailPanel {
+    padding: var(--space-lg) var(--space-md);
+  }
+}

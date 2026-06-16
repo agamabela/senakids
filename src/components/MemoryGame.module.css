@@ -1,0 +1,354 @@
+/* ===================================
+   MemoryGame — CSS Module
+   A playful memory card matching game
+   =================================== */
+
+/* --- Main Container --- */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+/* --- Title --- */
+.title {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  background: linear-gradient(135deg, var(--color-purple), var(--color-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: slideDown 0.5s ease-out;
+}
+
+/* --- Score Bar --- */
+.scoreBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  animation: slideDown 0.5s ease-out 0.1s both;
+}
+
+.scorePill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: linear-gradient(135deg, var(--color-purple), var(--color-pink));
+  color: var(--color-text-white);
+  font-family: var(--font-body), 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-card);
+  white-space: nowrap;
+}
+
+.scoreDivider {
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 2px;
+  font-weight: 400;
+}
+
+/* --- Card Grid --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  perspective: 1000px;
+  margin-bottom: var(--space-xl);
+}
+
+/* --- Individual Card --- */
+.cardWrapper {
+  aspect-ratio: 1;
+  cursor: pointer;
+  perspective: 800px;
+  /* Large tap target for kids */
+  min-height: 48px;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: var(--radius-md);
+}
+
+/* Flip the card when it's face-up */
+.cardFlipped {
+  transform: rotateY(180deg);
+}
+
+/* Shared styles for both faces */
+.cardFace {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  font-size: 2.5rem;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.3s ease, border 0.3s ease;
+  border: 3px solid transparent;
+  user-select: none;
+}
+
+/* --- Card Back (the ❓ side) --- */
+.cardBack {
+  composes: cardFace;
+  background: linear-gradient(135deg, var(--color-purple), var(--color-pink));
+  color: white;
+  z-index: 2;
+}
+
+.cardBack:hover {
+  box-shadow: var(--shadow-hover);
+  transform: scale(1.05);
+}
+
+/* --- Card Front (the emoji side) --- */
+.cardFront {
+  composes: cardFace;
+  background: var(--color-bg-card);
+  transform: rotateY(180deg);
+}
+
+/* --- Matched State --- */
+.cardMatched .cardFront {
+  border-color: var(--color-green);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.45), var(--shadow-card);
+}
+
+.cardMatched .cardBack:hover {
+  transform: none;
+}
+
+/* Bounce animation when a match is found */
+.matchBounce {
+  animation: matchPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Disabled card (already matched or during check) */
+.cardDisabled {
+  pointer-events: none;
+}
+
+/* --- Play Again Button --- */
+.playAgainWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-md);
+}
+
+.playAgainBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: linear-gradient(135deg, var(--color-orange), var(--color-yellow));
+  color: var(--color-text-white);
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: 1.2rem;
+  padding: 14px 36px;
+  border-radius: var(--radius-full);
+  border: none;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-bounce),
+              box-shadow var(--transition-normal);
+  cursor: pointer;
+}
+
+.playAgainBtn:hover {
+  transform: scale(1.1) rotate(-2deg);
+  box-shadow: var(--shadow-hover);
+}
+
+.playAgainBtn:active {
+  transform: scale(0.95);
+}
+
+/* --- Celebration Overlay --- */
+.celebration {
+  text-align: center;
+  padding: var(--space-xl);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hover);
+  margin-bottom: var(--space-xl);
+  animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.celebrationEmojis {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-sm);
+  animation: wiggleEmoji 1s ease-in-out infinite;
+}
+
+.celebrationTitle {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  background: linear-gradient(135deg, var(--color-purple), var(--color-pink), var(--color-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-sm);
+}
+
+.celebrationText {
+  font-family: var(--font-body), 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+  font-weight: 600;
+  margin-bottom: var(--space-lg);
+}
+
+/* Confetti pieces floating around celebration */
+.confettiContainer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  top: -20px;
+  font-size: 1.4rem;
+  animation: confettiFall linear infinite;
+  opacity: 0.85;
+}
+
+/* --- Keyframes --- */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes matchPop {
+  0% { transform: rotateY(180deg) scale(1); }
+  40% { transform: rotateY(180deg) scale(1.2); }
+  70% { transform: rotateY(180deg) scale(0.95); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  80% {
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes wiggleEmoji {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-10deg); }
+  40% { transform: rotate(10deg); }
+  60% { transform: rotate(-5deg); }
+  80% { transform: rotate(5deg); }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-10%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* --- Responsive Design --- */
+
+/* Tablet: 3 columns */
+@media (max-width: 600px) {
+  .container {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .scorePill {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+
+  .cardFace {
+    font-size: 2rem;
+  }
+}
+
+/* Small phones: 2 columns */
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .scoreBar {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .cardFace {
+    font-size: 1.8rem;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .cardBack:hover {
+    transform: none;
+  }
+
+  .matchBounce {
+    animation: none;
+  }
+
+  .celebration {
+    animation: none;
+  }
+
+  .confetti {
+    animation: none;
+    display: none;
+  }
+
+  .celebrationEmojis {
+    animation: none;
+  }
+}

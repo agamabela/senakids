@@ -1,0 +1,68 @@
+.adminContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: white;
+  border-right: 1.5px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.brand h2 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.logo {
+  font-size: 24px;
+}
+
+.nav {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  color: var(--color-muted-foreground);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.navLink:hover {
+  background-color: var(--color-muted);
+  color: var(--color-text);
+}
+
+.footer {
+  padding: 24px 16px;
+  border-top: 1.5px solid var(--color-border);
+}
+
+.mainContent {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}

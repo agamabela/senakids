@@ -1,0 +1,278 @@
+/* ===================================
+   CountingGame – CSS Module
+   Interactive counting game for kids
+   =================================== */
+
+/* ── Container ── */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+}
+
+/* ── Header row ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.title {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  background: linear-gradient(135deg, var(--color-purple), var(--color-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.scorePill {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: var(--color-yellow);
+  color: #fff;
+  padding: 6px 18px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+  white-space: nowrap;
+}
+
+/* ── Prompt ── */
+.prompt {
+  font-family: var(--font-body), 'Nunito', sans-serif;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+  color: var(--color-text);
+}
+
+.promptEmoji {
+  font-size: 1.6em;
+  vertical-align: middle;
+}
+
+/* ── Objects Area ── */
+.objectsArea {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  min-height: 180px;
+  padding: var(--space-xl);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-xl);
+}
+
+.emojiItem {
+  font-size: clamp(2.4rem, 6vw, 3.2rem);
+  display: inline-block;
+  opacity: 0;
+  animation: countBounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes countBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) translateY(30px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.15) translateY(-6px);
+  }
+  80% {
+    transform: scale(0.95) translateY(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Answer Buttons ── */
+.answersRow {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.answerBtn {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  border: 4px solid transparent;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--transition-bounce),
+    box-shadow var(--transition-normal),
+    border-color var(--transition-fast);
+  cursor: pointer;
+}
+
+.answerBtn:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-hover);
+}
+
+.answerBtn:active {
+  transform: scale(0.95);
+}
+
+/* Color variants via data attribute */
+.answerBtn[data-color='purple'] {
+  background: var(--color-purple);
+}
+.answerBtn[data-color='pink'] {
+  background: var(--color-pink);
+}
+.answerBtn[data-color='teal'] {
+  background: var(--color-teal);
+}
+
+/* ── Correct button glow ── */
+.correctBtn {
+  animation: glowPulse 0.8s ease-in-out infinite alternate;
+  border-color: var(--color-yellow);
+}
+
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.4), 0 0 30px rgba(245, 158, 11, 0.2);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 24px rgba(245, 158, 11, 0.7), 0 0 50px rgba(245, 158, 11, 0.3);
+    transform: scale(1.12);
+  }
+}
+
+/* ── Wrong button shake ── */
+.wrongBtn {
+  animation: shakeWrong 0.45s ease;
+  border-color: var(--color-red);
+}
+
+@keyframes shakeWrong {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px) rotate(-2deg); }
+  30% { transform: translateX(8px) rotate(2deg); }
+  45% { transform: translateX(-6px) rotate(-1deg); }
+  60% { transform: translateX(6px) rotate(1deg); }
+  75% { transform: translateX(-3px); }
+  90% { transform: translateX(3px); }
+}
+
+/* ── Feedback Area ── */
+.feedbackArea {
+  min-height: 64px;
+  margin-bottom: var(--space-lg);
+  position: relative;
+}
+
+.feedbackCorrect,
+.feedbackWrong {
+  animation: feedbackPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedbackText {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+}
+
+.feedbackCorrect .feedbackText {
+  background: linear-gradient(135deg, var(--color-green), var(--color-teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.feedbackWrong .feedbackText {
+  color: var(--color-orange);
+}
+
+@keyframes feedbackPop {
+  0% { opacity: 0; transform: scale(0.5); }
+  60% { transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Confetti ── */
+.confettiContainer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confettiPiece {
+  position: absolute;
+  top: -10%;
+  font-size: 1.6rem;
+  animation: confettiFall 1.2s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(120px) rotate(540deg) scale(0.5);
+  }
+}
+
+/* ── Next Button ── */
+.nextBtn {
+  font-family: var(--font-heading), 'Fredoka', sans-serif;
+  font-size: 1.2rem;
+  padding: 14px 36px;
+  background: linear-gradient(135deg, var(--color-orange), var(--color-pink));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35);
+  cursor: pointer;
+  transition:
+    transform var(--transition-bounce),
+    box-shadow var(--transition-normal);
+}
+
+.nextBtn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.5);
+}
+
+.nextBtn:active {
+  transform: scale(0.96);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .answerBtn {
+    width: 72px;
+    height: 72px;
+    font-size: 1.6rem;
+  }
+
+  .objectsArea {
+    padding: var(--space-lg);
+    gap: 10px;
+    min-height: 140px;
+  }
+}
