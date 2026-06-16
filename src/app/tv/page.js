@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { PlayCircle, Tv, Clapperboard, Star, Clock } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
 const playlist = [
@@ -12,12 +13,14 @@ const playlist = [
 ];
 
 export default function TvPage() {
+  const { t } = useLanguage();
+
   return (
     <div className={styles.container}>
       
       <div className={styles.cinemaHeader}>
         <Clapperboard size={32} className={styles.headerIcon} />
-        <h1 className={styles.pageTitle}>Sena Cinema</h1>
+        <h1 className={styles.pageTitle}>{t("tv.pageTitle")}</h1>
       </div>
 
       <div className={styles.layout}>
@@ -36,13 +39,13 @@ export default function TvPage() {
               >
                 <PlayCircle size={80} strokeWidth={1.5} />
               </motion.button>
-              <div className={styles.screenLabel}>Sedang Tayang: Petualangan Luar Angkasa</div>
+              <div className={styles.screenLabel}>{t("tv.screenLabel")}</div>
             </div>
           </motion.div>
           
           <div className={styles.screenDetails}>
-            <h2 className={styles.videoTitle}>Petualangan Luar Angkasa 🚀</h2>
-            <p className={styles.videoDesc}>Ayo ikuti petualangan seru astronot cilik kita menjelajahi planet-planet di tata surya!</p>
+            <h2 className={styles.videoTitle}>{t("tv.videoTitle")}</h2>
+            <p className={styles.videoDesc}>{t("tv.videoDesc")}</p>
             <div className={styles.videoTags}>
               <span className={styles.tag}>Sains</span>
               <span className={styles.tag}>Animasi 3D</span>
@@ -53,7 +56,7 @@ export default function TvPage() {
         {/* Playlist / Ticket Area */}
         <div className={styles.playlistArea}>
           <h3 className={styles.playlistTitle}>
-            <Tv size={20} /> Playlist Pilihan
+            <Tv size={20} /> {t("tv.playlistTitle")}
           </h3>
           
           <div className={styles.ticketList}>

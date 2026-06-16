@@ -4,9 +4,12 @@ import { motion } from "framer-motion";
 import CountingGame from "@/components/CountingGame";
 import AlphabetExplorer from "@/components/AlphabetExplorer";
 import FloatingShapes from "@/components/FloatingShapes";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
 export default function LearningJourneysPage() {
+  const { t } = useLanguage();
+
   return (
     <>
       <FloatingShapes />
@@ -19,12 +22,8 @@ export default function LearningJourneysPage() {
           transition={{ duration: 0.6 }}
         >
           <span className={styles.headerEmoji}>📚</span>
-          <h1 className={styles.title}>
-            Ayo <span className={styles.gradientPurple}>Belajar!</span>
-          </h1>
-          <p className={styles.subtitle}>
-            Kenali angka, huruf, dan banyak hal seru lainnya! 🧠✨
-          </p>
+          <h1 className={styles.title}>{t("learning.pageTitle")}</h1>
+          <p className={styles.subtitle}>{t("learning.pageSubtitle")}</p>
         </motion.div>
 
         {/* Counting Game Section */}
@@ -34,12 +33,8 @@ export default function LearningJourneysPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <h2 className={styles.sectionTitle}>
-            🔢 Petualangan Berhitung
-          </h2>
-          <p className={styles.sectionDesc}>
-            Berapa banyak benda yang kamu lihat? Pilih angka yang benar!
-          </p>
+          <h2 className={styles.sectionTitle}>{t("learning.countingTitle")}</h2>
+          <p className={styles.sectionDesc}>{t("learning.countingDesc")}</p>
           <CountingGame />
         </motion.section>
 
@@ -50,12 +45,8 @@ export default function LearningJourneysPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          <h2 className={styles.sectionTitle}>
-            🔤 Penjelajah Alfabet
-          </h2>
-          <p className={styles.sectionDesc}>
-            Tekan huruf untuk melihat apa isinya!
-          </p>
+          <h2 className={styles.sectionTitle}>{t("learning.alphabetTitle")}</h2>
+          <p className={styles.sectionDesc}>{t("learning.alphabetDesc")}</p>
           <AlphabetExplorer />
         </motion.section>
       </div>

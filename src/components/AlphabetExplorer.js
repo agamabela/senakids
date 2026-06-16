@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/components/LanguageProvider';
 import styles from './AlphabetExplorer.module.css';
 
 /* Letter data: uppercase, word, and emoji for each letter */
@@ -47,13 +48,14 @@ const RAINBOW_COLORS = [
 
 export default function AlphabetExplorer() {
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const { t } = useLanguage();
   const selected = selectedIndex !== null ? LETTER_DATA[selectedIndex] : null;
 
   return (
-    <section className={styles.container} aria-label="Alphabet Explorer">
+    <section className={styles.container} aria-label={t("alphabetExplorer.title")}>
       {/* ── Title ── */}
-      <h2 className={styles.title}>Alphabet Explorer 🔤</h2>
-      <p className={styles.subtitle}>Tap a letter to learn!</p>
+      <h2 className={styles.title}>{t("alphabetExplorer.title")}</h2>
+      <p className={styles.subtitle}>{t("alphabetExplorer.subtitle")}</p>
 
       {/* ── Letter Grid ── */}
       <div className={styles.grid} role="list">
@@ -93,9 +95,8 @@ export default function AlphabetExplorer() {
 
           {/* Word */}
           <p className={styles.detailWord}>
-            <span className={styles.detailWordHighlight}>{selected.letter}</span>
-            {' is for '}
-            <strong>{selected.word}</strong> {selected.emoji}
+            {t("alphabetExplorer.detailWord", { letter: selected.letter, word: selected.word })}
+            <strong> {selected.emoji}</strong>
           </p>
         </div>
       )}

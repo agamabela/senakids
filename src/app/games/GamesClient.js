@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Trophy, Play } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
 // Helper function to extract color from zone if needed, or just default to blue
@@ -13,6 +14,8 @@ const getZoneColor = (title) => {
 };
 
 export default function GamesClient({ zones }) {
+  const { t } = useLanguage();
+
   return (
     <div className={styles.container}>
       
@@ -27,16 +30,16 @@ export default function GamesClient({ zones }) {
           <div className={styles.trophyIcon}>
             <Trophy size={32} />
           </div>
-          <h1 className={styles.heroTitle}>Game Pilihan Minggu Ini</h1>
-          <p className={styles.heroSubtitle}>Coba kalahkan skor tertinggi di "Petualangan Angka"!</p>
+          <h1 className={styles.heroTitle}>{t("games.heroTitle")}</h1>
+          <p className={styles.heroSubtitle}>{t("games.heroSubtitle")}</p>
           <button className={styles.playNowBtn}>
-            <Play fill="currentColor" size={24} /> Main Sekarang!
+            <Play fill="currentColor" size={24} /> {t("games.playNow")}
           </button>
         </div>
       </motion.div>
 
       {/* Game Zones from DB */}
-      {zones.length === 0 && <p style={{textAlign: 'center', marginTop: '40px', color: 'var(--color-muted-foreground)'}}>Belum ada game. Tambahkan di Admin Panel!</p>}
+      {zones.length === 0 && <p style={{textAlign: 'center', marginTop: '40px', color: 'var(--color-muted-foreground)'}}>{t("games.emptyMessage")}</p>}
       {zones.map((zone, i) => (
         <section key={zone.title} className={styles.zoneSection}>
           <motion.div 
@@ -48,7 +51,7 @@ export default function GamesClient({ zones }) {
             <div className={styles.zoneIndicator} style={{ backgroundColor: getZoneColor(zone.title) }} />
             <div>
               <h2 className={styles.zoneTitle}>{zone.title}</h2>
-              <p className={styles.zoneDesc}>Pilih game favoritmu di zona ini!</p>
+              <p className={styles.zoneDesc}>{t("games.zoneDesc")}</p>
             </div>
           </motion.div>
           

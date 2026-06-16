@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { useLanguage } from '@/components/LanguageProvider';
 import styles from './CountingGame.module.css';
 
 /* Pool of fun emoji to use as countable objects */
@@ -41,6 +42,7 @@ function generateRound() {
 const BUTTON_COLORS = ['purple', 'pink', 'teal'];
 
 export default function CountingGame() {
+  const { t } = useLanguage();
   const [round, setRound] = useState(() => generateRound());
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong' | null
@@ -86,18 +88,18 @@ export default function CountingGame() {
   const confettiEmojis = ['🎉', '🎊', '✨', '⭐', '💫', '🌟', '🥳', '🎆'];
 
   return (
-    <section className={styles.container} aria-label="Counting Game">
+    <section className={styles.container} aria-label={t("countingGame.title")}>
       {/* ── Header ── */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Count &amp; Play! 🔢</h2>
+        <h2 className={styles.title}>{t("countingGame.title")}</h2>
         <div className={styles.scorePill} aria-live="polite">
-          Score: {score} ⭐
+          {t("countingGame.score", { score })}
         </div>
       </div>
 
       {/* ── Prompt ── */}
       <p className={styles.prompt}>
-        How many <span className={styles.promptEmoji}>{round.emoji}</span> do you see?
+        {t("countingGame.prompt", { emoji: round.emoji })}
       </p>
 
       {/* ── Objects Area ── */}
@@ -133,7 +135,7 @@ export default function CountingGame() {
       <div className={styles.feedbackArea} aria-live="polite">
         {feedback === 'correct' && (
           <div className={styles.feedbackCorrect}>
-            <span className={styles.feedbackText}>Great job! 🎉</span>
+            <span className={styles.feedbackText}>{t("countingGame.correct")}</span>
             {/* Confetti burst */}
             <div className={styles.confettiContainer} aria-hidden="true">
               {confettiEmojis.map((c, i) => (
@@ -155,14 +157,14 @@ export default function CountingGame() {
 
         {feedback === 'wrong' && (
           <div className={styles.feedbackWrong}>
-            <span className={styles.feedbackText}>Try again! 💪</span>
+            <span className={styles.feedbackText}>{t("countingGame.wrong")}</span>
           </div>
         )}
       </div>
 
       {/* ── Next Button ── */}
       <button className={styles.nextBtn} onClick={nextRound}>
-        Next Round 🚀
+        {t("countingGame.nextRound")}
       </button>
     </section>
   );

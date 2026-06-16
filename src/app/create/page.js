@@ -3,9 +3,12 @@
 import { motion } from "framer-motion";
 import DrawingCanvas from "@/components/DrawingCanvas";
 import FloatingShapes from "@/components/FloatingShapes";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
 export default function CreatePage() {
+  const { t } = useLanguage();
+
   return (
     <>
       <FloatingShapes />
@@ -18,12 +21,8 @@ export default function CreatePage() {
           transition={{ duration: 0.6 }}
         >
           <span className={styles.headerEmoji}>🎨</span>
-          <h1 className={styles.title}>
-            Let&apos;s <span className={styles.gradientTeal}>Create!</span>
-          </h1>
-          <p className={styles.subtitle}>
-            Grab a brush and let your imagination run wild! 🖌️✨
-          </p>
+          <h1 className={styles.title}>{t("create.pageTitle")}</h1>
+          <p className={styles.subtitle}>{t("create.pageSubtitle")}</p>
         </motion.div>
 
         {/* Drawing Canvas Section */}
@@ -33,12 +32,8 @@ export default function CreatePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <h2 className={styles.sectionTitle}>
-            🖼️ Masterpiece Maker
-          </h2>
-          <p className={styles.sectionDesc}>
-            Pick a color, choose a brush size, and draw whatever you like!
-          </p>
+          <h2 className={styles.sectionTitle}>{t("create.sectionTitle")}</h2>
+          <p className={styles.sectionDesc}>{t("create.sectionDesc")}</p>
           <DrawingCanvas />
         </motion.section>
       </div>

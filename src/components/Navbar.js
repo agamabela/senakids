@@ -5,19 +5,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Home, Tv, Book, Gamepad2, Route, RefreshCcw, UserRound } from "lucide-react";
 import MenuModal from "./MenuModal";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./Navbar.module.css";
 
 const navLinks = [
-  { name: "Home", href: "/home", icon: Home },
-  { name: "Tv", href: "/tv", icon: Tv },
-  { name: "Buku", href: "/books", icon: Book },
-  { name: "Bermain", href: "/games", icon: Gamepad2 },
-  { name: "Kurikulum", href: "/learning_journeys", icon: Route },
+  { key: "nav.home", href: "/home", icon: Home },
+  { key: "nav.tv", href: "/tv", icon: Tv },
+  { key: "nav.books", href: "/books", icon: Book },
+  { key: "nav.games", href: "/games", icon: Gamepad2 },
+  { key: "nav.learning", href: "/learning_journeys", icon: Route },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <>
@@ -38,11 +41,11 @@ export default function Navbar() {
           <div className={styles.middleSection}>
             <button 
               className={styles.menuButton} 
-              aria-label="Menu"
+              aria-label={t("nav.menu")}
               onClick={() => setIsMenuOpen(true)}
             >
               <Menu size={20} strokeWidth={2.5} />
-              <span className={styles.menuText}>Menu</span>
+              <span className={styles.menuText}>{t("nav.menu")}</span>
             </button>
           
           <nav className={styles.navDesktop}>
@@ -51,12 +54,12 @@ export default function Navbar() {
               const Icon = link.icon;
               return (
                 <Link
-                  key={link.name}
+                  key={link.key}
                   href={link.href}
                   className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
                 >
                   <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
-                  <span>{link.name}</span>
+                  <span>{t(link.key)}</span>
                 </Link>
               );
             })}
@@ -65,10 +68,11 @@ export default function Navbar() {
 
         {/* Right Section: Actions */}
         <div className={styles.rightSection}>
-          <button className={styles.actionButton} aria-label="Refresh">
+          <LanguageToggle />
+          <button className={styles.actionButton} aria-label={t("nav.refresh")}> 
             <RefreshCcw size={20} strokeWidth={2.5} />
           </button>
-          <button className={styles.avatarButton} aria-label="Profile">
+          <button className={styles.avatarButton} aria-label={t("nav.profile")}> 
             <div className={styles.avatarFallback}>
               <UserRound size={18} strokeWidth={2.5} />
             </div>

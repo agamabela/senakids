@@ -4,15 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart, ChevronRight, Play, Calculator, Music, PenTool } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
-
-const featuredChannels = [
-  { name: "Sena Official", emoji: "🌿", color: "var(--color-green)" },
-  { name: "Belajar Ceria", emoji: "🎨", color: "var(--color-yellow)" },
-  { name: "Petualangan", emoji: "🚀", color: "var(--color-blue)" },
-  { name: "Dunia Hewan", emoji: "🦁", color: "var(--color-orange)" },
-  { name: "Sains Seru", emoji: "🔬", color: "var(--color-purple)" },
-];
 
 const bookActivities = [
   {
@@ -84,6 +77,8 @@ const gameActivities = [
 ];
 
 export default function Home() {
+  const { t } = useLanguage();
+
   return (
     <div className={styles.container}>
       
@@ -99,41 +94,18 @@ export default function Home() {
             <Heart fill="currentColor" size={24} />
           </div>
           <div>
-            <h2 className={styles.bannerTitle}>Dukung Sena Kids</h2>
-            <p className={styles.bannerSubtitle}>Bantu kami terus menghadirkan konten belajar ramah anak untuk keluarga Indonesia.</p>
+            <h2 className={styles.bannerTitle}>{t("home.supportTitle")}</h2>
+            <p className={styles.bannerSubtitle}>{t("home.supportSubtitle")}</p>
           </div>
         </div>
-        <button className={styles.bannerButton}>Mulai</button>
+        <button className={styles.bannerButton}>{t("home.supportButton")}</button>
       </motion.div>
-
-      {/* Featured Channels Section */}
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Channel Pilihan</h2>
-          <button className={styles.seeAllBtn}>Lihat Semua <ChevronRight size={16} /></button>
-        </div>
-        <div className={styles.channelsList}>
-          {featuredChannels.map((channel, i) => (
-            <motion.div 
-              key={channel.name} 
-              className={styles.channelCircle}
-              style={{ backgroundColor: channel.color }}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: i * 0.1, type: "spring" }}
-              whileHover={{ scale: 1.1 }}
-            >
-              <span className={styles.channelEmoji}>{channel.emoji}</span>
-            </motion.div>
-          ))}
-        </div>
-      </section>
 
       {/* Books Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Jelajahi Buku</h2>
-          <button className={styles.seeAllBtn}>Lihat Semua <ChevronRight size={16} /></button>
+          <h2 className={styles.sectionTitle}>{t("home.booksSection")}</h2>
+          <button className={styles.seeAllBtn}>{t("home.seeAll")} <ChevronRight size={16} /></button>
         </div>
         <div className={styles.cardGrid}>
           {bookActivities.map((activity, index) => (
@@ -149,8 +121,8 @@ export default function Home() {
       {/* Games Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Jelajahi Permainan</h2>
-          <button className={styles.seeAllBtn}>Lihat Semua <ChevronRight size={16} /></button>
+          <h2 className={styles.sectionTitle}>{t("home.gamesSection")}</h2>
+          <button className={styles.seeAllBtn}>{t("home.seeAll")} <ChevronRight size={16} /></button>
         </div>
         <div className={styles.cardGrid}>
           {gameActivities.map((activity, index) => (
@@ -165,7 +137,7 @@ export default function Home() {
 
       {/* Footer Banner */}
       <footer className={styles.footerBanner}>
-        <p>Dibuat dengan penuh perhatian untuk anak-anak Indonesia. Sena Kids Web</p>
+        <p>{t("home.footer")}</p>
       </footer>
     </div>
   );

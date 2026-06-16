@@ -3,16 +3,17 @@
 import { motion } from "framer-motion";
 import { BookOpen, Star, Sparkles, Filter, ChevronRight } from "lucide-react";
 import BookFlipCard from "@/components/BookFlipCard";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
 const featuredBook = {
-  title: "Petualangan Bintang Kecil",
-  description: "Buku Interaktif Terbaik Bulan Ini!",
   color: "var(--color-yellow)",
   emoji: "🌟"
 };
 
 export default function BooksClient({ shelves }) {
+  const { t } = useLanguage();
+
   return (
     <div className={styles.container}>
       
@@ -24,12 +25,12 @@ export default function BooksClient({ shelves }) {
       >
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>
-            <Star size={16} fill="currentColor" /> Pilihan Hari Ini
+            <Star size={16} fill="currentColor" /> {t("books.featuredBadge")}
           </div>
-          <h1 className={styles.heroTitle}>{featuredBook.title}</h1>
-          <p className={styles.heroSubtitle}>{featuredBook.description}</p>
+          <h1 className={styles.heroTitle}>{t("books.featuredTitle")}</h1>
+          <p className={styles.heroSubtitle}>{t("books.featuredDescription")}</p>
           <button className={styles.readBtn}>
-            <BookOpen size={20} /> Baca Sekarang
+            <BookOpen size={20} /> {t("books.readNow")}
           </button>
         </div>
         <div className={styles.heroVisual} style={{ backgroundColor: featuredBook.color }}>
@@ -45,21 +46,21 @@ export default function BooksClient({ shelves }) {
 
       {/* Category Filters */}
       <section className={styles.filterSection}>
-        <button className={styles.filterBtnActive}><Sparkles size={16} /> Semua</button>
-        <button className={styles.filterBtn}>🐾 Hewan</button>
-        <button className={styles.filterBtn}>🚀 Angkasa</button>
-        <button className={styles.filterBtn}>🧚 Dongeng</button>
+        <button className={styles.filterBtnActive}><Sparkles size={16} /> {t("books.filterAll")}</button>
+        <button className={styles.filterBtn}>{t("books.filterAnimals")}</button>
+        <button className={styles.filterBtn}>{t("books.filterSpace")}</button>
+        <button className={styles.filterBtn}>{t("books.filterFairy")}</button>
         <button className={styles.filterBtnIcon}><Filter size={16} /></button>
       </section>
 
       {/* Magic Shelves from Database */}
-      {shelves.length === 0 && <p style={{textAlign: 'center', marginTop: '40px', color: 'var(--color-muted-foreground)'}}>Belum ada buku. Tambahkan di Admin Panel!</p>}
+      {shelves.length === 0 && <p style={{textAlign: 'center', marginTop: '40px', color: 'var(--color-muted-foreground)'}}>{t("books.emptyMessage")}</p>}
       {shelves.map((shelf, i) => (
         <section key={shelf.title} className={styles.shelfSection}>
           <div className={styles.shelfHeader}>
             <h2 className={styles.shelfTitle}>{shelf.title}</h2>
             <button className={styles.seeAllBtn}>
-              Lihat Semua <ChevronRight size={16} />
+              {t("books.shelfButton")} <ChevronRight size={16} />
             </button>
           </div>
           <div className={styles.shelfTrack}>

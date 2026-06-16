@@ -2,9 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Download, BookOpen } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./BookFlipCard.module.css";
 
 export default function BookFlipCard({ title, description, emoji, pdfUrl, color, delay = 0 }) {
+  const { t } = useLanguage();
   const backgroundStyle = { backgroundColor: color || "var(--color-card)" };
 
   return (
@@ -23,7 +25,7 @@ export default function BookFlipCard({ title, description, emoji, pdfUrl, color,
             <h3 className={styles.title}>{title}</h3>
             <p className={styles.description}>{description}</p>
             <div className={styles.hint}>
-              {pdfUrl ? "Hover to flip and open the PDF" : "Upload a PDF to make this book interactive"}
+              {pdfUrl ? t("bookFlip.hoverHint") : t("bookFlip.uploadHint")}
             </div>
           </div>
 
@@ -32,10 +34,10 @@ export default function BookFlipCard({ title, description, emoji, pdfUrl, color,
             <p className={styles.description}>{description}</p>
             {pdfUrl ? (
               <a href={pdfUrl} target="_blank" rel="noreferrer" className={styles.pdfButton}>
-                <Download size={16} /> Open PDF
+                <Download size={16} /> {t("bookFlip.openPdf")}
               </a>
             ) : (
-              <div className={styles.noPdf}>No PDF uploaded yet.</div>
+              <div className={styles.noPdf}>{t("bookFlip.noPdf")}</div>
             )}
           </div>
         </div>
