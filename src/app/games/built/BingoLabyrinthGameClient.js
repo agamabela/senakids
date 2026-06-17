@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
+import { useActivityStore } from "@/components/BackButton";
 import styles from "./BingoLabyrinthGameClient.module.css";
 
 const GRID_SIZE = 8;
@@ -54,6 +55,7 @@ export default function SenaLabyrinthGameClient() {
   const [showIntro, setShowIntro] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
   const level = LEVELS[currentLevel];
   const isWall = (x, y) => level.walls.some((w) => w.x === x && w.y === y);
@@ -237,6 +239,7 @@ export default function SenaLabyrinthGameClient() {
     const pos = getGridPos(e);
     // Skip if on wall
     if (isWall(pos.x, pos.y)) return;
+    setHasChanges(true);
 
     // Check if clicking on any existing path point - if so, continue from there
     const pathIndex = path.findIndex(p => p.x === pos.x && p.y === pos.y);

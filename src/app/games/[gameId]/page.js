@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getGame } from "@/app/admin/actions";
+import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
 export default async function GameDetailPage({ params }) {
@@ -12,6 +13,9 @@ export default async function GameDetailPage({ params }) {
 
   return (
     <div className={styles.gameDetailContainer}>
+      <div className={styles.backButtonWrapper}>
+        <BackButton />
+      </div>
       <div className={styles.header}>
         <div>
           <h1>{game.title}</h1>

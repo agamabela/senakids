@@ -2,6 +2,10 @@
   padding: 32px;
 }
 
+.backButtonWrapper {
+  margin-bottom: 16px;
+}
+
 .card {
   max-width: 800px;
   margin: 0 auto;

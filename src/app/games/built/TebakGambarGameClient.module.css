@@ -1,0 +1,113 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--color-text);
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: var(--color-muted-foreground);
+}
+
+.puzzleCard {
+  background: white;
+  border-radius: 24px;
+  border: 1.5px solid var(--color-border);
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.emoji {
+  font-size: 6rem;
+  margin-bottom: 24px;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.choiceBtn {
+  padding: 20px;
+  background: white;
+  border: 2px solid var(--color-border);
+  border-radius: 16px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.choiceBtn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-muted);
+}
+
+.choiceBtn.correct {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #166534;
+}
+
+.choiceBtn.wrong {
+  background: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  color: #991b1b;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.resultCorrect {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.resultWrong {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.nextBtn {
+  margin-top: 20px;
+  padding: 14px 32px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.nextBtn:hover {
+  transform: scale(1.05);
+}
+
+.progress {
+  text-align: center;
+  margin-top: 24px;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}

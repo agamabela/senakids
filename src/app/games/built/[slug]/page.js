@@ -1,6 +1,16 @@
 import { notFound } from "next/navigation";
 import DrumGameClient from "../DrumGameClient";
 import BingoLabyrinthGameClient from "../BingoLabyrinthGameClient";
+import LearnEnglish1GameClient from "../LearnEnglish1GameClient";
+import FlashcardSimpleGameClient from "../FlashcardSimpleGameClient";
+import TebakGambarGameClient from "../TebakGambarGameClient";
+import MencocokkanGambarGameClient from "../MencocokkanGambarGameClient";
+import MenyabungPipaGameClient from "../MenyabungPipaGameClient";
+import MenyusunGambarGameClient from "../MenyusunGambarGameClient";
+import MengurutkanBalokGameClient from "../MengurutkanBalokGameClient";
+import UrutkanBolaAngkaGameClient from "../UrutkanBolaAngkaGameClient";
+import QuizGameClient from "../QuizGameClient";
+import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
 const builtGameDetails = {
@@ -10,11 +20,25 @@ const builtGameDetails = {
   "flashcard-simple": { title: "Flashcard Simple", description: "Ingat kata melalui kartu.", note: "This built-in game is implemented directly in Sena Kids." },
   "tebak-gambar": { title: "Tebak Gambar", description: "Tebak gambar mana yang benar.", note: "This built-in game is implemented directly in Sena Kids." },
   "mencocokkan-gambar": { title: "Mencocokkan Gambar", description: "Cari pasangan gambar yang sama.", note: "This built-in game is implemented directly in Sena Kids." },
-  "menyambung-pipa": { title: "Menyambung Pipa", description: "Sambungkan pipa agar air mengalir.", note: "This built-in game is implemented directly in Sena Kids." },
+  "menyabung-pipa": { title: "Menyabung Pipa", description: "Sambungkan pipa agar air mengalir.", note: "This built-in game is implemented directly in Sena Kids." },
   "menyusun-gambar": { title: "Menyusun Gambar", description: "Susun potongan gambar menjadi utuh.", note: "This built-in game is implemented directly in Sena Kids." },
   "mengurutkan-balok": { title: "Mengurutkan Balok", description: "Urutkan balok sesuai urutan.", note: "This built-in game is implemented directly in Sena Kids." },
   "urutkan-bola-angka": { title: "Urutkan Bola Angka", description: "Susun bola berdasarkan angka.", note: "This built-in game is implemented directly in Sena Kids." },
   quiz: { title: "Quiz", description: "Jawab kuis seru dan menantang.", note: "This built-in game is implemented directly in Sena Kids." },
+};
+
+const gameClients = {
+  drum: DrumGameClient,
+  "membuat-jalur": BingoLabyrinthGameClient,
+  "learn-english-1": LearnEnglish1GameClient,
+  "flashcard-simple": FlashcardSimpleGameClient,
+  "tebak-gambar": TebakGambarGameClient,
+  "mencocokkan-gambar": MencocokkanGambarGameClient,
+  "menyabung-pipa": MenyabungPipaGameClient,
+  "menyusun-gambar": MenyusunGambarGameClient,
+  "mengurutkan-balok": MengurutkanBalokGameClient,
+  "urutkan-bola-angka": UrutkanBolaAngkaGameClient,
+  quiz: QuizGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {
@@ -25,19 +49,14 @@ export default async function BuiltGamePage({ params }) {
     notFound();
   }
 
+  const GameClient = gameClients[slug];
+
   return (
     <div className={styles.container}>
-      {slug === "drum" ? (
-        <DrumGameClient />
-      ) : slug === "membuat-jalur" ? (
-        <BingoLabyrinthGameClient />
-      ) : (
-        <div className={styles.card}>
-          <h1>{game.title}</h1>
-          <p>{game.description}</p>
-          <div className={styles.note}>{game.note}</div>
-        </div>
-      )}
+      <div className={styles.backButtonWrapper}>
+        <BackButton />
+      </div>
+      <GameClient />
     </div>
   );
 }

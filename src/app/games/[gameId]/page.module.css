@@ -5,6 +5,10 @@
   gap: 24px;
 }
 
+.backButtonWrapper {
+  margin-bottom: 8px;
+}
+
 .header {
   display: flex;
   flex-wrap: wrap;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useActivityStore } from "@/components/BackButton";
 import styles from "./DrumGameClient.module.css";
 
 const drumPads = [
@@ -138,6 +139,7 @@ export default function DrumGameClient() {
   const [audioCtx, setAudioCtx] = useState(null);
   const [activeKey, setActiveKey] = useState(null);
   const [started, setStarted] = useState(false);
+  const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
   const getAudioContext = useCallback(() => {
     if (audioCtx) return audioCtx;
@@ -164,9 +166,10 @@ export default function DrumGameClient() {
         ctx.resume();
       }
       setStarted(true);
+      setHasChanges(true);
       playDrumSound(ctx, sound);
     },
-    [getAudioContext]
+    [getAudioContext, setHasChanges]
   );
 
   useEffect(() => {

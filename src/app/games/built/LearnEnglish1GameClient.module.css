@@ -1,0 +1,138 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--color-text);
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: var(--color-muted-foreground);
+}
+
+.card {
+  background: white;
+  border-radius: 24px;
+  border: 1.5px solid var(--color-border);
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.emoji {
+  font-size: 5rem;
+  margin-bottom: 20px;
+}
+
+.speakBtn {
+  padding: 14px 32px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.speakBtn:hover {
+  transform: scale(1.05);
+}
+
+.wordDisplay {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.word {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 2px;
+}
+
+.hintBtn {
+  padding: 8px 16px;
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.hint {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--color-muted);
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.navBtn {
+  padding: 12px 24px;
+  background: white;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.navBtn:hover {
+  background: var(--color-muted);
+}
+
+.counter {
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}
+
+.wordGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.wordItem {
+  padding: 16px;
+  background: white;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.wordItem:hover {
+  transform: scale(1.05);
+}
+
+.wordItem.active {
+  border-color: var(--color-primary);
+  background: var(--color-muted);
+}
