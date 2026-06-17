@@ -1,3 +1,27 @@
+@import "tailwindcss";
+
+/* Tailwind v4 Theme Configuration */
+@theme {
+  --color-primary: #8BA888;
+  --color-primary-light: #E8EBE6;
+  --color-purple: #9A8A9E;
+  --color-pink: #C5948E;
+  --color-yellow: #D9A05B;
+  --color-teal: #8BA888;
+  --color-orange: #C87A65;
+  --color-blue: #7A8B99;
+  --color-green: #8BA888;
+  --color-background: #FAF6F0;
+  --color-card: #FFFFFF;
+  --color-muted: #F2EBE1;
+  --color-muted-foreground: #8C7A6B;
+  --color-accent-foreground: #4A3F35;
+  --color-text: #4A3F35;
+
+  --font-family-heading: 'Fredoka', sans-serif;
+  --font-family-body: 'Nunito', sans-serif;
+}
+
 /* ===================================
    CaBocil Design System
    A clean, modern, app-like theme for kids

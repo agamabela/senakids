@@ -1,0 +1,300 @@
+.container {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8EAF6 0%, #C5CAE9 50%, #9FA8DA 100%);
+}
+
+.header {
+  margin-bottom: 25px;
+}
+
+.header h1 {
+  color: #283593;
+  font-family: var(--font-fredoka), var(--font-nunito), system-ui, sans-serif;
+  font-size: 2rem;
+  margin-bottom: 8px;
+  text-shadow: 2px 2px 0px rgba(255,255,255,0.8);
+}
+
+.header p {
+  color: #3949AB;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.stepIndicator {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.stepDot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #B39DDB;
+  background: linear-gradient(145deg, #FFFFFF 0%, #EDE7F6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 3px 10px rgba(179, 157, 219, 0.3);
+}
+
+.stepDot:hover {
+  transform: scale(1.1);
+}
+
+.stepDot.active {
+  border-color: #7E57C2;
+  background: linear-gradient(145deg, #7E57C2 0%, #5E35B1 100%);
+  transform: scale(1.2);
+  box-shadow: 0 5px 20px rgba(126, 87, 194, 0.5);
+}
+
+.stepDot.completed {
+  border-color: #66BB6A;
+  background: linear-gradient(145deg, #66BB6A 0%, #43A047 100%);
+}
+
+.stepNumber {
+  font-weight: bold;
+  color: #7E57C2;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+.stepDot.active .stepNumber {
+  color: white;
+}
+
+.stepDot.completed .stepNumber {
+  color: white;
+}
+
+.card {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F5F5F5 100%);
+  border-radius: 30px;
+  padding: 35px 25px;
+  margin-bottom: 25px;
+  box-shadow:
+    0 10px 30px rgba(40, 53, 147, 0.15),
+    0 4px 10px rgba(40, 53, 147, 0.1),
+    inset 0 2px 0 rgba(255,255,255,0.8);
+  position: relative;
+  border: 4px solid #C5CAE9;
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.iconBadge {
+  position: absolute;
+  top: -18px;
+  right: 25px;
+  background: linear-gradient(145deg, #FF7043 0%, #F4511E 100%);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 15px rgba(244, 81, 30, 0.4);
+  border: 3px solid white;
+}
+
+.emoji {
+  font-size: 4rem;
+  margin-bottom: 18px;
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+.card h2 {
+  color: #283593;
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+  font-family: var(--font-fredoka), system-ui, sans-serif;
+}
+
+.card p {
+  color: #37474F;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.navBtn {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #42A5F5 0%, #1E88E5 100%);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(30, 136, 229, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navBtn:hover {
+  transform: scale(1.15) translateY(-3px);
+  box-shadow: 0 8px 25px rgba(30, 136, 229, 0.5);
+}
+
+.navBtn:active {
+  transform: scale(0.95);
+}
+
+.diagramBtn {
+  background: linear-gradient(145deg, #7E57C2 0%, #5E35B1 100%);
+  color: white;
+  border: none;
+  padding: 14px 26px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(94, 53, 177, 0.4);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.diagramBtn:hover {
+  transform: scale(1.08) translateY(-3px);
+  box-shadow: 0 8px 25px rgba(94, 53, 177, 0.5);
+}
+
+.diagram {
+  background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(245,245,245,0.95) 100%);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+  animation: fadeIn 0.4s ease;
+  box-shadow: 0 4px 15px rgba(40, 53, 147, 0.15);
+  border: 3px solid #9FA8DA;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.diagram h3 {
+  font-size: 1.1rem;
+  color: #283593;
+  margin-bottom: 18px;
+  font-family: var(--font-fredoka), system-ui, sans-serif;
+}
+
+.diagramFlow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.diagramItem {
+  background: linear-gradient(145deg, #E8EAF6 0%, #C5CAE9 100%);
+  padding: 12px 24px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  color: #283593;
+  font-weight: 600;
+  border: 2px solid #9FA8DA;
+}
+
+.arrow {
+  font-size: 1.4rem;
+  color: #5E35B1;
+  animation: bounce 0.6s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.summary {
+  background: linear-gradient(145deg, #E8F5E9 0%, #C8E6C9 100%);
+  border-radius: 25px;
+  padding: 25px;
+  text-align: center;
+  border: 3px solid #66BB6A;
+  box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+}
+
+.summary h3 {
+  color: #2E7D32;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  font-family: var(--font-fredoka), system-ui, sans-serif;
+}
+
+.summary p {
+  color: #1B5E20;
+  font-size: 1.05rem;
+  font-weight: bold;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+@media (max-width: 480px) {
+  .stepDot {
+    width: 34px;
+    height: 34px;
+  }
+
+  .stepNumber {
+    font-size: 0.85rem;
+  }
+
+  .emoji {
+    font-size: 3rem;
+  }
+
+  .card {
+    padding: 28px 18px;
+  }
+
+  .card h2 {
+    font-size: 1.25rem;
+  }
+
+  .controls {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .diagramBtn {
+    width: 80%;
+  }
+}

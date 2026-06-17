@@ -84,17 +84,53 @@ function playDrumSound(audioCtx, type) {
     hatGain.connect(gain);
     noise.start(now);
     noise.stop(now + (type === "openhat" ? 0.18 : 0.08));
-  } else {
+  } else if (type === "lowtom") {
+    // Low Tom - deep, low frequency with pitch drop
     const osc = audioCtx.createOscillator();
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(type === "lowtom" ? 120 : 240, now);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.15);
     const tomGain = audioCtx.createGain();
-    tomGain.gain.setValueAtTime(0.8, now);
-    tomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    tomGain.gain.setValueAtTime(0.9, now);
+    tomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
     osc.connect(tomGain);
     tomGain.connect(gain);
     osc.start(now);
-    osc.stop(now + 0.25);
+    osc.stop(now + 0.4);
+  } else if (type === "hightom") {
+    // High Tom - higher pitch, shorter decay
+    const osc = audioCtx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
+    const tomGain = audioCtx.createGain();
+    tomGain.gain.setValueAtTime(0.7, now);
+    tomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(tomGain);
+    tomGain.connect(gain);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  } else if (type === "crash") {
+    // Crash Cymbal - noise + high freq, long decay
+    const bufferSize = audioCtx.sampleRate * 0.8;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i += 1) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    const highpass = audioCtx.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 5000;
+    const crashGain = audioCtx.createGain();
+    crashGain.gain.setValueAtTime(0.5, now);
+    crashGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+    noise.connect(highpass);
+    highpass.connect(crashGain);
+    crashGain.connect(gain);
+    noise.start(now);
+    noise.stop(now + 0.8);
   }
 }
 
