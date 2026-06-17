@@ -26,6 +26,7 @@ model Game {
   description String
   iconName    String?
   emoji       String?
+  gameUrl     String?
   color       String
   href        String   @default("/games")
   zoneName    String   // e.g. "Zona Puzzle 🧩"

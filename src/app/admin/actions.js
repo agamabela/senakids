@@ -35,6 +35,10 @@ export async function getGames() {
   return await prisma.game.findMany({ orderBy: { createdAt: 'desc' } });
 }
 
+export async function getGame(id) {
+  return await prisma.game.findUnique({ where: { id: Number(id) } });
+}
+
 export async function createGame(data) {
   await prisma.game.create({ data });
   revalidatePath("/games");

@@ -1,0 +1,66 @@
+.gameDetailContainer {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: var(--color-muted-foreground);
+  max-width: 560px;
+}
+
+.externalLink {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.iframeWrapper {
+  width: 100%;
+  min-height: 72vh;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+.gameIframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.noGameMessage {
+  padding: 32px;
+  border-radius: var(--radius-2xl);
+  background: white;
+  border: 1.5px solid var(--color-border);
+}
+
+@media (max-width: 720px) {
+  .gameDetailContainer {
+    padding: 20px;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

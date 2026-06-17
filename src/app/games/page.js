@@ -7,7 +7,10 @@ export default async function GamesPage() {
   const zonesMap = {};
   games.forEach(game => {
     if (!zonesMap[game.zoneName]) zonesMap[game.zoneName] = { title: game.zoneName, games: [] };
-    zonesMap[game.zoneName].games.push(game);
+    zonesMap[game.zoneName].games.push({
+      ...game,
+      href: `/games/${game.id}`,
+    });
   });
 
   const zones = Object.values(zonesMap);

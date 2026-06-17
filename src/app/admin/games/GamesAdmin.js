@@ -25,9 +25,9 @@ export default function GamesAdmin({ initialGames }) {
       description: formData.get("description"),
       emoji: formData.get("emoji") || null,
       iconName: formData.get("iconName") || null,
+      gameUrl: formData.get("gameUrl") || null,
       color: formData.get("color"),
       zoneName: formData.get("zoneName"),
-      href: "/games",
     };
 
     await createGame(newGame);
@@ -53,6 +53,10 @@ export default function GamesAdmin({ initialGames }) {
           <input name="description" placeholder={t("admin.descriptionPlaceholder")} required style={inputStyle} />
           <input name="emoji" placeholder={t("admin.emojiPlaceholder")} style={inputStyle} />
           <input name="iconName" placeholder={t("admin.iconNamePlaceholder")} style={inputStyle} />
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
+            {t("admin.gameUrl")}
+            <input name="gameUrl" placeholder={t("admin.gameUrlPlaceholder")} style={inputStyle} />
+          </label>
           <input name="zoneName" placeholder={t("admin.zonePlaceholder")} required style={inputStyle} />
           <select name="color" required style={inputStyle}>
             <option value="blue">Blue</option>
@@ -74,6 +78,7 @@ export default function GamesAdmin({ initialGames }) {
               <th style={thStyle}>{t("admin.emoji")}/{t("admin.title")}</th>
               <th style={thStyle}>{t("admin.title")}</th>
               <th style={thStyle}>{t("admin.zonePlaceholder")}</th>
+              <th style={thStyle}>URL</th>
               <th style={thStyle}>{t("admin.color")}</th>
               <th style={thStyle}>{t("admin.actions")}</th>
             </tr>
@@ -84,6 +89,7 @@ export default function GamesAdmin({ initialGames }) {
                 <td style={tdStyle}>{game.emoji || game.iconName}</td>
                 <td style={tdStyle}><strong>{game.title}</strong><br/><small style={{ color:'gray' }}>{game.description}</small></td>
                 <td style={tdStyle}>{game.zoneName}</td>
+                <td style={tdStyle}><small style={{ color: 'var(--color-muted-foreground)', wordBreak: 'break-all' }}>{game.gameUrl || "—"}</small></td>
                 <td style={tdStyle}>{game.color}</td>
                 <td style={tdStyle}>
                   <button onClick={() => handleDelete(game.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={18} /></button>

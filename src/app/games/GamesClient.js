@@ -6,6 +6,20 @@ import ActivityCard from "@/components/ActivityCard";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
+const builtGames = [
+  { title: "Drum", description: "Tap untuk main!", emoji: "🥁", href: "/games/built/drum", color: "purple" },
+  { title: "Membuat Jalur", description: "Bangun rute yang benar.", emoji: "🧭", href: "/games/built/membuat-jalur", color: "blue" },
+  { title: "Learn English 1", description: "Kata sederhana dan suara.", emoji: "📘", href: "/games/built/learn-english-1", color: "green" },
+  { title: "Flashcard Simple", description: "Ingat gambar dan kata.", emoji: "🃏", href: "/games/built/flashcard-simple", color: "orange" },
+  { title: "Tebak Gambar", description: "Tebak apa yang ditampilkan.", emoji: "🖼️", href: "/games/built/tebak-gambar", color: "pink" },
+  { title: "Mencocokkan Gambar", description: "Pasangkan gambar yang sama.", emoji: "🧠", href: "/games/built/mencocokkan-gambar", color: "teal" },
+  { title: "Menyambung Pipa", description: "Sambungkan aliran air.", emoji: "🔧", href: "/games/built/menyambung-pipa", color: "yellow" },
+  { title: "Menyusun Gambar", description: "Susun potongan menjadi utuh.", emoji: "🧩", href: "/games/built/menyusun-gambar", color: "blue" },
+  { title: "Mengurutkan Balok", description: "Urutkan balok dengan benar.", emoji: "🟦", href: "/games/built/mengurutkan-balok", color: "green" },
+  { title: "Urutkan Bola Angka", description: "Susun angka dari kecil ke besar.", emoji: "⚽", href: "/games/built/urutkan-bola-angka", color: "orange" },
+  { title: "Quiz", description: "Jawab pertanyaan seru.", emoji: "🧠", href: "/games/built/quiz", color: "purple" },
+];
+
 // Helper function to extract color from zone if needed, or just default to blue
 const getZoneColor = (title) => {
   if (title.includes("Puzzle")) return "var(--color-blue)";
@@ -39,6 +53,27 @@ export default function GamesClient({ zones }) {
       </motion.div>
 
       {/* Game Zones from DB */}
+      <section className={styles.zoneSection}>
+        <motion.div 
+          className={styles.zoneHeader}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className={styles.zoneIndicator} style={{ backgroundColor: getZoneColor("Built-in") }} />
+          <div>
+            <h2 className={styles.zoneTitle}>{t("games.builtInTitle")}</h2>
+            <p className={styles.zoneDesc}>{t("games.builtInDesc")}</p>
+          </div>
+        </motion.div>
+
+        <div className={styles.zoneGrid}>
+          {builtGames.map((game, j) => (
+            <ActivityCard key={game.href} {...game} delay={j * 0.05} />
+          ))}
+        </div>
+      </section>
+
       {zones.length === 0 && <p style={{textAlign: 'center', marginTop: '40px', color: 'var(--color-muted-foreground)'}}>{t("games.emptyMessage")}</p>}
       {zones.map((zone, i) => (
         <section key={zone.title} className={styles.zoneSection}>
