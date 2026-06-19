@@ -10,6 +10,11 @@ import MenyusunGambarGameClient from "../MenyusunGambarGameClient";
 import MengurutkanBalokGameClient from "../MengurutkanBalokGameClient";
 import UrutkanBolaAngkaGameClient from "../UrutkanBolaAngkaGameClient";
 import QuizGameClient from "../QuizGameClient";
+import BerhitungGameClient from "../BerhitungGameClient";
+import MewarnaiGameClient from "../MewarnaiGameClient";
+import HurufABCGameClient from "../HurufABCGameClient";
+import WarnaGameClient from "../WarnaGameClient";
+import PianoGameClient from "../PianoGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -25,6 +30,11 @@ const builtGameDetails = {
   "mengurutkan-balok": { title: "Mengurutkan Balok", description: "Urutkan balok sesuai urutan.", note: "This built-in game is implemented directly in Sena Kids." },
   "urutkan-bola-angka": { title: "Urutkan Bola Angka", description: "Susun bola berdasarkan angka.", note: "This built-in game is implemented directly in Sena Kids." },
   quiz: { title: "Quiz", description: "Jawab kuis seru dan menantang.", note: "This built-in game is implemented directly in Sena Kids." },
+  berhitung: { title: "Berhitung", description: "Selesaikan soal matematika seru!", note: "This built-in game is implemented directly in Sena Kids." },
+  mewarnai: { title: "Mewarnai", description: "Warnai gambar yang indah!", note: "This built-in game is implemented directly in Sena Kids." },
+  "huruf-abc": { title: "Huruf ABC", description: "Belajar huruf dan suara!", note: "This built-in game is implemented directly in Sena Kids." },
+  warna: { title: "Warna", description: "Belajar warna-warna!", note: "This built-in game is implemented directly in Sena Kids." },
+  piano: { title: "Piano", description: "Main piano interaktif!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -39,6 +49,11 @@ const gameClients = {
   "mengurutkan-balok": MengurutkanBalokGameClient,
   "urutkan-bola-angka": UrutkanBolaAngkaGameClient,
   quiz: QuizGameClient,
+  berhitung: BerhitungGameClient,
+  mewarnai: MewarnaiGameClient,
+  "huruf-abc": HurufABCGameClient,
+  warna: WarnaGameClient,
+  piano: PianoGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {

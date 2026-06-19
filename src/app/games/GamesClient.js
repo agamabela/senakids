@@ -13,11 +13,16 @@ const builtGames = [
   { title: "Flashcard Simple", description: "Ingat gambar dan kata.", emoji: "🃏", href: "/games/built/flashcard-simple", color: "orange" },
   { title: "Tebak Gambar", description: "Tebak apa yang ditampilkan.", emoji: "🖼️", href: "/games/built/tebak-gambar", color: "pink" },
   { title: "Mencocokkan Gambar", description: "Pasangkan gambar yang sama.", emoji: "🧠", href: "/games/built/mencocokkan-gambar", color: "teal" },
-  { title: "Menyambung Pipa", description: "Sambungkan aliran air.", emoji: "🔧", href: "/games/built/menyambung-pipa", color: "yellow" },
+  { title: "Menyabung Pipa", description: "Sambungkan aliran air.", emoji: "🔧", href: "/games/built/menyabung-pipa", color: "yellow" },
   { title: "Menyusun Gambar", description: "Susun potongan menjadi utuh.", emoji: "🧩", href: "/games/built/menyusun-gambar", color: "blue" },
   { title: "Mengurutkan Balok", description: "Urutkan balok dengan benar.", emoji: "🟦", href: "/games/built/mengurutkan-balok", color: "green" },
   { title: "Urutkan Bola Angka", description: "Susun angka dari kecil ke besar.", emoji: "⚽", href: "/games/built/urutkan-bola-angka", color: "orange" },
   { title: "Quiz", description: "Jawab pertanyaan seru.", emoji: "🧠", href: "/games/built/quiz", color: "purple" },
+  { title: "Berhitung", description: "Soal matematika seru!", emoji: "🔢", href: "/games/built/berhitung", color: "blue" },
+  { title: "Mewarnai", description: "Warnai gambar yang indah!", emoji: "🎨", href: "/games/built/mewarnai", color: "pink" },
+  { title: "Huruf ABC", description: "Belajar huruf dan suara!", emoji: "🔤", href: "/games/built/huruf-abc", color: "green" },
+  { title: "Warna", description: "Belajar warna-warna!", emoji: "🎨", href: "/games/built/warna", color: "orange" },
+  { title: "Piano", description: "Main piano interaktif!", emoji: "🎹", href: "/games/built/piano", color: "purple" },
 ];
 
 // Helper function to extract color from zone if needed, or just default to blue

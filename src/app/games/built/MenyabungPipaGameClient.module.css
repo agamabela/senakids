@@ -1,96 +1,333 @@
+/* ─── Intro ─────────────────────────────────────── */
+.introWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 20px;
+}
+
+.introCard {
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0,0,0,.1);
+}
+
+.introCard h1 {
+  font-size: 2rem;
+  margin: 20px 0 10px;
+  color: var(--color-text);
+}
+
+.introCard p {
+  color: var(--color-muted-foreground);
+  margin-bottom: 30px;
+}
+
+.pipeArt {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 0;
+}
+
+.pipeSegment {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  border-radius: 8px;
+  position: relative;
+  animation: pipeConnect 1.5s ease-in-out infinite;
+}
+
+@keyframes pipeConnect {
+  0%, 100% { transform: scale(1);    box-shadow: 0 4px 12px rgba(59,130,246,.3); }
+  50%       { transform: scale(1.05); box-shadow: 0 8px 24px rgba(59,130,246,.5); }
+}
+
+.waterDrop {
+  position: absolute;
+  width: 20px; height: 20px;
+  background: #bfdbfe;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  margin: -10px 0 0 -10px;
+  animation: waterBob 1s ease-in-out infinite;
+}
+
+@keyframes waterBob {
+  0%, 100% { opacity: .5; transform: translateY(0); }
+  50%       { opacity: 1;  transform: translateY(-5px); }
+}
+
+.instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--color-muted);
+  border-radius: 12px;
+}
+
+.stepNum {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px;
+  flex-shrink: 0;
+}
+
+.startButton {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.startButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59,130,246,.4);
+}
+
+/* ─── Game layout ─────────────────────────────────── */
 .container {
-  max-width: 800px;
+  max-width: 700px;
   margin: 0 auto;
   padding: 20px;
 }
 
 .header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.header h1 {
+.headerContent h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: var(--color-text);
 }
 
-.header p {
-  margin: 8px 0 0;
+.headerContent p {
+  margin: 4px 0 0;
   color: var(--color-muted-foreground);
+  font-size: .9rem;
 }
 
+.levelNav {
+  display: flex;
+  gap: 8px;
+}
+
+.levelBtn {
+  width: 36px; height: 36px;
+  border: 2px solid var(--color-border);
+  background: white;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, color .2s;
+}
+
+.levelBtn:hover { border-color: #60a5fa; }
+
+.activeLevel {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+/* ─── Stats ─────────────────────────────────────── */
 .stats {
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 16px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: .95rem;
+}
+
+.status { color: var(--color-muted-foreground); transition: color .3s; }
+.status.success { color: #22c55e; }
+
+/* ─── Game board ─────────────────────────────────── */
+.gameArea {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  transition: box-shadow .4s;
+}
+
+.gameAreaComplete .grid {
+  box-shadow: 0 0 0 4px #22d3ee, 0 12px 40px rgba(34,211,238,.35);
 }
 
 .grid {
-  background: #1e3a5f;
-  padding: 16px;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #1e3a5f, #0f2744);
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
   display: inline-block;
-  margin: 0 auto;
+  transition: box-shadow .4s;
 }
 
 .row {
   display: flex;
 }
 
-.pipe {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1.8rem;
-  color: #60a5fa;
+/* ─── Each cell ──────────────────────────────────── */
+.cell {
+  width: 90px;
+  height: 90px;
+  background: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: visible;
+  transition: border-color .15s, background .15s, transform .1s;
+  padding: 0;
 }
 
-.pipe:hover:not(.locked) {
-  background: rgba(255, 255, 255, 0.2);
+.cell:hover:not(.locked):not(:disabled) {
+  background: #263548;
+  border-color: #475569;
+  transform: scale(1.04);
 }
 
-.pipe.locked {
-  background: #22c55e;
-  color: white;
+.cell:active:not(.locked):not(:disabled) {
+  transform: scale(.95);
 }
 
+.cell.locked {
+  cursor: default;
+  background: #243044;
+}
+
+/* Flowing state — steady blue glow, no blipping */
+.cell.flowing {
+  background: #0c2a3d;
+  border-color: #0ea5e9;
+  box-shadow: inset 0 0 12px rgba(14,165,233,.25);
+}
+
+/* Win state — cyan glow */
+.cell.complete {
+  border-color: #22d3ee;
+  box-shadow: inset 0 0 16px rgba(34,211,238,.3);
+}
+
+/* Start / End border accents */
+.cell.startCell {
+  border-color: #22c55e;
+  box-shadow: inset 0 0 10px rgba(34,197,94,.2);
+}
+
+.cell.endCell {
+  border-color: #ef4444;
+  box-shadow: inset 0 0 10px rgba(239,68,68,.2);
+}
+
+/* Combined: start/end + flowing */
+.cell.startCell.flowing,
+.cell.endCell.flowing {
+  border-color: #22d3ee;
+}
+
+/* ─── SVG pipe ──────────────────────────────────── */
+.pipeSvg {
+  width: 70px;
+  height: 70px;
+  display: block;
+  transition: transform .18s ease;
+}
+
+/* ─── Markers ───────────────────────────────────── */
+.marker {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  font-size: 1.2rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.6));
+}
+
+/* ─── Controls ──────────────────────────────────── */
 .controls {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .btn {
-  padding: 12px 24px;
+  padding: 11px 24px;
   background: white;
-  border: 1.5px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background .2s, border-color .2s;
 }
 
-.btn:hover {
-  background: var(--color-muted);
+.btn:hover { background: var(--color-muted); border-color: #60a5fa; }
+
+.nextBtn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
 }
 
-.instructions {
+.nextBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34,197,94,.4);
+}
+
+.hint {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--color-muted);
+  border-radius: 12px;
   color: var(--color-muted-foreground);
+  font-size: .9rem;
 }
 
-.instructions p {
-  margin: 0;
+/* ─── Responsive ────────────────────────────────── */
+@media (max-width: 620px) {
+  .cell    { width: 58px; height: 58px; }
+  .pipeSvg { width: 46px; height: 46px; }
+}
+
+@media (max-width: 420px) {
+  .cell    { width: 46px; height: 46px; }
+  .pipeSvg { width: 36px; height: 36px; }
 }
