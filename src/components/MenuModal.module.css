@@ -134,3 +134,35 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.donationSection {
+  padding: 20px 40px 32px;
+  border-top: 1.5px solid var(--color-border);
+  background-color: var(--color-card);
+}
+
+.donationLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.donationLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+.donationLink:active {
+  transform: translateY(0);
+}

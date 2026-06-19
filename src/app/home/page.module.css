@@ -156,6 +156,143 @@
   margin-top: 20px;
 }
 
+/* Section Subtitle */
+.sectionSubtitle {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-muted-foreground);
+  margin-top: -12px;
+}
+
+/* Let's Read Grid */
+.letsReadGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.letsReadCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.letsReadCard:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-primary);
+}
+
+.letsReadCover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.readBadge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  backdrop-filter: blur(4px);
+}
+
+.letsReadInfo {
+  padding: 12px;
+}
+
+.letsReadTitle {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.letsReadDesc {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* CTA Section */
+.ctaSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-card));
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  text-align: center;
+  color: var(--color-text);
+}
+
+.ctaSection h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.ctaSection p {
+  font-size: 1rem;
+  color: var(--color-muted-foreground);
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-xl);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .supportBanner {
@@ -169,5 +306,10 @@
   
   .cardGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .letsReadGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }

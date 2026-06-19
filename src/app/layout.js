@@ -1,6 +1,7 @@
 import { Fredoka, Nunito } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { LanguageProvider } from "@/components/LanguageProvider";
+import { SessionProvider } from "@/components/SessionProvider";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -24,14 +25,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id" className={`${fredoka.variable} ${nunito.variable}`}>
       <body>
-        <div className="app-wrapper">
-          <LanguageProvider>
-            <Navbar />
-            <main className="main-content">
-              {children}
-            </main>
-          </LanguageProvider>
-        </div>
+        <SessionProvider>
+          <div className="app-wrapper">
+            <LanguageProvider>
+              <Navbar />
+              <main className="main-content">
+                {children}
+              </main>
+            </LanguageProvider>
+          </div>
+        </SessionProvider>
       </body>
     </html>
   );

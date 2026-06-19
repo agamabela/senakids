@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Home, Tv, Book, Gamepad2, Route, RefreshCcw, UserRound } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { Menu, Home, Tv, Book, Gamepad2, Route, RefreshCcw, UserRound, LogOut, LogIn, Shield } from "lucide-react";
 import MenuModal from "./MenuModal";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -20,7 +21,13 @@ const navLinks = [
 export default function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const { t } = useLanguage();
+  const { data: session, status } = useSession();
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/games" });
+  };
 
   return (
     <>
@@ -72,11 +79,53 @@ export default function Navbar() {
           <button className={styles.actionButton} aria-label={t("nav.refresh")}> 
             <RefreshCcw size={20} strokeWidth={2.5} />
           </button>
-          <button className={styles.avatarButton} aria-label={t("nav.profile")}> 
-            <div className={styles.avatarFallback}>
-              <UserRound size={18} strokeWidth={2.5} />
-            </div>
-          </button>
+          
+          {/* User Menu */}
+          <div className={styles.userMenuWrapper}>
+            <button 
+              className={styles.avatarButton} 
+              aria-label={t("nav.profile")}
+              onClick={() => setShowUserMenu(!showUserMenu)}
+            > 
+              <div className={styles.avatarFallback}>
+                <UserRound size={18} strokeWidth={2.5} />
+              </div>
+            </button>
+
+            {showUserMenu && (
+              <div className={styles.userDropdown}>
+                {status === "authenticated" ? (
+                  <>
+                    <div className={styles.userInfo}>
+                      <div className={styles.userName}>{session.user?.name || session.user?.email}</div>
+                      <div className={styles.userEmail}>{session.user?.email}</div>
+                    </div>
+                    {session.user?.role === "admin" && (
+                      <Link href="/admin" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
+                        <Shield size={16} />
+                        Admin Panel
+                      </Link>
+                    )}
+                    <button onClick={handleLogout} className={styles.dropdownItem}>
+                      <LogOut size={16} />
+                      Keluar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
+                      <LogIn size={16} />
+                      Masuk
+                    </Link>
+                    <Link href="/register" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
+                      <UserRound size={16} />
+                      Daftar
+                    </Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
       </div>

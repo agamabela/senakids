@@ -15,6 +15,7 @@ import MewarnaiGameClient from "../MewarnaiGameClient";
 import HurufABCGameClient from "../HurufABCGameClient";
 import WarnaGameClient from "../WarnaGameClient";
 import PianoGameClient from "../PianoGameClient";
+import PetualanganLabirinGameClient from "../PetualanganLabirinGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -35,6 +36,7 @@ const builtGameDetails = {
   "huruf-abc": { title: "Huruf ABC", description: "Belajar huruf dan suara!", note: "This built-in game is implemented directly in Sena Kids." },
   warna: { title: "Warna", description: "Belajar warna-warna!", note: "This built-in game is implemented directly in Sena Kids." },
   piano: { title: "Piano", description: "Main piano interaktif!", note: "This built-in game is implemented directly in Sena Kids." },
+  "petualangan-labirin": { title: "Petualangan Labirin", description: "Bantu astronot kumpulkan bintang di labirin!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -54,6 +56,7 @@ const gameClients = {
   "huruf-abc": HurufABCGameClient,
   warna: WarnaGameClient,
   piano: PianoGameClient,
+  "petualangan-labirin": PetualanganLabirinGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {

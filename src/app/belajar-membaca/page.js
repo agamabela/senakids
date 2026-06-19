@@ -21,8 +21,8 @@ const WORDS = [
     english: { word: "FISH", syllables: ["F", "ISH"], meaning: "Fish" }
   },
   { id: 4, emoji: "🐠",
-    indonesian: { word: "BURI", syllables: ["BU", "RI"], meaning: "Buri" },
-    english: { word: "TROUT", syllables: ["TROUT"], meaning: "Trout" }
+    indonesian: { word: "NEMO", syllables: ["NE", "MO"], meaning: "Ikan Badut" },
+    english: { word: "CLOWNFISH", syllables: ["CLOWN", "FISH"], meaning: "Clownfish" }
   },
   { id: 5, emoji: "🐴",
     indonesian: { word: "KUDA", syllables: ["KU", "DA"], meaning: "Kuda" },
@@ -33,7 +33,7 @@ const WORDS = [
     english: { word: "PIG", syllables: ["P", "IG"], meaning: "Pig" }
   },
   { id: 7, emoji: "🦆",
-    indonesian: { word: "BANG", syllables: ["BANG"], meaning: "Bebek" },
+    indonesian: { word: "BEBEK", syllables: ["BE", "BEK"], meaning: "Bebek" },
     english: { word: "DUCK", syllables: ["D", "UCK"], meaning: "Duck" }
   },
   { id: 8, emoji: "🐘",
@@ -45,7 +45,7 @@ const WORDS = [
     english: { word: "ANT", syllables: ["A", "NT"], meaning: "Ant" }
   },
   { id: 10, emoji: "🐝",
-    indonesian: { word: "LEBA", syllables: ["LE", "BA"], meaning: "Lebah" },
+    indonesian: { word: "LEBAH", syllables: ["LE", "BAH"], meaning: "Lebah" },
     english: { word: "BEE", syllables: ["B", "EE"], meaning: "Bee" }
   },
   { id: 11, emoji: "🦋",
@@ -57,7 +57,7 @@ const WORDS = [
     english: { word: "FLOWER", syllables: ["FLOW", "ER"], meaning: "Flower" }
   },
   { id: 13, emoji: "🐸",
-    indonesian: { word: "POKON", syllables: ["PO", "KON"], meaning: "Kodok" },
+    indonesian: { word: "KODOK", syllables: ["KO", "DOK"], meaning: "Kodok" },
     english: { word: "FROG", syllables: ["F", "ROG"], meaning: "Frog" }
   },
   { id: 14, emoji: "🐶",
@@ -73,7 +73,7 @@ const WORDS = [
     english: { word: "COW", syllables: ["C", "OW"], meaning: "Cow" }
   },
   { id: 17, emoji: "🐐",
-    indonesian: { word: "KAMBING", syllables: ["KAM", "BING"], meaning: "Kambling" },
+    indonesian: { word: "KAMBING", syllables: ["KAM", "BING"], meaning: "Kambing" },
     english: { word: "GOAT", syllables: ["G", "OAT"], meaning: "Goat" }
   },
   { id: 18, emoji: "🦁",

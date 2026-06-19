@@ -1,0 +1,349 @@
+/* ─── Shared wrapper ─────────────────────────────────── */
+.introWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #e8dcc5 0%, #d4c4a8 100%);
+}
+
+/* ─── Intro card ─────────────────────────────────────── */
+.introCard {
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 24px;
+  padding: 40px 36px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  color: #3e3e3e;
+}
+
+.introEmoji {
+  font-size: 4rem;
+  margin-bottom: 12px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+.introCard h1 {
+  font-size: 2rem;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.introDesc {
+  color: rgba(0,0,0,0.6);
+  font-size: 1rem;
+  margin-bottom: 28px;
+}
+
+/* Level grid */
+.levelGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.levelCard {
+  border: 2px solid rgba(0,0,0,0.15);
+  border-radius: 16px;
+  padding: 16px 12px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.5);
+  color: #3e3e3e;
+  text-align: center;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+
+.levelCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+}
+
+.tier1 { border-color: #4ade80; }
+.tier1:hover { box-shadow: 0 8px 24px rgba(74,222,128,.3); }
+.tier2 { border-color: #facc15; }
+.tier2:hover { box-shadow: 0 8px 24px rgba(250,204,21,.3); }
+.tier3 { border-color: #f97316; }
+.tier3:hover { box-shadow: 0 8px 24px rgba(249,115,22,.3); }
+.tier4 { border-color: #f43f5e; }
+.tier4:hover { box-shadow: 0 8px 24px rgba(244,63,94,.3); }
+
+.tierBadge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,0.08);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 8px;
+  color: rgba(0,0,0,0.6);
+}
+
+.lvlName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.lvlDetail {
+  font-size: 0.8rem;
+  color: rgba(0,0,0,0.5);
+}
+
+.controlHint {
+  color: rgba(0,0,0,0.5);
+  font-size: .85rem;
+  margin: 0;
+}
+
+/* ─── Win card ───────────────────────────────────────── */
+.winCard {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 24px;
+  padding: 44px 36px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  color: #3e3e3e;
+}
+
+.winEmoji {
+  font-size: 4rem;
+  margin-bottom: 12px;
+}
+
+.winCard h1 {
+  font-size: 2rem;
+  margin: 0 0 8px;
+  color: #d97706;
+}
+
+.winCard p {
+  color: rgba(0,0,0,0.65);
+  margin-bottom: 28px;
+}
+
+.winStats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 28px;
+}
+
+.winStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.winStatVal {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.winStatLbl {
+  font-size: .8rem;
+  color: rgba(0,0,0,0.5);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.winActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btnPrimary {
+  padding: 13px 24px;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.btnPrimary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,.5); }
+
+.btnSecondary {
+  padding: 13px 24px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.btnSecondary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,197,94,.4); }
+
+.btnGhost {
+  padding: 11px 24px;
+  background: transparent;
+  color: rgba(0,0,0,0.6);
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.btnGhost:hover { border-color: rgba(0,0,0,.4); color: #3e3e3e; }
+
+/* ─── Game screen ────────────────────────────────────── */
+.gameWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e8dcc5 0%, #d4c4a8 100%);
+  padding: 12px 16px 24px;
+  gap: 12px;
+}
+
+/* HUD */
+.hud {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 14px;
+  padding: 10px 16px;
+  color: #3e3e3e;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.hudLeft, .hudRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hudCenter {
+  display: flex;
+  gap: 4px;
+  font-size: 1.2rem;
+}
+
+.hudBadge {
+  background: rgba(96,165,250,0.15);
+  border: 1px solid rgba(96,165,250,0.3);
+  color: #2563eb;
+  border-radius: 8px;
+  padding: 3px 10px;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.hudSteps, .hudTimer {
+  font-size: .9rem;
+  color: rgba(0,0,0,0.65);
+  font-weight: 600;
+}
+
+.starOn  { opacity: 1;   filter: drop-shadow(0 0 4px #fde68a); }
+.starOff { opacity: 0.25; filter: grayscale(1); }
+
+.hudBtn {
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #3e3e3e;
+  border-radius: 8px;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.hudBtn:hover { background: rgba(0,0,0,0.1); }
+
+/* Canvas */
+.canvasWrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15), 0 0 0 2px rgba(168,147,113,0.3);
+}
+
+.canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* Joystick */
+.joystick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+.jRow {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.jBtn {
+  width: 56px; height: 56px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 12px;
+  color: #3e3e3e;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .1s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.jBtn:active { background: rgba(184,217,111,0.4); transform: scale(.92); }
+
+.jCenter {
+  background: rgba(184,217,111,0.25);
+  border-color: rgba(168,147,113,0.3);
+  cursor: default;
+  pointer-events: none;
+}
+
+.hint {
+  color: rgba(0,0,0,0.45);
+  font-size: .85rem;
+  text-align: center;
+}
+
+/* ─── Responsive ─────────────────────────────────────── */
+@media (max-width: 480px) {
+  .levelGrid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .jBtn { width: 48px; height: 48px; font-size: 1.2rem; }
+}

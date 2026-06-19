@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Home, Tv, Book, Gamepad2, Newspaper, ShoppingBag, ThumbsUp, Link as LinkIcon, Route, PlayCircle, X } from "lucide-react";
+import { Home, Tv, Book, Gamepad2, Route, X, Heart } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./MenuModal.module.css";
 
@@ -11,12 +11,7 @@ const menuItems = [
   { nameKey: "menuModal.tv", href: "/tv", icon: Tv, color: "var(--color-blue)" },
   { nameKey: "menuModal.books", href: "/books", icon: Book, color: "var(--color-green)" },
   { nameKey: "menuModal.games", href: "/games", icon: Gamepad2, color: "var(--color-pink)" },
-  { nameKey: "menuModal.news", href: "/home", icon: Newspaper, color: "var(--color-teal)" },
-  { nameKey: "menuModal.products", href: "/home", icon: ShoppingBag, color: "var(--color-orange)" },
-  { nameKey: "menuModal.recommend", href: "/home", icon: ThumbsUp, color: "var(--color-blue)" },
-  { nameKey: "menuModal.links", href: "/home", icon: LinkIcon, color: "var(--color-green)" },
   { nameKey: "menuModal.curriculum", href: "/learning_journeys", icon: Route, color: "var(--color-purple)" },
-  { nameKey: "menuModal.playlist", href: "/tv", icon: PlayCircle, color: "var(--color-pink)" },
 ];
 
 export default function MenuModal({ isOpen, onClose }) {
@@ -70,6 +65,19 @@ export default function MenuModal({ isOpen, onClose }) {
                   </Link>
                 );
               })}
+            </div>
+
+            {/* Donation Link */}
+            <div className={styles.donationSection}>
+              <a 
+                href="https://saweria.co/senakids" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={styles.donationLink}
+              >
+                <Heart size={20} fill="currentColor" />
+                <span>Dukung Sena Kids</span>
+              </a>
             </div>
           </motion.div>
           </div>

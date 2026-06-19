@@ -45,3 +45,6 @@ next-env.d.ts
 
 dev.db
 /public/uploads
+
+# Security - credentials files
+ADMIN_CREDENTIALS.md
