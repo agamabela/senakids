@@ -107,8 +107,6 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
-  /* prevent rubber-band scroll from exposing background on iOS */
-  overscroll-behavior-y: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
