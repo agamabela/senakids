@@ -34,7 +34,7 @@ const builtGameDetails = {
   berhitung: { title: "Berhitung", description: "Selesaikan soal matematika seru!", note: "This built-in game is implemented directly in Sena Kids." },
   mewarnai: { title: "Mewarnai", description: "Warnai gambar yang indah!", note: "This built-in game is implemented directly in Sena Kids." },
   "huruf-abc": { title: "Huruf ABC", description: "Belajar huruf dan suara!", note: "This built-in game is implemented directly in Sena Kids." },
-  warna: { title: "Warna", description: "Belajar warna-warna!", note: "This built-in game is implemented directly in Sena Kids." },
+  warna: { title: "Menggambar Bebas", description: "Gambar bebas dengan warna-warni!", note: "This built-in game is implemented directly in Sena Kids." },
   piano: { title: "Piano", description: "Main piano interaktif!", note: "This built-in game is implemented directly in Sena Kids." },
   "petualangan-labirin": { title: "Petualangan Labirin", description: "Bantu astronot kumpulkan bintang di labirin!", note: "This built-in game is implemented directly in Sena Kids." },
 };

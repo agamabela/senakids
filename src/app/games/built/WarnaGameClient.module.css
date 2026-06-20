@@ -1,352 +1,170 @@
 .container {
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 24px;
 }
 
 .header h1 {
-  margin: 0;
-  font-size: 2rem;
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
   color: var(--color-text);
+  margin: 0;
 }
 
 .header p {
-  margin: 8px 0 0;
   color: var(--color-muted-foreground);
+  margin: 4px 0 0;
 }
 
-.modeNav {
+/* Palette */
+.palette {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 8px;
+  padding: 12px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px;
 }
 
-.modeBtn {
-  padding: 12px 24px;
-  background: white;
+.colorBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 0 1.5px var(--color-border);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.colorBtn:hover {
+  transform: scale(1.12);
+}
+
+.colorActive {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 3px var(--color-primary);
+}
+
+.rainbowBtn {
+  background: conic-gradient(from 0deg, #ef4444, #f59e0b, #22c55e, #3b82f6, #a855f7, #ef4444);
+}
+
+/* Tools */
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.sizeGroup,
+.actionGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sizeBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   border: 2px solid var(--color-border);
-  border-radius: 12px;
-  font-weight: 600;
+  background: var(--color-card);
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.modeBtn:hover {
-  border-color: #3b82f6;
-}
-
-.modeBtn.active {
-  background: #3b82f6;
-  color: white;
-  border-color: #3b82f6;
-}
-
-.stats {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-.learnSection, .matchSection, .sortSection {
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.mainCard {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  margin-bottom: 32px;
+  transition: border-color 0.15s, background 0.15s;
 }
 
-.navBtn {
-  width: 50px;
-  height: 50px;
-  border: none;
-  background: white;
+.sizeBtn:hover {
+  background: var(--color-muted);
+}
+
+.sizeActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.sizeDot {
+  background: var(--color-text);
   border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: block;
 }
 
-.navBtn:hover {
-  transform: scale(1.1);
-}
-
-.colorCard {
-  width: 200px;
-  height: 200px;
-  border-radius: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.colorCard:hover {
-  transform: translateY(-4px) scale(1.02);
-}
-
-.colorCard:active {
-  transform: scale(0.98);
-}
-
-.colorEmoji {
-  font-size: 4rem;
-  margin-bottom: 8px;
-}
-
-.colorName {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.speakHint {
-  margin-top: 8px;
-  font-size: 1.2rem;
-  opacity: 0.8;
-}
-
-.allColors {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.colorDot {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 3px solid transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.colorDot:hover {
-  transform: scale(1.15);
-}
-
-.colorDot.active {
-  border-color: #333;
-  transform: scale(1.2);
-}
-
-.matchSection {
-  text-align: center;
-}
-
-.targetCard {
-  width: 220px;
-  height: 220px;
-  border-radius: 32px;
-  margin: 0 auto 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  animation: popIn 0.5s ease;
-}
-
-@keyframes popIn {
-  0% { transform: scale(0.5); opacity: 0; }
-  70% { transform: scale(1.05); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.targetEmoji {
-  font-size: 4rem;
-  margin-bottom: 8px;
-}
-
-.targetName {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.options {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-}
-
-.optionBtn {
-  width: 80px;
-  height: 80px;
-  border-radius: 16px;
-  border: 4px solid white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 2.5rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
-
-.optionBtn:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.optionBtn:disabled {
-  cursor: default;
-}
-
-.optionBtn.correct {
-  animation: correctPulse 0.5s ease;
-}
-
-.optionBtn.showCorrect {
-  border-color: #22c55e;
-}
-
-@keyframes correctPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-.sortSection {
-  text-align: center;
-}
-
-.slots {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.slot {
-  width: 60px;
-  height: 60px;
+.toolBtn {
+  padding: 10px 16px;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #9ca3af;
-  border: 3px dashed #d1d5db;
-  transition: all 0.3s ease;
-}
-
-.slot.filled {
-  border: 3px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.sortHint {
-  color: var(--color-muted-foreground);
-  margin-bottom: 24px;
-}
-
-.sortOptions {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.sortBtn {
-  width: 70px;
-  height: 70px;
-  border-radius: 16px;
-  border: 3px solid white;
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
   cursor: pointer;
-  font-size: 2rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.15s;
 }
 
-.sortBtn:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+.toolBtn:hover {
+  background: var(--color-muted);
 }
 
-.sortBtn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: scale(0.95);
+.toolActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
-@media (max-width: 520px) {
-  .modeNav {
-    gap: 8px;
-  }
+.saveBtn {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
 
-  .modeBtn {
-    padding: 10px 16px;
-    font-size: 0.9rem;
-  }
+.saveBtn:hover {
+  filter: brightness(1.05);
+  background: var(--color-primary);
+}
 
-  .mainCard {
-    gap: 12px;
-  }
+/* Canvas */
+.canvasWrap {
+  width: 100%;
+  height: min(60vh, 520px);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 3px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  background: #fff;
+}
 
-  .navBtn {
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-  }
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+}
 
-  .colorCard {
-    width: 150px;
-    height: 150px;
+@media (max-width: 600px) {
+  .tools {
+    justify-content: center;
   }
-
-  .colorEmoji {
-    font-size: 3rem;
-  }
-
-  .colorName {
-    font-size: 1.4rem;
-  }
-
-  .targetCard {
-    width: 180px;
-    height: 180px;
-  }
-
-  .optionBtn {
-    width: 65px;
-    height: 65px;
-    font-size: 2rem;
-  }
-
-  .slot {
-    width: 45px;
-    height: 45px;
-    font-size: 1.2rem;
-  }
-
-  .sortBtn {
-    width: 55px;
-    height: 55px;
-    font-size: 1.5rem;
+  .colorBtn {
+    width: 32px;
+    height: 32px;
   }
 }

@@ -229,6 +229,15 @@
   background: #243044;
 }
 
+/* Empty (non-pipe) cell — keeps grid spacing on easy levels */
+.emptyCell {
+  width: 90px;
+  height: 90px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 6px;
+}
+
 /* Flowing state — steady blue glow, no blipping */
 .cell.flowing {
   background: #0c2a3d;
@@ -323,11 +332,13 @@
 
 /* ─── Responsive ────────────────────────────────── */
 @media (max-width: 620px) {
-  .cell    { width: 58px; height: 58px; }
-  .pipeSvg { width: 46px; height: 46px; }
+  .cell      { width: 58px; height: 58px; }
+  .emptyCell { width: 58px; height: 58px; }
+  .pipeSvg   { width: 46px; height: 46px; }
 }
 
 @media (max-width: 420px) {
-  .cell    { width: 46px; height: 46px; }
-  .pipeSvg { width: 36px; height: 36px; }
+  .cell      { width: 46px; height: 46px; }
+  .emptyCell { width: 46px; height: 46px; }
+  .pipeSvg   { width: 36px; height: 36px; }
 }

@@ -1,210 +1,232 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useActivityStore } from "@/components/BackButton";
 import styles from "./WarnaGameClient.module.css";
 
 const COLORS = [
-  { id: "red", name: { id: "Merah", en: "Red" }, hex: "#EF4444", emoji: "🍎" },
-  { id: "orange", name: { id: "Oranye", en: "Orange" }, hex: "#F97316", emoji: "🍊" },
-  { id: "yellow", name: { id: "Kuning", en: "Yellow" }, hex: "#EAB308", emoji: "🍋" },
-  { id: "green", name: { id: "Hijau", en: "Green" }, hex: "#22C55E", emoji: "🥬" },
-  { id: "blue", name: { id: "Biru", en: "Blue" }, hex: "#3B82F6", emoji: "🟦" },
-  { id: "purple", name: { id: "Ungu", en: "Purple" }, hex: "#A855F7", emoji: "🍇" },
-  { id: "pink", name: { id: "Merah Muda", en: "Pink" }, hex: "#EC4899", emoji: "🌸" },
-  { id: "brown", name: { id: "Coklat", en: "Brown" }, hex: "#92400E", emoji: "🍫" },
+  "#EF4444", "#F97316", "#F59E0B", "#FACC15",
+  "#22C55E", "#10B981", "#06B6D4", "#3B82F6",
+  "#6366F1", "#A855F7", "#EC4899", "#F472B6",
+  "#92400E", "#78350F", "#1E1B4B", "#000000",
 ];
 
-const MODE = {
-  LEARN: "learn",
-  MATCH: "match",
-  SORT: "sort",
-};
+const SIZES = [
+  { label: "S", value: 6 },
+  { label: "M", value: 14 },
+  { label: "L", value: 28 },
+  { label: "XL", value: 48 },
+];
+
+const CANVAS_BG = "#FFFFFF";
 
 export default function WarnaGameClient() {
   const { language } = useLanguage();
-  const [currentMode, setCurrentMode] = useState(MODE.LEARN);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [isCorrect, setIsCorrect] = useState(null);
-  const [shuffledColors, setShuffledColors] = useState([]);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
-  const currentColor = COLORS[currentIndex];
+  const canvasRef = useRef(null);
+  const wrapRef = useRef(null);
+  const ctxRef = useRef(null);
+  const isDrawing = useRef(false);
+  const lastPos = useRef({ x: 0, y: 0 });
+
+  const [activeColor, setActiveColor] = useState(COLORS[7]);
+  const [brushSize, setBrushSize] = useState(SIZES[1].value);
+  const [isEraser, setIsEraser] = useState(false);
+  const [isRainbow, setIsRainbow] = useState(false);
+  const hueRef = useRef(0);
+
+  const t = (id, en) => (language === "id" ? id : en);
+
+  const setupCanvas = useCallback((preserve = true) => {
+    const canvas = canvasRef.current;
+    const wrap = wrapRef.current;
+    if (!canvas || !wrap) return;
+
+    // preserve existing drawing across resizes
+    let snapshot = null;
+    if (preserve && canvas.width > 0) {
+      snapshot = document.createElement("canvas");
+      snapshot.width = canvas.width;
+      snapshot.height = canvas.height;
+      snapshot.getContext("2d").drawImage(canvas, 0, 0);
+    }
+
+    const rect = wrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.fillStyle = CANVAS_BG;
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    if (snapshot) {
+      ctx.drawImage(snapshot, 0, 0, snapshot.width, snapshot.height, 0, 0, rect.width, rect.height);
+    }
+    ctxRef.current = ctx;
+  }, []);
 
   useEffect(() => {
-    setShuffledColors([...COLORS].sort(() => Math.random() - 0.5));
-    setSelectedColors([]);
-    setIsCorrect(null);
-  }, [currentMode]);
+    setupCanvas(false);
+    const handleResize = () => setupCanvas(true);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setupCanvas]);
 
-  const speak = () => {
-    if ("speechSynthesis" in window) {
-      const text = currentColor.name[language];
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = language === "id" ? "id-ID" : "en-US";
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
-    }
+  const getPos = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const source = e.touches ? e.touches[0] : e;
+    return { x: source.clientX - rect.left, y: source.clientY - rect.top };
   };
 
-  const handleColorClick = (color) => {
+  const strokeColor = () => {
+    if (isEraser) return CANVAS_BG;
+    if (isRainbow) {
+      hueRef.current = (hueRef.current + 8) % 360;
+      return `hsl(${hueRef.current}, 85%, 55%)`;
+    }
+    return activeColor;
+  };
+
+  const startDrawing = (e) => {
+    e.preventDefault();
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+    isDrawing.current = true;
     setHasChanges(true);
-    
-    if (currentMode === MODE.LEARN) {
-      setCurrentIndex(COLORS.findIndex(c => c.id === color.id));
-      return;
-    }
-
-    if (currentMode === MODE.MATCH) {
-      if (color.id === currentColor.id) {
-        setIsCorrect(true);
-        setScore(score + 10 + (streak * 2));
-        setStreak(streak + 1);
-        setTimeout(() => {
-          setCurrentIndex(Math.floor(Math.random() * COLORS.length));
-          setShuffledColors([...COLORS].sort(() => Math.random() - 0.5));
-          setIsCorrect(null);
-        }, 1000);
-      } else {
-        setIsCorrect(false);
-        setStreak(0);
-        setTimeout(() => setIsCorrect(null), 500);
-      }
-    }
-
-    if (currentMode === MODE.SORT) {
-      const expected = COLORS[selectedColors.length];
-      if (color.id === expected.id) {
-        const newSelected = [...selectedColors, color];
-        setSelectedColors(newSelected);
-        setScore(score + 10);
-        
-        if (newSelected.length === COLORS.length) {
-          setTimeout(() => {
-            alert(language === "id" ? "🎉 Selesai! Kamu luar biasa!" : "🎉 Done! You're amazing!");
-            setSelectedColors([]);
-            setScore(0);
-            setShuffledColors([...COLORS].sort(() => Math.random() - 0.5));
-          }, 500);
-        }
-      }
-    }
+    const { x, y } = getPos(e);
+    lastPos.current = { x, y };
+    // draw a dot so a tap leaves a mark
+    ctx.beginPath();
+    ctx.fillStyle = strokeColor();
+    ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+    ctx.fill();
   };
 
-  const next = () => {
-    setCurrentIndex((prev) => (prev + 1) % COLORS.length);
+  const draw = (e) => {
+    e.preventDefault();
+    if (!isDrawing.current) return;
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+    const { x, y } = getPos(e);
+    ctx.beginPath();
+    ctx.strokeStyle = strokeColor();
+    ctx.lineWidth = brushSize;
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    lastPos.current = { x, y };
   };
 
-  const prev = () => {
-    setCurrentIndex((prev) => (prev - 1 + COLORS.length) % COLORS.length);
+  const stopDrawing = (e) => {
+    if (e) e.preventDefault();
+    isDrawing.current = false;
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+    if (!canvas || !ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    ctx.fillStyle = CANVAS_BG;
+    ctx.fillRect(0, 0, rect.width, rect.height);
+    setHasChanges(false);
+  };
+
+  const saveCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const link = document.createElement("a");
+    link.download = "gambar-sena-kids.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
+  const pickColor = (hex) => {
+    setActiveColor(hex);
+    setIsEraser(false);
+    setIsRainbow(false);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>🎨 Warna</h1>
-        <p>{language === "id" ? "Belajar warna-warna yang indah!" : "Learn beautiful colors!"}</p>
+        <h1>🎨 {t("Menggambar Bebas", "Free Drawing")}</h1>
+        <p>{t("Gambar apa saja sesukamu!", "Draw anything you like!")}</p>
       </div>
 
-      <div className={styles.modeNav}>
-        {Object.values(MODE).map((mode) => (
+      {/* Color palette */}
+      <div className={styles.palette}>
+        {COLORS.map((hex) => (
           <button
-            key={mode}
-            className={`${styles.modeBtn} ${currentMode === mode ? styles.active : ""}`}
-            onClick={() => { setCurrentMode(mode); setCurrentIndex(0); setScore(0); setStreak(0); }}
-          >
-            {mode === MODE.LEARN && (language === "id" ? "📖 Belajar" : "📖 Learn")}
-            {mode === MODE.MATCH && (language === "id" ? "🎯 Cocokkan" : "🎯 Match")}
-            {mode === MODE.SORT && (language === "id" ? "🃏 Urutkan" : "🃏 Sort")}
-          </button>
+            key={hex}
+            className={`${styles.colorBtn} ${activeColor === hex && !isEraser && !isRainbow ? styles.colorActive : ""}`}
+            style={{ backgroundColor: hex }}
+            onClick={() => pickColor(hex)}
+            aria-label={`Warna ${hex}`}
+          />
         ))}
+        <button
+          className={`${styles.colorBtn} ${styles.rainbowBtn} ${isRainbow ? styles.colorActive : ""}`}
+          onClick={() => { setIsRainbow(true); setIsEraser(false); }}
+          aria-label="Pelangi"
+        >
+          🌈
+        </button>
       </div>
 
-      <div className={styles.stats}>
-        <span>⭐ {score}</span>
-        {currentMode !== MODE.LEARN && <span>🔥 {streak}</span>}
+      {/* Tools */}
+      <div className={styles.tools}>
+        <div className={styles.sizeGroup}>
+          {SIZES.map((s) => (
+            <button
+              key={s.value}
+              className={`${styles.sizeBtn} ${brushSize === s.value ? styles.sizeActive : ""}`}
+              onClick={() => setBrushSize(s.value)}
+              aria-label={`${t("Ukuran", "Size")} ${s.label}`}
+            >
+              <span className={styles.sizeDot} style={{ width: Math.min(s.value, 28), height: Math.min(s.value, 28) }} />
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.actionGroup}>
+          <button
+            className={`${styles.toolBtn} ${isEraser ? styles.toolActive : ""}`}
+            onClick={() => { setIsEraser((p) => !p); setIsRainbow(false); }}
+          >
+            🧽 {t("Hapus", "Erase")}
+          </button>
+          <button className={styles.toolBtn} onClick={clearCanvas}>
+            🗑️ {t("Bersihkan", "Clear")}
+          </button>
+          <button className={`${styles.toolBtn} ${styles.saveBtn}`} onClick={saveCanvas}>
+            💾 {t("Simpan", "Save")}
+          </button>
+        </div>
       </div>
 
-      {currentMode === MODE.LEARN && (
-        <div className={styles.learnSection}>
-          <div className={styles.mainCard}>
-            <button className={styles.navBtn} onClick={prev}>←</button>
-            <div className={styles.colorCard} style={{ backgroundColor: currentColor.hex }} onClick={speak}>
-              <span className={styles.colorEmoji}>{currentColor.emoji}</span>
-              <span className={styles.colorName}>{currentColor.name[language]}</span>
-              <span className={styles.speakHint}>🔊</span>
-            </div>
-            <button className={styles.navBtn} onClick={next}>→</button>
-          </div>
-          <div className={styles.allColors}>
-            {COLORS.map((color) => (
-              <button
-                key={color.id}
-                className={`${styles.colorDot} ${currentColor.id === color.id ? styles.active : ""}`}
-                style={{ backgroundColor: color.hex }}
-                onClick={() => setCurrentIndex(COLORS.findIndex(c => c.id === color.id))}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {currentMode === MODE.MATCH && (
-        <div className={styles.matchSection}>
-          <div className={styles.targetCard} style={{ backgroundColor: currentColor.hex }}>
-            <span className={styles.targetEmoji}>{currentColor.emoji}</span>
-            <span className={styles.targetName}>{currentColor.name[language]}</span>
-          </div>
-          <div className={styles.options}>
-            {shuffledColors.map((color) => (
-              <button
-                key={color.id}
-                className={`${styles.optionBtn} ${isCorrect === true ? styles.correct : ""} ${isCorrect === false && color.id === currentColor.id ? styles.showCorrect : ""}`}
-                style={{ backgroundColor: color.hex }}
-                onClick={() => handleColorClick(color)}
-              >
-                {color.emoji}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {currentMode === MODE.SORT && (
-        <div className={styles.sortSection}>
-          <div className={styles.slots}>
-            {COLORS.map((color, i) => (
-              <div
-                key={color.id}
-                className={`${styles.slot} ${selectedColors[i] ? styles.filled : ""}`}
-                style={{ backgroundColor: selectedColors[i]?.hex || "#f3f4f6" }}
-              >
-                {selectedColors[i]?.emoji || (i + 1)}
-              </div>
-            ))}
-          </div>
-          <p className={styles.sortHint}>
-            {language === "id" ? "Klik warna urut dari Merah ke Ungu!" : "Click colors in order from Red to Purple!"}
-          </p>
-          <div className={styles.sortOptions}>
-            {shuffledColors.map((color) => (
-              <button
-                key={color.id}
-                className={styles.sortBtn}
-                style={{ backgroundColor: color.hex }}
-                onClick={() => handleColorClick(color)}
-                disabled={selectedColors.some(c => c.id === color.id)}
-              >
-                {color.emoji}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Canvas */}
+      <div className={styles.canvasWrap} ref={wrapRef}>
+        <canvas
+          ref={canvasRef}
+          className={styles.canvas}
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+          onTouchStart={startDrawing}
+          onTouchMove={draw}
+          onTouchEnd={stopDrawing}
+          onTouchCancel={stopDrawing}
+        />
+      </div>
     </div>
   );
 }

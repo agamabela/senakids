@@ -21,7 +21,7 @@ const builtGames = [
   { title: "Berhitung", description: "Soal matematika seru!", emoji: "🔢", href: "/games/built/berhitung", color: "blue" },
   { title: "Mewarnai", description: "Warnai gambar yang indah!", emoji: "🎨", href: "/games/built/mewarnai", color: "pink" },
   { title: "Huruf ABC", description: "Belajar huruf dan suara!", emoji: "🔤", href: "/games/built/huruf-abc", color: "green" },
-  { title: "Warna", description: "Belajar warna-warna!", emoji: "🎨", href: "/games/built/warna", color: "orange" },
+  { title: "Menggambar Bebas", description: "Gambar apa saja sesukamu!", emoji: "🎨", href: "/games/built/warna", color: "orange" },
   { title: "Piano", description: "Main piano interaktif!", emoji: "🎹", href: "/games/built/piano", color: "purple" },
   { title: "Petualangan Labirin", description: "Kumpulkan bintang di labirin!", emoji: "🧑‍🚀", href: "/games/built/petualangan-labirin", color: "blue" },
 ];
