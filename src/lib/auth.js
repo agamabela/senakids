@@ -1,9 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-
-const prisma = new PrismaClient();
 
 export const authOptions = {
   providers: [
@@ -18,9 +16,15 @@ export const authOptions = {
           throw new Error("Email dan password harus diisi");
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
+        let user;
+        try {
+          user = await prisma.user.findUnique({
+            where: { email: credentials.email }
+          });
+        } catch (err) {
+          console.error("DB error during login:", err);
+          throw new Error("Tidak dapat terhubung ke database. Coba lagi.");
+        }
 
         if (!user || !user.password) {
           throw new Error("Email atau password salah");
@@ -46,7 +50,7 @@ export const authOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -69,6 +73,7 @@ export const authOptions = {
     error: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);

@@ -1,0 +1,27 @@
+{
+  "appId": "com.senakids.app",
+  "appName": "Sena Kids",
+  "webDir": "out",
+  "server": {
+    "url": "https://senakids.vercel.app",
+    "cleartext": false,
+    "androidScheme": "https"
+  },
+  "android": {
+    "backgroundColor": "#FAF6F0",
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#8BA888",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#8BA888"
+    }
+  }
+}

@@ -275,3 +275,42 @@
   background-color: var(--color-muted);
 }
 
+/* ─── Mobile responsive ────────────────────────── */
+@media (max-width: 640px) {
+  .container {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+
+  /* left: just the logo box, no text */
+  .leftSection {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  /* right: auto width, hide the refresh button */
+  .rightSection {
+    width: auto;
+    gap: 4px;
+  }
+
+  .actionButton {
+    display: none; /* hide refresh on mobile */
+  }
+
+  .actionButton, .avatarButton {
+    height: 34px;
+    width: 34px;
+  }
+
+  /* user dropdown opens from the right, ensure it doesn't go off-screen */
+  .userDropdown {
+    right: 0;
+    min-width: 200px;
+    max-width: calc(100vw - 24px);
+  }
+
+  .menuText {
+    display: none; /* just show the hamburger icon */
+  }
+}

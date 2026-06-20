@@ -15,7 +15,7 @@ model Book {
   color       String
   pdfUrl      String?
   href        String   @default("/books")
-  shelf       String   // e.g. "Dongeng Sebelum Tidur 🌙"
+  shelf       String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -29,7 +29,7 @@ model Game {
   gameUrl     String?
   color       String
   href        String   @default("/games")
-  zoneName    String   // e.g. "Zona Puzzle 🧩"
+  zoneName    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -59,7 +59,7 @@ model User {
   name          String?
   email         String   @unique
   password      String
-  role          String   @default("user") // "user" or "admin"
+  role          String   @default("user")
   emailVerified DateTime?
   image         String?
   createdAt     DateTime @default(now())
