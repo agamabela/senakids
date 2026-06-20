@@ -37,8 +37,8 @@ const builtGameDetails = {
   "huruf-abc": { title: "Huruf ABC", description: "Belajar huruf dan suara!", note: "This built-in game is implemented directly in Sena Kids." },
   warna: { title: "Menggambar Bebas", description: "Gambar bebas dengan warna-warni!", note: "This built-in game is implemented directly in Sena Kids." },
   piano: { title: "Piano", description: "Main piano interaktif!", note: "This built-in game is implemented directly in Sena Kids." },
-  "petualangan-labirin": { title: "Petualangan Labirin", description: "Bantu astronot kumpulkan bintang di labirin!", note: "This built-in game is implemented directly in Sena Kids." },
-  "labirin-3d": { title: "Labirin 3D", description: "Jelajahi labirin 3D orang pertama dan temukan keju!", note: "This built-in game is implemented directly in Sena Kids." },
+  "petualangan-labirin": { title: "Petualangan Labirin", description: "Jelajahi labirin dan kumpulkan semua permata!", note: "This built-in game is implemented directly in Sena Kids." },
+  "labirin-3d": { title: "Labirin 3D", description: "Jelajahi labirin 3D orang pertama dan kumpulkan permata!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {

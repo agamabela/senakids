@@ -4,273 +4,270 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./PetualanganLabirinGameClient.module.css";
 
-// ─── Maze generator (recursive backtracker) ────────────────────────────────
+// ─── Maze generator (recursive backtracker, iterative to avoid stack limits) ─
 function generateMaze(cols, rows) {
-  // cols/rows must be odd for wall-based grid
   const W = cols % 2 === 0 ? cols + 1 : cols;
   const H = rows % 2 === 0 ? rows + 1 : rows;
-
-  // 1 = wall, 0 = passage
   const grid = Array.from({ length: H }, () => Array(W).fill(1));
-
+  const dirs = [[0, -2], [0, 2], [-2, 0], [2, 0]];
   const inBounds = (x, y) => x > 0 && y > 0 && x < W - 1 && y < H - 1;
-  const dirs = [
-    [0, -2], [0, 2], [-2, 0], [2, 0],
-  ];
 
-  function carve(x, y) {
-    grid[y][x] = 0;
-    const shuffled = [...dirs].sort(() => Math.random() - 0.5);
-    for (const [dx, dy] of shuffled) {
-      const nx = x + dx;
-      const ny = y + dy;
-      if (inBounds(nx, ny) && grid[ny][nx] === 1) {
-        grid[y + dy / 2][x + dx / 2] = 0; // carve wall between
-        carve(nx, ny);
-      }
+  const stack = [{ x: 1, y: 1 }];
+  grid[1][1] = 0;
+  while (stack.length) {
+    const cur = stack[stack.length - 1];
+    const opts = [];
+    for (const [dx, dy] of dirs) {
+      const nx = cur.x + dx;
+      const ny = cur.y + dy;
+      if (inBounds(nx, ny) && grid[ny][nx] === 1) opts.push([dx, dy, nx, ny]);
+    }
+    if (opts.length) {
+      const [dx, dy, nx, ny] = opts[Math.floor(Math.random() * opts.length)];
+      grid[cur.y + dy / 2][cur.x + dx / 2] = 0;
+      grid[ny][nx] = 0;
+      stack.push({ x: nx, y: ny });
+    } else {
+      stack.pop();
     }
   }
-
-  carve(1, 1);
   return { grid, W, H };
 }
 
-// Place N treasures in random open cells (not the start cell)
 function placeTreasures(grid, W, H, n, startX, startY) {
   const open = [];
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++)
       if (grid[y][x] === 0 && !(x === startX && y === startY)) open.push({ x, y });
-
-  const shuffled = [...open].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, n).map((p, i) => ({ ...p, id: i, collected: false }));
+  // prefer cells far from the start so kids must explore
+  open.sort((a, b) => {
+    const da = Math.abs(a.x - startX) + Math.abs(a.y - startY);
+    const db = Math.abs(b.x - startX) + Math.abs(b.y - startY);
+    return db - da;
+  });
+  const pool = open.slice(0, Math.max(n * 3, 8));
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, n).map((p, i) => ({ ...p, id: i, collected: false }));
 }
 
 // ─── Level configs ─────────────────────────────────────────────────────────
 const LEVELS = [
-  { id: 1, name: { id: "Mudah",    en: "Easy"    }, cols: 17, rows: 17, treasures: 2, vision: 9, tier: 1, showTrail: true  },
-  { id: 2, name: { id: "Sedang",   en: "Medium"  }, cols: 25, rows: 25, treasures: 3, vision: 7, tier: 2, showTrail: true  },
-  { id: 3, name: { id: "Sulit",    en: "Hard"    }, cols: 33, rows: 33, treasures: 4, vision: 6, tier: 3, showTrail: true  },
-  { id: 4, name: { id: "Extreme",  en: "Extreme" }, cols: 41, rows: 41, treasures: 5, vision: 6, tier: 4, showTrail: false },
+  { id: 1, name: { id: "Mudah",   en: "Easy"   }, cols: 13, rows: 13, gems: 3, reveal: 3, tier: 1 },
+  { id: 2, name: { id: "Sedang",  en: "Medium" }, cols: 19, rows: 19, gems: 4, reveal: 3, tier: 2 },
+  { id: 3, name: { id: "Sulit",   en: "Hard"   }, cols: 27, rows: 27, gems: 4, reveal: 2, tier: 3 },
+  { id: 4, name: { id: "Ekstrem", en: "Extreme"}, cols: 35, rows: 35, gems: 5, reveal: 2, tier: 4 },
 ];
 
-const CELL = 24; // px per cell
+const BOARD_W = 660;
+const BOARD_H = 470;
 
 function buildLevel(levelIdx) {
   const cfg = LEVELS[levelIdx];
   const { grid, W, H } = generateMaze(cfg.cols, cfg.rows);
   const startX = 1;
   const startY = 1;
-  const treasures = placeTreasures(grid, W, H, cfg.treasures, startX, startY);
+  const treasures = placeTreasures(grid, W, H, cfg.gems, startX, startY);
   return { grid, W, H, startX, startY, treasures };
 }
 
-// ─── Component ─────────────────────────────────────────────────────────────
+// soft "blip" used for footsteps / pickups
+function playBlip(freq, dur = 0.08, type = "sine", vol = 0.12) {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    if (!playBlip._ctx) playBlip._ctx = new Ctx();
+    const ctx = playBlip._ctx;
+    if (ctx.state === "suspended") ctx.resume();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + dur);
+  } catch (e) {
+    /* ignore */
+  }
+}
+
 export default function PetualanganLabirinGameClient() {
   const { language } = useLanguage();
 
-  const [screen, setScreen]           = useState("intro"); // intro | playing | win
-  const [levelIdx, setLevelIdx]       = useState(0);
-  const [state, setState]             = useState(null);
-  const [playerPos, setPlayerPos]     = useState({ x: 1, y: 1 });
-  const [treasures, setTreasures]     = useState([]);
-  const [trail, setTrail]             = useState(new Set());
-  const [steps, setSteps]             = useState(0);
-  const [startTime, setStartTime]     = useState(null);
-  const [elapsed, setElapsed]         = useState(0);
-  const timerRef = useRef(null);
+  const [screen, setScreen]       = useState("intro");
+  const [levelIdx, setLevelIdx]   = useState(0);
+  const [state, setState]         = useState(null);
+  const [playerPos, setPlayerPos] = useState({ x: 1, y: 1 });
+  const [treasures, setTreasures] = useState([]);
+  const [explored, setExplored]   = useState(new Set());
+  const [steps, setSteps]         = useState(0);
   const canvasRef = useRef(null);
 
   const cfg = LEVELS[levelIdx];
 
-  // ── Start / reset a level ─────────────────────────────────────────────
+  const revealAround = useCallback((set, cx, cy, grid, W, H, r) => {
+    for (let dy = -r; dy <= r; dy++) {
+      for (let dx = -r; dx <= r; dx++) {
+        const x = cx + dx;
+        const y = cy + dy;
+        if (x < 0 || y < 0 || x >= W || y >= H) continue;
+        if (Math.abs(dx) + Math.abs(dy) > r + 1) continue;
+        set.add(`${x},${y}`);
+      }
+    }
+  }, []);
+
   const startLevel = useCallback((idx) => {
     const lvl = buildLevel(idx);
     setState(lvl);
     setPlayerPos({ x: lvl.startX, y: lvl.startY });
     setTreasures(lvl.treasures);
-    setTrail(new Set([`${lvl.startX},${lvl.startY}`]));
+    const set = new Set();
+    revealAround(set, lvl.startX, lvl.startY, lvl.grid, lvl.W, lvl.H, LEVELS[idx].reveal);
+    setExplored(set);
     setSteps(0);
-    setElapsed(0);
-    const now = Date.now();
-    setStartTime(now);
     setScreen("playing");
-  }, []);
+  }, [revealAround]);
 
-  // ── Timer ─────────────────────────────────────────────────────────────
-  useEffect(() => {
-    if (screen !== "playing") {
-      clearInterval(timerRef.current);
-      return;
-    }
-    timerRef.current = setInterval(() => {
-      setElapsed(Math.floor((Date.now() - startTime) / 1000));
-    }, 1000);
-    return () => clearInterval(timerRef.current);
-  }, [screen, startTime]);
-
-  // ── Move logic ────────────────────────────────────────────────────────
   const move = useCallback((dx, dy) => {
     if (!state || screen !== "playing") return;
-    setPlayerPos(prev => {
+    setPlayerPos((prev) => {
       const nx = prev.x + dx;
       const ny = prev.y + dy;
       if (nx < 0 || ny < 0 || nx >= state.W || ny >= state.H) return prev;
       if (state.grid[ny][nx] === 1) return prev;
 
-      const key = `${nx},${ny}`;
-      setTrail(t => {
-        const next = new Set(t);
-        next.add(key);
-        return next;
-      });
-      setSteps(s => s + 1);
+      playBlip(180 + Math.random() * 40, 0.06, "triangle", 0.08); // footstep
 
-      // collect treasure
-      setTreasures(prev => {
-        const updated = prev.map(tr =>
-          tr.x === nx && tr.y === ny && !tr.collected
-            ? { ...tr, collected: true }
-            : tr
-        );
-        if (updated.every(tr => tr.collected)) {
-          setTimeout(() => setScreen("win"), 200);
+      setExplored((old) => {
+        const set = new Set(old);
+        revealAround(set, nx, ny, state.grid, state.W, state.H, cfg.reveal);
+        return set;
+      });
+      setSteps((s) => s + 1);
+
+      setTreasures((old) => {
+        let picked = false;
+        const updated = old.map((tr) => {
+          if (tr.x === nx && tr.y === ny && !tr.collected) {
+            picked = true;
+            return { ...tr, collected: true };
+          }
+          return tr;
+        });
+        if (picked) playBlip(880, 0.18, "sine", 0.18);
+        if (updated.every((tr) => tr.collected)) {
+          playBlip(1320, 0.4, "sine", 0.2);
+          setTimeout(() => setScreen("win"), 250);
         }
         return updated;
       });
 
       return { x: nx, y: ny };
     });
-  }, [state, screen]);
+  }, [state, screen, cfg, revealAround]);
 
-  // ── Keyboard ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (screen !== "playing") return;
     const handler = (e) => {
       const map = {
-        ArrowUp: [0, -1], ArrowDown: [0, 1],
-        ArrowLeft: [-1, 0], ArrowRight: [1, 0],
+        ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
         w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0],
         W: [0, -1], S: [0, 1], A: [-1, 0], D: [1, 0],
       };
-      if (map[e.key]) {
-        e.preventDefault();
-        move(...map[e.key]);
-      }
+      if (map[e.key]) { e.preventDefault(); move(...map[e.key]); }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [move, screen]);
 
-  // ── Canvas draw ───────────────────────────────────────────────────────
+  // ── Canvas draw: full board with persistent fog of war ──
   useEffect(() => {
     if (!canvasRef.current || !state || screen !== "playing") return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const { grid, W, H } = state;
-    const vr = cfg.vision; // vision radius in cells
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const cell = Math.floor(Math.min(BOARD_W, BOARD_H) / Math.max(W, H));
+    const mazeW = cell * W;
+    const mazeH = cell * H;
+    const ox = Math.floor((BOARD_W - mazeW) / 2);
+    const oy = Math.floor((BOARD_H - mazeH) / 2);
 
-    // viewport: center on player, show vr*2+1 cells each axis
-    const vpW = vr * 2 + 1;
-    const vpH = vr * 2 + 1;
-    const offsetX = playerPos.x - vr;
-    const offsetY = playerPos.y - vr;
+    // page-beige background
+    ctx.fillStyle = "#e7dcc0";
+    ctx.fillRect(0, 0, BOARD_W, BOARD_H);
 
-    for (let vy = 0; vy < vpH; vy++) {
-      for (let vx = 0; vx < vpW; vx++) {
-        const gx = offsetX + vx;
-        const gy = offsetY + vy;
-
-        const px = vx * CELL;
-        const py = vy * CELL;
-
-        // distance from player (for fog falloff)
-        const dist = Math.sqrt((vx - vr) ** 2 + (vy - vr) ** 2);
-        const fogAlpha = Math.min(1, dist / (vr + 0.5));
-
-        if (gx < 0 || gy < 0 || gx >= W || gy >= H) {
-          // out of bounds — beige fog
-          ctx.fillStyle = "#c9b799";
-          ctx.fillRect(px, py, CELL, CELL);
-        } else {
-          const cell = grid[gy][gx];
-          const key = `${gx},${gy}`;
-          const isTrail = cfg.showTrail && trail.has(key);
-
-          if (cell === 1) {
-            // wall — tan/brown color
-            ctx.fillStyle = "#a89371";
-            ctx.fillRect(px, py, CELL, CELL);
-            // wall texture: slight shading
-            const grd = ctx.createLinearGradient(px, py, px + CELL, py + CELL);
-            grd.addColorStop(0, "rgba(0,0,0,0.08)");
-            grd.addColorStop(1, "rgba(0,0,0,0.02)");
-            ctx.fillStyle = grd;
-            ctx.fillRect(px, py, CELL, CELL);
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const px = ox + x * cell;
+        const py = oy + y * cell;
+        const seen = explored.has(`${x},${y}`);
+        if (seen) {
+          if (grid[y][x] === 1) {
+            ctx.fillStyle = "#8aa54e"; // explored wall — olive green
           } else {
-            // floor — beige base
-            ctx.fillStyle = "#d9cdb3";
-            ctx.fillRect(px, py, CELL, CELL);
-            // bright green path
-            if (isTrail) {
-              ctx.fillStyle = "#b8d96f";
-              ctx.fillRect(px, py, CELL, CELL);
-            }
+            ctx.fillStyle = "#f1ead0"; // explored floor — pale cream
           }
-
-          // treasure
-          const tr = treasures.find(t => t.x === gx && t.y === gy && !t.collected);
-          if (tr && dist < vr) {
-            ctx.font = `${CELL - 4}px serif`;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("⭐", px + CELL / 2, py + CELL / 2);
-          }
+        } else {
+          ctx.fillStyle = "#ddd0ad"; // unexplored fog — flat beige
         }
-
-        // fog of war gradient overlay (lighter, more subtle)
-        if (fogAlpha > 0) {
-          ctx.fillStyle = `rgba(201,183,153,${fogAlpha * 0.75})`;
-          ctx.fillRect(px, py, CELL, CELL);
-        }
+        ctx.fillRect(px, py, cell, cell);
       }
     }
 
-    // player — always at center of viewport
-    const cx = vr * CELL + CELL / 2;
-    const cy = vr * CELL + CELL / 2;
-    ctx.font = `${CELL - 2}px serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("🧑‍🚀", cx, cy);
+    // gems act as beacons — visible even through fog (dark teal squares)
+    treasures.forEach((tr) => {
+      if (tr.collected) return;
+      const px = ox + tr.x * cell;
+      const py = oy + tr.y * cell;
+      const seen = explored.has(`${tr.x},${tr.y}`);
+      ctx.fillStyle = seen ? "#1f7a6b" : "#39786e";
+      const inset = Math.max(2, cell * 0.18);
+      ctx.fillRect(px + inset, py + inset, cell - inset * 2, cell - inset * 2);
+      // little shine
+      ctx.fillStyle = "rgba(255,255,255,0.4)";
+      ctx.fillRect(px + inset + 1, py + inset + 1, Math.max(1, (cell - inset * 2) / 3), Math.max(1, (cell - inset * 2) / 3));
+    });
 
-    // edge vignette (lighter fog color)
-    const radGrd = ctx.createRadialGradient(
-      canvas.width / 2, canvas.height / 2, canvas.width * 0.3,
-      canvas.width / 2, canvas.height / 2, canvas.width * 0.7
-    );
-    radGrd.addColorStop(0, "rgba(217,205,179,0)");
-    radGrd.addColorStop(1, "rgba(201,183,153,0.5)");
-    ctx.fillStyle = radGrd;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }, [state, playerPos, treasures, trail, cfg, screen]);
+    // player — white rounded blob with eyes
+    const cx = ox + playerPos.x * cell + cell / 2;
+    const cy = oy + playerPos.y * cell + cell / 2;
+    const r = cell * 0.42;
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "rgba(0,0,0,0.18)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#333";
+    const er = Math.max(1, cell * 0.07);
+    ctx.beginPath();
+    ctx.arc(cx - r * 0.35, cy - r * 0.1, er, 0, Math.PI * 2);
+    ctx.arc(cx + r * 0.35, cy - r * 0.1, er, 0, Math.PI * 2);
+    ctx.fill();
+  }, [state, playerPos, treasures, explored, screen]);
 
-  const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-  const collected = treasures.filter(t => t.collected).length;
+  const collected = treasures.filter((t) => t.collected).length;
+  const diffName = (lv) => lv.name[language] ?? lv.name.id;
 
-  // ── INTRO ─────────────────────────────────────────────────────────────
+  // ── INTRO ──
   if (screen === "intro") {
     return (
       <div className={styles.introWrapper}>
         <div className={styles.introCard}>
-          <div className={styles.introEmoji}>🧑‍🚀</div>
+          <div className={styles.introEmoji}>🐭💎</div>
           <h1>{language === "id" ? "Petualangan Labirin" : "Maze Adventure"}</h1>
           <p className={styles.introDesc}>
             {language === "id"
-              ? "Bantu astronot menemukan semua bintang di labirin luar angkasa!"
-              : "Help the astronaut collect all stars in the space maze!"}
+              ? "Jelajahi labirin dan kumpulkan semua permata yang berkilau!"
+              : "Explore the maze and collect all the shiny gems!"}
           </p>
           <div className={styles.levelGrid}>
             {LEVELS.map((lv, i) => (
@@ -280,10 +277,8 @@ export default function PetualanganLabirinGameClient() {
                 onClick={() => { setLevelIdx(i); startLevel(i); }}
               >
                 <div className={styles.tierBadge}>Tier {lv.tier}</div>
-                <div className={styles.lvlName}>{lv.name[language] ?? lv.name.id}</div>
-                <div className={styles.lvlDetail}>
-                  {lv.cols}×{lv.rows} · {lv.treasures} ⭐ · 👁 {lv.vision}
-                </div>
+                <div className={styles.lvlName}>{diffName(lv)}</div>
+                <div className={styles.lvlDetail}>{lv.cols}×{lv.rows} · {lv.gems} 💎</div>
               </button>
             ))}
           </div>
@@ -297,23 +292,19 @@ export default function PetualanganLabirinGameClient() {
     );
   }
 
-  // ── WIN ───────────────────────────────────────────────────────────────
+  // ── WIN ──
   if (screen === "win") {
     return (
       <div className={styles.introWrapper}>
         <div className={styles.winCard}>
-          <div className={styles.winEmoji}>🎉</div>
+          <div className={styles.winEmoji}>🎉💎</div>
           <h1>{language === "id" ? "Selamat!" : "You Win!"}</h1>
           <p>
             {language === "id"
-              ? `Kamu mengumpulkan semua ${cfg.treasures} bintang!`
-              : `You collected all ${cfg.treasures} stars!`}
+              ? `Kamu mengumpulkan semua ${cfg.gems} permata!`
+              : `You collected all ${cfg.gems} gems!`}
           </p>
           <div className={styles.winStats}>
-            <div className={styles.winStat}>
-              <span className={styles.winStatVal}>{fmt(elapsed)}</span>
-              <span className={styles.winStatLbl}>{language === "id" ? "Waktu" : "Time"}</span>
-            </div>
             <div className={styles.winStat}>
               <span className={styles.winStatVal}>{steps}</span>
               <span className={styles.winStatLbl}>{language === "id" ? "Langkah" : "Steps"}</span>
@@ -325,7 +316,7 @@ export default function PetualanganLabirinGameClient() {
             </button>
             <button
               className={styles.btnSecondary}
-              onClick={() => { setLevelIdx(i => (i + 1) % LEVELS.length); startLevel((levelIdx + 1) % LEVELS.length); }}
+              onClick={() => { const n = (levelIdx + 1) % LEVELS.length; setLevelIdx(n); startLevel(n); }}
             >
               ➡️ {language === "id" ? "Level Berikutnya" : "Next Level"}
             </button>
@@ -338,58 +329,36 @@ export default function PetualanganLabirinGameClient() {
     );
   }
 
-  // ── PLAYING ───────────────────────────────────────────────────────────
-  const vpSize = (cfg.vision * 2 + 1) * CELL;
-
+  // ── PLAYING ──
   return (
     <div className={styles.gameWrapper}>
-      {/* HUD */}
-      <div className={styles.hud}>
-        <div className={styles.hudLeft}>
-          <span className={styles.hudBadge}>{cfg.name[language] ?? cfg.name.id}</span>
-          <span className={styles.hudSteps}>👟 {steps}</span>
+      {/* Top bar */}
+      <div className={styles.topBar}>
+        <div className={styles.gemPill}>💎 {collected} / {cfg.gems}</div>
+        <div className={styles.tierPill}>
+          {language === "id" ? "Tingkat" : "Level"}: {diffName(cfg)}
         </div>
-        <div className={styles.hudCenter}>
-          {Array.from({ length: cfg.treasures }, (_, i) => (
-            <span key={i} className={i < collected ? styles.starOn : styles.starOff}>⭐</span>
-          ))}
-        </div>
-        <div className={styles.hudRight}>
-          <span className={styles.hudTimer}>⏱ {fmt(elapsed)}</span>
-          <button className={styles.hudBtn} onClick={() => setScreen("intro")}>🗺️</button>
-          <button className={styles.hudBtn} onClick={() => startLevel(levelIdx)}>🔄</button>
-        </div>
+        <button className={styles.menuPill} onClick={() => setScreen("intro")}>
+          ← {language === "id" ? "Menu" : "Menu"}
+        </button>
       </div>
 
-      {/* Canvas viewport */}
-      <div className={styles.canvasWrapper}>
+      {/* Board */}
+      <div className={styles.boardPanel}>
         <canvas
           ref={canvasRef}
-          width={vpSize}
-          height={vpSize}
+          width={BOARD_W}
+          height={BOARD_H}
           className={styles.canvas}
         />
       </div>
 
-      {/* On-screen joystick */}
-      <div className={styles.joystick}>
-        <div className={styles.jRow}>
-          <button className={styles.jBtn} onClick={() => move(0, -1)}>⬆</button>
-        </div>
-        <div className={styles.jRow}>
-          <button className={styles.jBtn} onClick={() => move(-1, 0)}>⬅</button>
-          <button className={`${styles.jBtn} ${styles.jCenter}`}>🧑‍🚀</button>
-          <button className={styles.jBtn} onClick={() => move(1, 0)}>➡</button>
-        </div>
-        <div className={styles.jRow}>
-          <button className={styles.jBtn} onClick={() => move(0, 1)}>⬇</button>
-        </div>
-      </div>
-
-      <div className={styles.hint}>
-        {language === "id"
-          ? "Kumpulkan semua ⭐ untuk menang!"
-          : "Collect all ⭐ to win!"}
+      {/* Arrow controls */}
+      <div className={styles.padCard}>
+        <button className={`${styles.padBtn} ${styles.padUp}`} onClick={() => move(0, -1)} aria-label="Atas">↑</button>
+        <button className={`${styles.padBtn} ${styles.padLeft}`} onClick={() => move(-1, 0)} aria-label="Kiri">←</button>
+        <button className={`${styles.padBtn} ${styles.padDown}`} onClick={() => move(0, 1)} aria-label="Bawah">↓</button>
+        <button className={`${styles.padBtn} ${styles.padRight}`} onClick={() => move(1, 0)} aria-label="Kanan">→</button>
       </div>
     </div>
   );
