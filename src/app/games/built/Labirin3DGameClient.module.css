@@ -161,18 +161,32 @@
   height: 100% !important;
 }
 
-/* Minimap overlay (top-right corner) */
+/* Minimap panel — sits OUTSIDE the 3D box */
+.miniPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+}
+
+.miniLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-muted-foreground);
+}
+
 .minimap {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 132px !important;
-  height: 132px !important;
-  border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, .8);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+  width: 132px;
+  height: 132px;
+  border-radius: 10px;
+  border: 2px solid #d8cfb8;
   background: #cdbfa0;
-  z-index: 3;
+  display: block;
 }
 
 .winOverlay {

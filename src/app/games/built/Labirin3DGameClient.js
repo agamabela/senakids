@@ -79,6 +79,61 @@ function playBlip(freq, dur = 0.08, type = "sine", vol = 0.12) {
   }
 }
 
+// ─── Procedural textures ───────────────────────────────────────────────────
+function makeBrickTexture() {
+  const c = document.createElement("canvas");
+  c.width = 128;
+  c.height = 128;
+  const ctx = c.getContext("2d");
+  // mortar background
+  ctx.fillStyle = "#6f4f33";
+  ctx.fillRect(0, 0, 128, 128);
+  // bricks
+  const bh = 32;
+  const bw = 64;
+  for (let row = 0; row * bh < 128; row++) {
+    const offset = (row % 2) * (bw / 2);
+    for (let x = -bw; x < 128; x += bw) {
+      const shade = 150 + Math.floor(Math.random() * 35);
+      ctx.fillStyle = `rgb(${shade + 20}, ${shade - 30}, ${shade - 70})`;
+      ctx.fillRect(x + offset + 2, row * bh + 2, bw - 4, bh - 4);
+      // top highlight
+      ctx.fillStyle = "rgba(255,255,255,0.10)";
+      ctx.fillRect(x + offset + 2, row * bh + 2, bw - 4, 4);
+      // bottom shadow
+      ctx.fillStyle = "rgba(0,0,0,0.12)";
+      ctx.fillRect(x + offset + 2, row * bh + bh - 6, bw - 4, 4);
+    }
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
+function makeFloorTexture() {
+  const c = document.createElement("canvas");
+  c.width = 64;
+  c.height = 64;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#8fc15a";
+  ctx.fillRect(0, 0, 64, 64);
+  for (let i = 0; i < 180; i++) {
+    const r = Math.random();
+    ctx.fillStyle = r > 0.6 ? "#7eb04a" : r > 0.3 ? "#9ecb6a" : "#86b952";
+    const s = Math.random() * 3 + 1;
+    ctx.fillRect(Math.random() * 64, Math.random() * 64, s, s);
+  }
+  // faint cell border so paths read clearly
+  ctx.strokeStyle = "rgba(0,0,0,0.06)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(0, 0, 64, 64);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
 export default function Labirin3DGameClient() {
   const { language } = useLanguage();
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
@@ -205,8 +260,12 @@ export default function Labirin3DGameClient() {
     dir.position.set(3, 8, 2);
     scene.add(dir);
 
+    const brickTex = makeBrickTexture();
+    const floorTex = makeFloorTexture();
+    floorTex.repeat.set(size, size);
+
     const floorGeo = new THREE.PlaneGeometry(size, size);
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x9ccc65 });
+    const floorMat = new THREE.MeshStandardMaterial({ map: floorTex });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.position.set(size / 2 - 0.5, 0, size / 2 - 0.5);
@@ -214,8 +273,8 @@ export default function Labirin3DGameClient() {
 
     const wallGeo = new THREE.BoxGeometry(1, 1, 1);
     const wallMats = [
-      new THREE.MeshStandardMaterial({ color: 0xb98a5a }),
-      new THREE.MeshStandardMaterial({ color: 0xc89b6a }),
+      new THREE.MeshStandardMaterial({ map: brickTex, color: 0xffffff }),
+      new THREE.MeshStandardMaterial({ map: brickTex, color: 0xe3cdb4 }),
     ];
     for (let y = 0; y < size; y++)
       for (let x = 0; x < size; x++)
@@ -328,6 +387,8 @@ export default function Labirin3DGameClient() {
       wallMats.forEach((m) => m.dispose());
       floorGeo.dispose();
       floorMat.dispose();
+      brickTex.dispose();
+      floorTex.dispose();
       gemGeo.dispose();
       gemMat.dispose();
       if (renderer.domElement && renderer.domElement.parentNode === mount) {
@@ -399,9 +460,6 @@ export default function Labirin3DGameClient() {
       </div>
 
       <div className={styles.viewport} ref={mountRef}>
-        {/* Minimap */}
-        <canvas ref={miniRef} width={132} height={132} className={styles.minimap} />
-
         {won && (
           <div className={styles.winOverlay}>
             <div className={styles.winCard}>
@@ -415,6 +473,12 @@ export default function Labirin3DGameClient() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Minimap — outside the 3D box */}
+      <div className={styles.miniPanel}>
+        <span className={styles.miniLabel}>🗺️ {t("Peta", "Map")}</span>
+        <canvas ref={miniRef} width={132} height={132} className={styles.minimap} />
       </div>
 
       <div className={styles.dpad}>
