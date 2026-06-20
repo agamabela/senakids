@@ -52,14 +52,21 @@ export default function GamesClient({ zones }) {
           </div>
           <h1 className={styles.heroTitle}>{t("games.heroTitle")}</h1>
           <p className={styles.heroSubtitle}>{t("games.heroSubtitle")}</p>
-          <button className={styles.playNowBtn}>
+          <button
+            className={styles.playNowBtn}
+            onClick={() => {
+              if (typeof document !== "undefined") {
+                document.getElementById("built-games")?.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+          >
             <Play fill="currentColor" size={24} /> {t("games.playNow")}
           </button>
         </div>
       </motion.div>
 
       {/* Game Zones from DB */}
-      <section className={styles.zoneSection}>
+      <section className={styles.zoneSection} id="built-games">
         <motion.div 
           className={styles.zoneHeader}
           initial={{ opacity: 0, x: -20 }}

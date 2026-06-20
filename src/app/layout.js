@@ -19,6 +19,9 @@ const nunito = Nunito({
 export const metadata = {
   title: "Sena Kids — Aplikasi untuk anak",
   description: "Belajar, bermain, dan bereksplorasi dengan Sena Kids!",
+  icons: {
+    icon: "/sena-logo.svg",
+  },
 };
 
 export default function RootLayout({ children }) {

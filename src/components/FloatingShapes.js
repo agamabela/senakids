@@ -10,18 +10,18 @@ import styles from './FloatingShapes.module.css';
 
 const SHAPES = [
   /* ── Emoji shapes ── */
-  { type: 'emoji', content: '⭐', top: '8%',  left: '5%',   size: 48, delay: 0,    color: '#F59E0B', anim: 'float'   },
-  { type: 'emoji', content: '☁️', top: '15%', left: '78%',  size: 64, delay: 1.2,  color: '#3B82F6', anim: 'float'   },
-  { type: 'emoji', content: '🌟', top: '55%', left: '90%',  size: 40, delay: 2.5,  color: '#F59E0B', anim: 'spin'    },
-  { type: 'emoji', content: '💜', top: '72%', left: '12%',  size: 36, delay: 0.8,  color: '#8B5CF6', anim: 'float'   },
-  { type: 'emoji', content: '☁️', top: '82%', left: '65%',  size: 56, delay: 3.0,  color: '#14B8A6', anim: 'float'   },
-  /* ── CSS blob shapes ── */
-  { type: 'blob',  top: '25%', left: '88%',  size: 60, delay: 1.8,  color: '#EC4899', anim: 'morph'   },
-  { type: 'blob',  top: '40%', left: '3%',   size: 72, delay: 0.4,  color: '#14B8A6', anim: 'morph'   },
-  { type: 'blob',  top: '65%', left: '45%',  size: 50, delay: 2.2,  color: '#8B5CF6', anim: 'float'   },
+  { type: 'emoji', content: '⭐', top: '8%',  left: '5%',   size: 48, delay: 0,    anim: 'float'   },
+  { type: 'emoji', content: '☁️', top: '15%', left: '78%',  size: 64, delay: 1.2,  anim: 'float'   },
+  { type: 'emoji', content: '🌿', top: '55%', left: '90%',  size: 40, delay: 2.5,  anim: 'float'   },
+  { type: 'emoji', content: '🍃', top: '72%', left: '12%',  size: 36, delay: 0.8,  anim: 'float'   },
+  { type: 'emoji', content: '☁️', top: '82%', left: '65%',  size: 56, delay: 3.0,  anim: 'float'   },
+  /* ── CSS blob shapes (earthy palette) ── */
+  { type: 'blob',  top: '25%', left: '88%',  size: 60, delay: 1.8,  color: '#C5948E', anim: 'morph'   },
+  { type: 'blob',  top: '40%', left: '3%',   size: 72, delay: 0.4,  color: '#8BA888', anim: 'morph'   },
+  { type: 'blob',  top: '65%', left: '45%',  size: 50, delay: 2.2,  color: '#9A8A9E', anim: 'float'   },
   /* ── CSS circle shapes ── */
-  { type: 'circle', top: '10%', left: '42%', size: 34, delay: 1.5,  color: '#F97316', anim: 'spin'    },
-  { type: 'circle', top: '88%', left: '30%', size: 44, delay: 3.4,  color: '#10B981', anim: 'float'   },
+  { type: 'circle', top: '10%', left: '42%', size: 34, delay: 1.5,  color: '#D9A05B', anim: 'spin'    },
+  { type: 'circle', top: '88%', left: '30%', size: 44, delay: 3.4,  color: '#7A8B99', anim: 'float'   },
 ];
 
 export default function FloatingShapes() {

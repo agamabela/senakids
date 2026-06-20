@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Home, Tv, Book, Gamepad2, Route, X, Heart } from "lucide-react";
+import { Home, Tv, Book, Gamepad2, Route, X, Heart, BookOpen, Palette } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./MenuModal.module.css";
 
@@ -10,7 +10,9 @@ const menuItems = [
   { nameKey: "menuModal.home", href: "/home", icon: Home, color: "var(--color-orange)" },
   { nameKey: "menuModal.tv", href: "/tv", icon: Tv, color: "var(--color-blue)" },
   { nameKey: "menuModal.books", href: "/books", icon: Book, color: "var(--color-green)" },
+  { nameKey: "menuModal.stories", href: "/buku-cerita", icon: BookOpen, color: "var(--color-teal)" },
   { nameKey: "menuModal.games", href: "/games", icon: Gamepad2, color: "var(--color-pink)" },
+  { nameKey: "menuModal.create", href: "/create", icon: Palette, color: "var(--color-yellow)" },
   { nameKey: "menuModal.curriculum", href: "/learning_journeys", icon: Route, color: "var(--color-purple)" },
 ];
 

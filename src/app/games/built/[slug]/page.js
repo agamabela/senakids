@@ -21,7 +21,7 @@ import styles from "./page.module.css";
 
 const builtGameDetails = {
   drum: { title: "Drum", description: "Permainan drum interaktif built-in.", note: "This built-in game is implemented directly in Sena Kids." },
-  "membuat-jalur": { title: "Petualangan Sena", description: "Bantu Sena menemukan jalan keluar maze!", note: "This built-in game is implemented directly in Sena Kids." },
+  "membuat-jalur": { title: "Membuat Jalur", description: "Bantu Sena menemukan jalan keluar labirin!", note: "This built-in game is implemented directly in Sena Kids." },
   "learn-english-1": { title: "Learn English 1", description: "Belajar kata sederhana dan gambar.", note: "This built-in game is implemented directly in Sena Kids." },
   "flashcard-simple": { title: "Flashcard Simple", description: "Ingat kata melalui kartu.", note: "This built-in game is implemented directly in Sena Kids." },
   "tebak-gambar": { title: "Tebak Gambar", description: "Tebak gambar mana yang benar.", note: "This built-in game is implemented directly in Sena Kids." },

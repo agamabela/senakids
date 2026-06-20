@@ -1,0 +1,25 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="senaLeaf" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A7C4A0"/>
+      <stop offset="1" stop-color="#8BA888"/>
+    </linearGradient>
+    <linearGradient id="senaSprout" x1="24" y1="14" x2="24" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9FBE97"/>
+      <stop offset="1" stop-color="#7E9B7B"/>
+    </linearGradient>
+  </defs>
+  <!-- rounded squircle background -->
+  <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#senaLeaf)"/>
+  <rect x="2" y="2" width="44" height="44" rx="14" fill="white" fill-opacity="0.06"/>
+  <!-- stem -->
+  <path d="M24 39 C24 31 24 27 24 21" stroke="#5F7A5C" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- left leaf -->
+  <path d="M24 28 C19 28 14 25 12.5 19.5 C18.5 18.5 23 21.5 24 26.5 Z" fill="url(#senaSprout)" stroke="#5F7A5C" stroke-width="1.1" stroke-linejoin="round"/>
+  <!-- right leaf -->
+  <path d="M24 24 C29 23.5 34.5 20 35.5 14 C29 13.5 24.5 17 24 22.5 Z" fill="white" fill-opacity="0.92" stroke="#5F7A5C" stroke-width="1.1" stroke-linejoin="round"/>
+  <!-- friendly face dots on the sprout pot/base -->
+  <circle cx="20" cy="35.5" r="1.5" fill="#5F7A5C"/>
+  <circle cx="28" cy="35.5" r="1.5" fill="#5F7A5C"/>
+  <path d="M21.5 38.5 Q24 40.5 26.5 38.5" stroke="#5F7A5C" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+</svg>

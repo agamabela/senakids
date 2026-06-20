@@ -38,7 +38,8 @@ export default function Navbar() {
           <div className={styles.leftSection}>
             <Link href="/home" className={styles.logoLink}>
               <div className={styles.logoBox}>
-                🌿
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/sena-logo.svg" alt="Sena Kids" width={36} height={36} />
               </div>
               <span className={styles.logoText}>Sena Kids</span>
             </Link>

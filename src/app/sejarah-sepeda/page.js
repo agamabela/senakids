@@ -22,7 +22,7 @@ const TIMELINE = [
       id: "Kirkpatrick MacMillan menambahkan pedal ke roda depan. Orang-Orang Scotland menciptakan ini!",
       en: "Kirkpatrick MacMillan added pedals to the front wheel. Scots invented this!"
     },
-    emoji: "🏴🇬🇧"
+    emoji: "🏴󠁧󠁢󠁳󠁣󠁴󠁿"
   },
   {
     year: "1860-an",
@@ -56,7 +56,7 @@ const TIMELINE = [
     year: "2024",
     title: { id: "Sepeda Masa Depan", en: "Future Bicycles" },
     description: {
-      id: "Sekarang adaSepeda Listrik, Sepeda Lipat, dan banyak lagi! Kita bisa memilih sesuai kebutuhan.",
+      id: "Sekarang ada Sepeda Listrik, Sepeda Lipat, dan banyak lagi! Kita bisa memilih sesuai kebutuhan.",
       en: "Now there are Electric Bikes, Folding Bikes, and more! We can choose what we need."
     },
     emoji: "⚡🚲"

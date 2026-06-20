@@ -55,9 +55,11 @@
 }
 
 .readBtn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  align-self: flex-start;
+  text-decoration: none;
   background-color: var(--color-primary);
   color: white;
   border: none;
@@ -80,11 +82,17 @@
   align-items: center;
   justify-content: center;
   border-left: 1.5px solid var(--color-border);
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-muted));
 }
 
-.heroEmoji {
-  font-size: 100px;
-  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+.shelfCount {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  background: var(--color-muted);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
 }
 
 /* Filters */
