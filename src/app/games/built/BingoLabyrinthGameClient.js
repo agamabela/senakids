@@ -8,10 +8,11 @@ import styles from "./BingoLabyrinthGameClient.module.css";
 const GRID_SIZE = 8;
 const CELL_SIZE = 50;
 
-const LEVELS = [
+// Pool of hand-made levels. Each session we shuffle this pool and play 3,
+// so the game never starts with the same maze twice.
+const LEVEL_POOL = [
   {
-    name: { id: "Jalan Taman", en: "Garden Path" },
-    nameKey: "gardenPath",
+    name: { id: "Jalan ke Rumah", en: "Way Home" },
     start: { x: 0, y: 0 },
     end: { x: 7, y: 7 },
     walls: [
@@ -22,8 +23,7 @@ const LEVELS = [
     ],
   },
   {
-    name: { id: "Petualangan Taman", en: "Park Adventure" },
-    nameKey: "parkAdventure",
+    name: { id: "Pulang Sekolah", en: "After School" },
     start: { x: 0, y: 7 },
     end: { x: 7, y: 0 },
     walls: [
@@ -33,8 +33,7 @@ const LEVELS = [
     ],
   },
   {
-    name: { id: "Seru di Pantai", en: "Beach Fun" },
-    nameKey: "beachFun",
+    name: { id: "Lewat Taman", en: "Through the Park" },
     start: { x: 0, y: 4 },
     end: { x: 7, y: 4 },
     walls: [
@@ -42,11 +41,53 @@ const LEVELS = [
       { x: 4, y: 7 }, { x: 4, y: 6 }, { x: 4, y: 5 }, { x: 4, y: 4 },
     ],
   },
+  {
+    name: { id: "Jalan Berliku", en: "Winding Road" },
+    start: { x: 0, y: 0 },
+    end: { x: 7, y: 6 },
+    walls: [
+      { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 },
+      { x: 3, y: 3 }, { x: 4, y: 3 }, { x: 5, y: 3 },
+      { x: 1, y: 5 }, { x: 2, y: 5 }, { x: 3, y: 5 },
+      { x: 5, y: 5 }, { x: 5, y: 6 },
+    ],
+  },
+  {
+    name: { id: "Dekat Pasar", en: "Near the Market" },
+    start: { x: 7, y: 0 },
+    end: { x: 0, y: 7 },
+    walls: [
+      { x: 5, y: 0 }, { x: 5, y: 1 }, { x: 5, y: 2 },
+      { x: 3, y: 2 }, { x: 3, y: 3 }, { x: 3, y: 4 },
+      { x: 1, y: 4 }, { x: 1, y: 5 }, { x: 1, y: 6 },
+    ],
+  },
+  {
+    name: { id: "Belakang Sekolah", en: "Behind School" },
+    start: { x: 0, y: 7 },
+    end: { x: 7, y: 7 },
+    walls: [
+      { x: 1, y: 7 }, { x: 1, y: 6 }, { x: 1, y: 5 },
+      { x: 3, y: 4 }, { x: 3, y: 5 }, { x: 3, y: 6 }, { x: 3, y: 7 },
+      { x: 5, y: 7 }, { x: 5, y: 6 }, { x: 5, y: 5 },
+    ],
+  },
 ];
 
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function SenaLabyrinthGameClient() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const canvasRef = useRef(null);
+  // Randomize the 3 levels for this session
+  const [levels, setLevels] = useState(() => shuffle(LEVEL_POOL).slice(0, 3));
   const [currentLevel, setCurrentLevel] = useState(0);
   const [path, setPath] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -55,14 +96,21 @@ export default function SenaLabyrinthGameClient() {
   const [showIntro, setShowIntro] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [blinkOn, setBlinkOn] = useState(true);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
-  const level = LEVELS[currentLevel];
+  const level = levels[currentLevel];
   const isWall = (x, y) => level.walls.some((w) => w.x === x && w.y === y);
 
   useEffect(() => {
     setIsClient(true);
     setMounted(true);
+  }, []);
+
+  // Blink timer for the start marker
+  useEffect(() => {
+    const id = setInterval(() => setBlinkOn((b) => !b), 450);
+    return () => clearInterval(id);
   }, []);
 
   const drawGame = useCallback(() => {
@@ -78,11 +126,7 @@ export default function SenaLabyrinthGameClient() {
         const cellX = x * CELL_SIZE;
         const cellY = y * CELL_SIZE;
 
-        if ((x + y) % 2 === 0) {
-          ctx.fillStyle = "#90EE90";
-        } else {
-          ctx.fillStyle = "#98FB98";
-        }
+        ctx.fillStyle = (x + y) % 2 === 0 ? "#90EE90" : "#98FB98";
         ctx.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
 
         if (isWall(x, y)) {
@@ -106,6 +150,7 @@ export default function SenaLabyrinthGameClient() {
       }
     }
 
+    // Drawn path
     if (path.length > 0) {
       ctx.strokeStyle = "#FFD700";
       ctx.lineWidth = 8;
@@ -115,11 +160,8 @@ export default function SenaLabyrinthGameClient() {
       path.forEach((point, i) => {
         const px = point.x * CELL_SIZE + CELL_SIZE / 2;
         const py = point.y * CELL_SIZE + CELL_SIZE / 2;
-        if (i === 0) {
-          ctx.moveTo(px, py);
-        } else {
-          ctx.lineTo(px, py);
-        }
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
       });
       ctx.stroke();
 
@@ -133,34 +175,61 @@ export default function SenaLabyrinthGameClient() {
       });
     }
 
-    ctx.fillStyle = "#4CAF50";
+    // ── START marker: blinking red/yellow beacon ──
+    const sx = level.start.x * CELL_SIZE + CELL_SIZE / 2;
+    const sy = level.start.y * CELL_SIZE + CELL_SIZE / 2;
+    ctx.save();
+    // outer glow ring
+    ctx.fillStyle = blinkOn ? "rgba(239,68,68,0.30)" : "rgba(250,204,21,0.30)";
     ctx.beginPath();
-    ctx.arc(
-      level.start.x * CELL_SIZE + CELL_SIZE / 2,
-      level.start.y * CELL_SIZE + CELL_SIZE / 2,
-      15,
-      0,
-      Math.PI * 2
-    );
+    ctx.arc(sx, sy, 20, 0, Math.PI * 2);
     ctx.fill();
+    // main beacon
+    ctx.fillStyle = blinkOn ? "#ef4444" : "#facc15";
+    ctx.beginPath();
+    ctx.arc(sx, sy, 13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    // little school icon dot
     ctx.fillStyle = "white";
-    ctx.font = "bold 14px Arial";
+    ctx.font = "14px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("S", level.start.x * CELL_SIZE + CELL_SIZE / 2, level.start.y * CELL_SIZE + CELL_SIZE / 2);
+    ctx.fillText("🏫", sx, sy + 1);
+    ctx.restore();
 
-    ctx.fillStyle = "#FF6B6B";
+    // ── FINISH marker: black & white checkered flag ──
+    const ex = level.end.x * CELL_SIZE + CELL_SIZE / 2;
+    const ey = level.end.y * CELL_SIZE + CELL_SIZE / 2;
+    ctx.save();
+    // pole
+    ctx.strokeStyle = "#444";
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(
-      level.end.x * CELL_SIZE + CELL_SIZE / 2,
-      level.end.y * CELL_SIZE + CELL_SIZE / 2,
-      15,
-      0,
-      Math.PI * 2
-    );
-    ctx.fill();
-    ctx.fillStyle = "white";
-    ctx.fillText("E", level.end.x * CELL_SIZE + CELL_SIZE / 2, level.end.y * CELL_SIZE + CELL_SIZE / 2);
+    ctx.moveTo(ex - 12, ey - 16);
+    ctx.lineTo(ex - 12, ey + 18);
+    ctx.stroke();
+    // checkered flag 4x3 of 6px squares
+    const fx = ex - 12;
+    const fy = ey - 16;
+    const sq = 6;
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 4; c++) {
+        ctx.fillStyle = (r + c) % 2 === 0 ? "#111" : "#fff";
+        ctx.fillRect(fx + c * sq, fy + r * sq, sq, sq);
+      }
+    }
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(fx, fy, sq * 4, sq * 3);
+    // little home icon under flag
+    ctx.font = "14px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("🏠", ex + 6, ey + 12);
+    ctx.restore();
 
     const drawSena = (x, y, scale = 1) => {
       const centerX = x * CELL_SIZE + CELL_SIZE / 2;
@@ -217,7 +286,7 @@ export default function SenaLabyrinthGameClient() {
     } else if (gameState === "drawing" || gameState === "won") {
       drawSena(level.start.x, level.start.y, 0.7);
     }
-  }, [path, bingoPos, level, isWall, gameState, isClient]);
+  }, [path, bingoPos, level, isWall, gameState, isClient, blinkOn]);
 
   useEffect(() => {
     drawGame();
@@ -234,164 +303,83 @@ export default function SenaLabyrinthGameClient() {
     return { x, y };
   };
 
-  const handleMouseDown = (e) => {
-    if (gameState !== "drawing") return;
-    const pos = getGridPos(e);
-    // Skip if on wall
+  const beginAt = (pos) => {
     if (isWall(pos.x, pos.y)) return;
     setHasChanges(true);
-
-    // Check if clicking on any existing path point - if so, continue from there
-    const pathIndex = path.findIndex(p => p.x === pos.x && p.y === pos.y);
+    const pathIndex = path.findIndex((p) => p.x === pos.x && p.y === pos.y);
     if (pathIndex !== -1 && pathIndex < path.length - 1) {
-      // Clicked on middle of path - truncate to that point and continue
       setIsDrawing(true);
       setPath(path.slice(0, pathIndex + 1));
       return;
     }
-
-    // Allow starting from S position OR anywhere if path is empty
     if (path.length === 0 && pos.x === level.start.x && pos.y === level.start.y) {
       setIsDrawing(true);
       setPath([pos]);
     } else if (path.length > 0) {
-      // Allow continuing from last point OR from anywhere if close enough (within 2 cells)
       const lastPoint = path[path.length - 1];
       const distance = Math.abs(pos.x - lastPoint.x) + Math.abs(pos.y - lastPoint.y);
       if (distance <= 2) {
         setIsDrawing(true);
-        // If not adjacent, we need to add intermediate points
         if (distance === 2) {
           const newPath = [...path];
-          // Add intermediate point
-          const midX = (lastPoint.x + pos.x) / 2;
-          const midY = (lastPoint.y + pos.y) / 2;
-          newPath.push({ x: midX, y: midY });
+          newPath.push({ x: (lastPoint.x + pos.x) / 2, y: (lastPoint.y + pos.y) / 2 });
           newPath.push(pos);
           setPath(newPath);
         } else {
           setPath((prev) => [...prev, pos]);
         }
       } else if (pos.x === level.start.x && pos.y === level.start.y) {
-        // Clear and start fresh from S
         setIsDrawing(true);
         setPath([pos]);
       }
     }
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDrawing || gameState !== "drawing") return;
-    const pos = getGridPos(e);
+  const moveTo = (pos) => {
     if (pos.x < 0 || pos.x >= GRID_SIZE || pos.y < 0 || pos.y >= GRID_SIZE) return;
     if (isWall(pos.x, pos.y)) return;
-
     const lastPoint = path[path.length - 1];
     const distance = Math.abs(pos.x - lastPoint.x) + Math.abs(pos.y - lastPoint.y);
-
     if (distance === 1) {
-      // Directly adjacent - add directly
       setPath((prev) => [...prev, pos]);
     } else if (distance === 2) {
-      // Skip one cell - add intermediate point then current
       const midX = Math.round((lastPoint.x + pos.x) / 2);
       const midY = Math.round((lastPoint.y + pos.y) / 2);
-      if (!isWall(midX, midY)) {
-        setPath((prev) => [...prev, { x: midX, y: midY }, pos]);
-      }
+      if (!isWall(midX, midY)) setPath((prev) => [...prev, { x: midX, y: midY }, pos]);
     }
   };
 
-  const handleMouseUp = () => {
-    setIsDrawing(false);
+  const handleMouseDown = (e) => {
+    if (gameState !== "drawing") return;
+    beginAt(getGridPos(e));
   };
+  const handleMouseMove = (e) => {
+    if (!isDrawing || gameState !== "drawing") return;
+    moveTo(getGridPos(e));
+  };
+  const handleMouseUp = () => setIsDrawing(false);
 
   const handleTouchStart = (e) => {
     e.preventDefault();
     if (gameState !== "drawing") return;
-    const touch = e.touches[0];
-    const pos = getGridPos(touch);
-    // Skip if on wall
-    if (isWall(pos.x, pos.y)) return;
-
-    // Check if tapping on any existing path point - if so, continue from there
-    const pathIndex = path.findIndex(p => p.x === pos.x && p.y === pos.y);
-    if (pathIndex !== -1 && pathIndex < path.length - 1) {
-      // Tapped on middle of path - truncate to that point and continue
-      setIsDrawing(true);
-      setPath(path.slice(0, pathIndex + 1));
-      return;
-    }
-
-    // Allow starting from S position OR anywhere if path is empty
-    if (path.length === 0 && pos.x === level.start.x && pos.y === level.start.y) {
-      setIsDrawing(true);
-      setPath([pos]);
-    } else if (path.length > 0) {
-      // Allow continuing from last point OR from anywhere if close enough (within 2 cells)
-      const lastPoint = path[path.length - 1];
-      const distance = Math.abs(pos.x - lastPoint.x) + Math.abs(pos.y - lastPoint.y);
-      if (distance <= 2) {
-        setIsDrawing(true);
-        // If not adjacent, we need to add intermediate points
-        if (distance === 2) {
-          const newPath = [...path];
-          // Add intermediate point
-          const midX = (lastPoint.x + pos.x) / 2;
-          const midY = (lastPoint.y + pos.y) / 2;
-          newPath.push({ x: midX, y: midY });
-          newPath.push(pos);
-          setPath(newPath);
-        } else {
-          setPath((prev) => [...prev, pos]);
-        }
-      } else if (pos.x === level.start.x && pos.y === level.start.y) {
-        // Clear and start fresh from S
-        setIsDrawing(true);
-        setPath([pos]);
-      }
-    }
+    beginAt(getGridPos(e.touches[0]));
   };
-
   const handleTouchMove = (e) => {
     e.preventDefault();
     if (!isDrawing || gameState !== "drawing") return;
-    const touch = e.touches[0];
-    const pos = getGridPos(touch);
-    if (pos.x < 0 || pos.x >= GRID_SIZE || pos.y < 0 || pos.y >= GRID_SIZE) return;
-    if (isWall(pos.x, pos.y)) return;
-
-    const lastPoint = path[path.length - 1];
-    const distance = Math.abs(pos.x - lastPoint.x) + Math.abs(pos.y - lastPoint.y);
-
-    if (distance === 1) {
-      // Directly adjacent - add directly
-      setPath((prev) => [...prev, pos]);
-    } else if (distance === 2) {
-      // Skip one cell - add intermediate point then current
-      const midX = Math.round((lastPoint.x + pos.x) / 2);
-      const midY = Math.round((lastPoint.y + pos.y) / 2);
-      if (!isWall(midX, midY)) {
-        setPath((prev) => [...prev, { x: midX, y: midY }, pos]);
-      }
-    }
+    moveTo(getGridPos(e.touches[0]));
   };
-
-  const handleTouchEnd = () => {
-    setIsDrawing(false);
-  };
+  const handleTouchEnd = () => setIsDrawing(false);
 
   const runPath = () => {
     if (path.length < 2) return;
     if (path[path.length - 1].x !== level.end.x || path[path.length - 1].y !== level.end.y) {
-      alert(language === "id" ? "Jalur harus berakhir di tanda E (Selesai)!" : "Path must end at the E (End) marker!");
+      alert(language === "id" ? "Jalur harus berakhir di rumah (🏁)!" : "Path must end at home (🏁)!");
       return;
     }
-
     setGameState("moving");
     let step = 0;
     setSenaPos(path[0]);
-
     const interval = setInterval(() => {
       step++;
       if (step >= path.length) {
@@ -410,26 +398,19 @@ export default function SenaLabyrinthGameClient() {
   };
 
   const nextLevel = () => {
-    if (currentLevel < LEVELS.length - 1) {
+    if (currentLevel < levels.length - 1) {
       setCurrentLevel((prev) => prev + 1);
-      resetLevel();
     } else {
+      // new shuffled session
+      setLevels(shuffle(LEVEL_POOL).slice(0, 3));
       setCurrentLevel(0);
-      resetLevel();
     }
+    resetLevel();
   };
 
-  const startGame = () => {
-    setShowIntro(false);
-  };
+  const getLevelName = (levelObj) => levelObj.name[language] || levelObj.name.id;
 
-  const getLevelName = (levelObj) => {
-    return levelObj.name[language] || levelObj.name.id;
-  };
-
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   if (showIntro) {
     return (
@@ -441,23 +422,23 @@ export default function SenaLabyrinthGameClient() {
             <div className={styles.bingoEar1}></div>
             <div className={styles.bingoEar2}></div>
           </div>
-          <h1>{language === "id" ? "🏃 Petualangan Sena!" : "🏃 Sena's Adventure!"}</h1>
-          <p>{language === "id" ? "Bantu Sena menemukan jalan keluar maze!" : "Help Sena find the path through the maze!"}</p>
+          <h1>{language === "id" ? "🏃 Sena Pulang ke Rumah!" : "🏃 Sena Goes Home!"}</h1>
+          <p>{language === "id" ? "Bantu Sena pulang dari sekolah 🏫 ke rumah 🏠!" : "Help Sena get from school 🏫 to home 🏠!"}</p>
           <div className={styles.instructions}>
             <div className={styles.step}>
               <span className={styles.stepNum}>1</span>
-              <span>{language === "id" ? "Gambar jalur dari S (Mulai) ke E (Selesai)" : "Draw a path from S (Start) to E (End)"}</span>
+              <span>{language === "id" ? "Gambar jalur dari 🏫 (sekolah) ke 🏁 (rumah)" : "Draw a path from 🏫 (school) to 🏁 (home)"}</span>
             </div>
             <div className={styles.step}>
               <span className={styles.stepNum}>2</span>
-              <span>{language === "id" ? "Ketuk \"Gas!\" agar Sena berlari" : "Tap \"Go!\" to make Sena run along the path"}</span>
+              <span>{language === "id" ? "Ketuk \"Gas!\" agar Sena berlari" : "Tap \"Go!\" to make Sena run"}</span>
             </div>
             <div className={styles.step}>
               <span className={styles.stepNum}>3</span>
-              <span>{language === "id" ? "Selesaikan 3 level!" : "Complete all 3 levels!"}</span>
+              <span>{language === "id" ? "Maze selalu acak setiap bermain!" : "Mazes are random every time you play!"}</span>
             </div>
           </div>
-          <button className={styles.startButton} onClick={startGame}>
+          <button className={styles.startButton} onClick={() => setShowIntro(false)}>
             {language === "id" ? "Gas! 🎮" : "Let's Go! 🎮"}
           </button>
         </div>
@@ -469,13 +450,19 @@ export default function SenaLabyrinthGameClient() {
     <div className={styles.gameWrapper}>
       <div className={styles.header}>
         <div>
-          <h1>{language === "id" ? "🏃 Petualangan Sena" : "🏃 Sena's Adventure"}</h1>
+          <h1>{language === "id" ? "🏃 Sena Pulang ke Rumah" : "🏃 Sena Goes Home"}</h1>
           <p>{language === "id" ? "Level" : "Level"} {currentLevel + 1}: {getLevelName(level)}</p>
         </div>
         <div className={styles.levelNav}>
-          <button onClick={() => { setCurrentLevel(0); resetLevel(); }} className={currentLevel === 0 ? styles.activeLevel : ""}>1</button>
-          <button onClick={() => { setCurrentLevel(1); resetLevel(); }} className={currentLevel === 1 ? styles.activeLevel : ""}>2</button>
-          <button onClick={() => { setCurrentLevel(2); resetLevel(); }} className={currentLevel === 2 ? styles.activeLevel : ""}>3</button>
+          {levels.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { setCurrentLevel(i); resetLevel(); }}
+              className={currentLevel === i ? styles.activeLevel : ""}
+            >
+              {i + 1}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -510,11 +497,11 @@ export default function SenaLabyrinthGameClient() {
         )}
         {gameState === "won" && (
           <div className={styles.winMessage}>
-            <span>{language === "id" ? "🎉 Kerja bagus! 🎉" : "🎉 Great Job! 🎉"}</span>
+            <span>{language === "id" ? "🎉 Sampai rumah! 🎉" : "🎉 Made it home! 🎉"}</span>
             <button className={styles.nextButton} onClick={nextLevel}>
-              {currentLevel < LEVELS.length - 1
+              {currentLevel < levels.length - 1
                 ? (language === "id" ? "Level Berikutnya ➡️" : "Next Level ➡️")
-                : (language === "id" ? "Main Lagi 🔄" : "Play Again 🔄")}
+                : (language === "id" ? "Maze Baru 🔄" : "New Mazes 🔄")}
             </button>
           </div>
         )}
@@ -522,8 +509,8 @@ export default function SenaLabyrinthGameClient() {
 
       <div className={styles.hint}>
         {gameState === "drawing" && (language === "id"
-          ? "Gambar jalur mulai dari tanda S hijau!"
-          : "Draw a path starting from the green S marker!")}
+          ? "Gambar jalur mulai dari 🏫 sekolah yang berkedip!"
+          : "Draw a path starting from the blinking 🏫 school!")}
       </div>
     </div>
   );

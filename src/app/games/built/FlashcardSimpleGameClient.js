@@ -16,13 +16,23 @@ const FLASHCARDS = [
   { id: 8, emoji: "🍑", front: "Peach", back: "Persik" },
 ];
 
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function FlashcardSimpleGameClient() {
   const { language } = useLanguage();
+  const [cards] = useState(() => shuffle(FLASHCARDS));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
-  const card = FLASHCARDS[currentIndex];
+  const card = cards[currentIndex];
 
   const handleFlip = () => {
     setFlipped(!flipped);
@@ -31,13 +41,13 @@ export default function FlashcardSimpleGameClient() {
 
   const nextCard = () => {
     setFlipped(false);
-    setCurrentIndex((prev) => (prev + 1) % FLASHCARDS.length);
+    setCurrentIndex((prev) => (prev + 1) % cards.length);
     setHasChanges(true);
   };
 
   const prevCard = () => {
     setFlipped(false);
-    setCurrentIndex((prev) => (prev - 1 + FLASHCARDS.length) % FLASHCARDS.length);
+    setCurrentIndex((prev) => (prev - 1 + cards.length) % cards.length);
     setHasChanges(true);
   };
 
@@ -66,7 +76,7 @@ export default function FlashcardSimpleGameClient() {
           ◀️ Prev
         </button>
         <div className={styles.counter}>
-          {currentIndex + 1} / {FLASHCARDS.length}
+          {currentIndex + 1} / {cards.length}
         </div>
         <button className={styles.navBtn} onClick={nextCard}>
           Next ▶️

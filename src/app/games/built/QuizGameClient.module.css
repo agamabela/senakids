@@ -21,10 +21,77 @@
 }
 
 .progress {
-  text-align: center;
-  margin-bottom: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-muted-foreground);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.sourceTag {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  background: var(--color-muted);
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.refreshBtn {
+  padding: 8px 16px;
+  background: var(--color-card);
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refreshBtn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-muted);
+}
+
+.refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resultButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.internetBtn {
+  padding: 14px 28px;
+  background: var(--color-card);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.internetBtn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  transform: scale(1.04);
+}
+
+.internetBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .quizCard {

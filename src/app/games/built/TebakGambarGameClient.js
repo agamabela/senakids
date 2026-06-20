@@ -12,16 +12,33 @@ const PUZZLES = [
   { id: 4, emoji: "🌞", answer: "Matahari", choices: ["Bulan", "Matahari", "Bintang", "awan"] },
   { id: 5, emoji: "🏠", answer: "Rumah", choices: ["Sekolah", "Rumah", "Toko", "Museum"] },
   { id: 6, emoji: "🐶", answer: "Anjing", choices: ["Kucing", "Anjing", "Babi", "Sapi"] },
+  { id: 7, emoji: "🐘", answer: "Gajah", choices: ["Badak", "Gajah", "Kuda", "Singa"] },
+  { id: 8, emoji: "🌈", answer: "Pelangi", choices: ["Awan", "Pelangi", "Hujan", "Petir"] },
+  { id: 9, emoji: "🦋", answer: "Kupu-kupu", choices: ["Lebah", "Capung", "Kupu-kupu", "Lalat"] },
+  { id: 10, emoji: "⚽", answer: "Bola", choices: ["Bola", "Balon", "Roda", "Donat"] },
 ];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export default function TebakGambarGameClient() {
   const { language } = useLanguage();
+  // Shuffle puzzle order and each puzzle's choices once per session
+  const [puzzles] = useState(() =>
+    shuffle(PUZZLES).map((p) => ({ ...p, choices: shuffle(p.choices) }))
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
-  const puzzle = PUZZLES[currentIndex];
+  const puzzle = puzzles[currentIndex];
 
   const handleAnswer = (choice) => {
     setSelectedAnswer(choice);
@@ -32,7 +49,7 @@ export default function TebakGambarGameClient() {
   const nextPuzzle = () => {
     setSelectedAnswer(null);
     setIsCorrect(null);
-    setCurrentIndex((prev) => (prev + 1) % PUZZLES.length);
+    setCurrentIndex((prev) => (prev + 1) % puzzles.length);
     setHasChanges(true);
   };
 
@@ -73,7 +90,7 @@ export default function TebakGambarGameClient() {
       </div>
 
       <div className={styles.progress}>
-        {currentIndex + 1} / {PUZZLES.length}
+        {currentIndex + 1} / {puzzles.length}
       </div>
     </div>
   );

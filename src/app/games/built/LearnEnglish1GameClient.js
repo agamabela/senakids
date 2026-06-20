@@ -20,6 +20,15 @@ const WORDS = [
 
 let audioContext = null;
 
+const shuffle = (arr) => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
 const getAudioContext = () => {
   if (!audioContext && typeof window !== 'undefined') {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -45,12 +54,13 @@ const speakWithBrowserTTS = async (text) => {
 
 export default function LearnEnglish1GameClient() {
   const { language } = useLanguage();
+  const [words] = useState(() => shuffle(WORDS));
   const [currentWord, setCurrentWord] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
-  const word = WORDS[currentWord];
+  const word = words[currentWord];
 
   const speak = useCallback(async () => {
     if (isSpeaking) return;
@@ -65,13 +75,13 @@ export default function LearnEnglish1GameClient() {
   }, [isSpeaking, word.word, setHasChanges]);
 
   const nextWord = () => {
-    setCurrentWord((prev) => (prev + 1) % WORDS.length);
+    setCurrentWord((prev) => (prev + 1) % words.length);
     setShowHint(false);
     setHasChanges(true);
   };
 
   const prevWord = () => {
-    setCurrentWord((prev) => (prev - 1 + WORDS.length) % WORDS.length);
+    setCurrentWord((prev) => (prev - 1 + words.length) % words.length);
     setShowHint(false);
     setHasChanges(true);
   };
@@ -117,7 +127,7 @@ export default function LearnEnglish1GameClient() {
       </div>
 
       <div className={styles.wordGrid}>
-        {WORDS.map((w, i) => (
+        {words.map((w, i) => (
           <button
             key={w.id}
             className={`${styles.wordItem} ${i === currentWord ? styles.active : ''}`}

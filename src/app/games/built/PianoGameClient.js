@@ -4,22 +4,35 @@ import { useCallback, useEffect, useState } from "react";
 import { useActivityStore } from "@/components/BackButton";
 import styles from "./PianoGameClient.module.css";
 
-// Piano keys: C4 to C5 (one octave + C)
-const pianoKeys = [
-  { key: "A", note: "C4", freq: 261.63, color: "#ff6b6b" },
-  { key: "W", note: "C#4", freq: 277.18, color: "#ffa502", isBlack: true },
-  { key: "S", note: "D4", freq: 293.66, color: "#ffa502" },
-  { key: "E", note: "D#4", freq: 311.13, color: "#ffd93d", isBlack: true },
-  { key: "D", note: "E4", freq: 329.63, color: "#ffd93d" },
-  { key: "F", note: "F4", freq: 349.23, color: "#6bcb77" },
-  { key: "T", note: "F#4", freq: 369.99, color: "#6bcb77", isBlack: true },
-  { key: "G", note: "G4", freq: 392.0, color: "#4d96ff" },
-  { key: "Y", note: "G#4", freq: 415.3, color: "#4d96ff", isBlack: true },
-  { key: "H", note: "A4", freq: 440.0, color: "#4d96ff" },
-  { key: "U", note: "A#4", freq: 466.16, color: "#a855f7", isBlack: true },
-  { key: "J", note: "B4", freq: 493.88, color: "#a855f7" },
-  { key: "K", note: "C5", freq: 523.25, color: "#f472b6" },
+// Note layout for one octave (+ the next C). Semitone offset from C.
+// Keyboard keys: white = A S D F G H J K, black = W E T Y U
+const WHITE_KEYS = [
+  { key: "A", name: "C", solfege: "Do",  semitone: 0,  color: "#ff6b6b" },
+  { key: "S", name: "D", solfege: "Re",  semitone: 2,  color: "#ffa502" },
+  { key: "D", name: "E", solfege: "Mi",  semitone: 4,  color: "#ffd93d" },
+  { key: "F", name: "F", solfege: "Fa",  semitone: 5,  color: "#6bcb77" },
+  { key: "G", name: "G", solfege: "Sol", semitone: 7,  color: "#4d96ff" },
+  { key: "H", name: "A", solfege: "La",  semitone: 9,  color: "#9b59b6" },
+  { key: "J", name: "B", solfege: "Si",  semitone: 11, color: "#a855f7" },
+  { key: "K", name: "C", solfege: "Do",  semitone: 12, color: "#f472b6" },
 ];
+
+const BLACK_KEYS = [
+  { key: "W", name: "C#", semitone: 1,  afterWhite: 0 },
+  { key: "E", name: "D#", semitone: 3,  afterWhite: 1 },
+  { key: "T", name: "F#", semitone: 6,  afterWhite: 3 },
+  { key: "Y", name: "G#", semitone: 8,  afterWhite: 4 },
+  { key: "U", name: "A#", semitone: 10, afterWhite: 5 },
+];
+
+const MIN_OCTAVE = 2;
+const MAX_OCTAVE = 6;
+
+// Equal-temperament frequency: A4 (octave 4, semitone 9) = 440Hz
+function noteFrequency(octave, semitone) {
+  const midi = 12 * (octave + 1) + semitone; // C4 -> 60
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
 
 function playPianoSound(audioCtx, frequency) {
   const now = audioCtx.currentTime;
@@ -27,25 +40,22 @@ function playPianoSound(audioCtx, frequency) {
   const gain = audioCtx.createGain();
   gain.connect(audioCtx.destination);
 
-  // Create oscillator for piano-like tone
   const osc = audioCtx.createOscillator();
-  osc.type = "sine";
+  osc.type = "triangle";
   osc.frequency.setValueAtTime(frequency, now);
 
-  // Piano envelope: quick attack, medium decay
   gain.gain.setValueAtTime(0, now);
   gain.gain.linearRampToValueAtTime(0.6, now + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.3, now + 0.3);
   gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
 
-  // Add harmonics for richer sound
   const osc2 = audioCtx.createOscillator();
   osc2.type = "sine";
   osc2.frequency.setValueAtTime(frequency * 2, now);
   const gain2 = audioCtx.createGain();
   gain2.gain.setValueAtTime(0, now);
-  gain2.gain.linearRampToValueAtTime(0.15, now + 0.02);
-  gain2.gain.exponentialRampToValueAtTime(0.05, now + 0.5);
+  gain2.gain.linearRampToValueAtTime(0.12, now + 0.02);
+  gain2.gain.exponentialRampToValueAtTime(0.04, now + 0.5);
   gain2.gain.exponentialRampToValueAtTime(0.001, now + 1);
 
   osc.connect(gain);
@@ -62,12 +72,14 @@ export default function PianoGameClient() {
   const [audioCtx, setAudioCtx] = useState(null);
   const [activeKeys, setActiveKeys] = useState(new Set());
   const [started, setStarted] = useState(false);
+  const [octave, setOctave] = useState(4);
+  const [lastNote, setLastNote] = useState(null);
+  const [showLabels, setShowLabels] = useState(true);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
   const getAudioContext = useCallback(() => {
     if (audioCtx) return audioCtx;
     if (typeof window === "undefined") return null;
-
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     setAudioCtx(ctx);
     return ctx;
@@ -75,38 +87,43 @@ export default function PianoGameClient() {
 
   useEffect(() => {
     return () => {
-      if (audioCtx && audioCtx.state !== "closed") {
-        audioCtx.close();
-      }
+      if (audioCtx && audioCtx.state !== "closed") audioCtx.close();
     };
   }, [audioCtx]);
 
   const playNote = useCallback(
-    (freq) => {
+    (semitone, label) => {
       const ctx = getAudioContext();
       if (!ctx) return;
-      if (ctx.state === "suspended") {
-        ctx.resume();
-      }
+      if (ctx.state === "suspended") ctx.resume();
       setStarted(true);
       setHasChanges(true);
+      const freq = noteFrequency(octave, semitone);
       playPianoSound(ctx, freq);
+      if (label) setLastNote(label);
     },
-    [getAudioContext, setHasChanges]
+    [getAudioContext, setHasChanges, octave]
   );
 
+  const shiftOctave = useCallback((dir) => {
+    setOctave((o) => Math.min(MAX_OCTAVE, Math.max(MIN_OCTAVE, o + dir)));
+  }, []);
+
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return undefined;
-    }
+    if (typeof window === "undefined") return undefined;
+
+    const allKeys = [...WHITE_KEYS, ...BLACK_KEYS];
 
     const handleKeyDown = (event) => {
       const key = event.key.toUpperCase();
-      const pianoKey = pianoKeys.find((k) => k.key === key);
-      if (pianoKey) {
+      if (key === "Z") { event.preventDefault(); shiftOctave(-1); return; }
+      if (key === "X") { event.preventDefault(); shiftOctave(1); return; }
+      const k = allKeys.find((pk) => pk.key === key);
+      if (k) {
         event.preventDefault();
+        if (activeKeys.has(key)) return; // avoid auto-repeat retrigger
         setActiveKeys((prev) => new Set([...prev, key]));
-        playNote(pianoKey.freq);
+        playNote(k.semitone, k.solfege || k.name);
       }
     };
 
@@ -125,107 +142,95 @@ export default function PianoGameClient() {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [playNote]);
-
-  // Calculate positions for black keys
-  const whiteKeys = pianoKeys.filter((k) => !k.isBlack);
-  const getBlackKeyPosition = (note) => {
-    const index = whiteKeys.findIndex((k) => k.note === note);
-    return index;
-  };
+  }, [playNote, shiftOctave, activeKeys]);
 
   return (
     <div className={styles.pianoGameWrapper}>
       <div className={styles.pianoHeader}>
         <h1>🎹 Piano</h1>
-        <p>Tekan tombol keyboard A S D F G H J K atau W E T Y U untuk memainkan piano!</p>
+        <p>Tekan A S D F G H J K (putih) dan W E T Y U (hitam). Tombol Z / X untuk ganti oktaf!</p>
       </div>
 
+      {/* Control bar */}
+      <div className={styles.controlBar}>
+        <button
+          className={styles.octaveBtn}
+          onClick={() => shiftOctave(-1)}
+          disabled={octave <= MIN_OCTAVE}
+          aria-label="Turun oktaf"
+        >
+          ⬇️ Oktaf
+        </button>
+        <div className={styles.octaveDisplay}>
+          <span className={styles.octaveLabel}>Oktaf</span>
+          <span className={styles.octaveValue}>{octave}</span>
+        </div>
+        <button
+          className={styles.octaveBtn}
+          onClick={() => shiftOctave(1)}
+          disabled={octave >= MAX_OCTAVE}
+          aria-label="Naik oktaf"
+        >
+          ⬆️ Oktaf
+        </button>
+        <button
+          className={styles.toggleBtn}
+          onClick={() => setShowLabels((s) => !s)}
+        >
+          {showLabels ? "🔤 Sembunyikan Nama" : "🔤 Tampilkan Nama"}
+        </button>
+        <div className={styles.nowPlaying}>
+          {lastNote ? `🎵 ${lastNote}` : "🎵 —"}
+        </div>
+      </div>
+
+      {/* Realistic keyboard */}
       <div className={styles.pianoContainer}>
         <div className={styles.keyboard}>
-          {whiteKeys.map((key, index) => (
-            <div key={key.note}>
+          {WHITE_KEYS.map((wk, index) => (
+            <div key={`${wk.key}-${index}`} className={styles.whiteKeyWrap}>
               <div
-                className={`${styles.whiteKey} ${
-                  activeKeys.has(key.key) ? styles.whiteKeyActive : ""
-                }`}
-                onClick={() => playNote(key.freq)}
+                className={`${styles.whiteKey} ${activeKeys.has(wk.key) ? styles.whiteKeyActive : ""}`}
+                onMouseDown={() => playNote(wk.semitone, wk.solfege)}
+                onTouchStart={(e) => { e.preventDefault(); playNote(wk.semitone, wk.solfege); }}
               >
-                <span className={styles.keyLabel}>{key.key}</span>
-                <span className={styles.keyNote}>{key.note}</span>
+                {showLabels && <span className={styles.solfege}>{wk.solfege}</span>}
+                <span className={styles.keyLabel}>{wk.key}</span>
               </div>
-              {/* Black key after this white key */}
-              {index < whiteKeys.length - 1 && (
-                <>
-                  {(() => {
-                    const nextWhiteNote = whiteKeys[index + 1].note;
-                    const blackNote = nextWhiteNote.slice(0, 2) + "#" + nextWhiteNote.slice(2);
-                    const blackKey = pianoKeys.find((k) => k.note === blackNote);
-                    if (blackKey) {
-                      return (
-                        <div
-                          className={`${styles.blackKey} ${
-                            activeKeys.has(blackKey.key) ? styles.blackKeyActive : ""
-                          }`}
-                          style={{
-                            left: `${(index + 1) * 74 - 25}px`,
-                          }}
-                          onClick={() => playNote(blackKey.freq)}
-                        >
-                          <span className={styles.blackKeyLabel}>{blackKey.key}</span>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })()}
-                </>
-              )}
+              {/* black key sitting between this white key and the next */}
+              {BLACK_KEYS.filter((bk) => bk.afterWhite === index).map((bk) => (
+                <div
+                  key={bk.key}
+                  className={`${styles.blackKey} ${activeKeys.has(bk.key) ? styles.blackKeyActive : ""}`}
+                  onMouseDown={(e) => { e.stopPropagation(); playNote(bk.semitone, bk.name); }}
+                  onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); playNote(bk.semitone, bk.name); }}
+                >
+                  <span className={styles.blackKeyLabel}>{bk.key}</span>
+                </div>
+              ))}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Colorful keys for kids */}
-      <div className={styles.colorfulKeys}>
-        {pianoKeys.slice(0, 7).map((key) => (
+      {/* Colorful Do-Re-Mi pads for little kids */}
+      <div className={styles.doremiRow}>
+        {WHITE_KEYS.map((wk, i) => (
           <button
-            key={key.key}
+            key={`pad-${i}`}
             type="button"
-            className={`${styles.colorKey} ${
-              key.color.includes("red")
-                ? styles.colorKeyRed
-                : key.color.includes("orange")
-                ? styles.colorKeyOrange
-                : key.color.includes("yellow")
-                ? styles.colorKeyYellow
-                : key.color.includes("green")
-                ? styles.colorKeyGreen
-                : key.color.includes("blue")
-                ? styles.colorKeyBlue
-                : styles.colorKeyPurple
-            }`}
-            onClick={() => playNote(key.freq)}
-            style={{
-              background:
-                key.color === "#ff6b6b"
-                  ? "linear-gradient(145deg, #ff6b6b, #ee5a5a)"
-                  : key.color === "#ffa502"
-                  ? "linear-gradient(145deg, #ffa502, #ff7f00)"
-                  : key.color === "#ffd93d"
-                  ? "linear-gradient(145deg, #ffd93d, #ffc107)"
-                  : key.color === "#6bcb77"
-                  ? "linear-gradient(145deg, #6bcb77, #4caf50)"
-                  : "linear-gradient(145deg, #4d96ff, #3b82f6)",
-            }}
+            className={styles.doremiPad}
+            style={{ background: wk.color }}
+            onClick={() => playNote(wk.semitone, wk.solfege)}
           >
-            🎵
+            <span className={styles.doremiText}>{wk.solfege}</span>
           </button>
         ))}
       </div>
 
       {!started && (
         <div className={styles.hintBox}>
-          Klik tombol manapun atau tekan tombol keyboard untuk mulai!
+          Klik tuts atau tekan keyboard untuk mulai bermain! 🎶
         </div>
       )}
     </div>

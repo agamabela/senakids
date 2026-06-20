@@ -10,7 +10,7 @@
 .pianoHeader {
   text-align: center;
   color: white;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .pianoHeader h1 {
@@ -20,22 +20,94 @@
 }
 
 .pianoHeader p {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   opacity: 0.9;
+  max-width: 620px;
 }
 
+/* ── Control bar (octave + toggles) ── */
+.controlBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 24px;
+  background: rgba(255,255,255,0.15);
+  padding: 12px 18px;
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+}
+
+.octaveBtn {
+  background: white;
+  color: #4a3f6a;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.12s, opacity 0.2s;
+}
+
+.octaveBtn:hover:not(:disabled) { transform: translateY(-2px); }
+.octaveBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.octaveDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  min-width: 56px;
+}
+
+.octaveLabel { font-size: 0.7rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 1px; }
+.octaveValue { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+
+.toggleBtn {
+  background: rgba(255,255,255,0.9);
+  color: #4a3f6a;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.toggleBtn:hover { transform: translateY(-2px); }
+
+.nowPlaying {
+  margin-left: auto;
+  background: rgba(0,0,0,0.25);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  min-width: 70px;
+  text-align: center;
+}
+
+/* ── Realistic keyboard ── */
 .pianoContainer {
   background: linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 100%);
-  padding: 30px 40px;
+  padding: 26px 30px;
   border-radius: 20px;
-  box-shadow: 
-    0 20px 60px rgba(0,0,0,0.4),
-    inset 0 2px 10px rgba(255,255,255,0.1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 2px 10px rgba(255,255,255,0.1);
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .keyboard {
   display: flex;
   position: relative;
+}
+
+.whiteKeyWrap {
+  position: relative;
+  display: inline-block;
 }
 
 .whiteKey {
@@ -49,70 +121,63 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  padding-bottom: 15px;
+  padding-bottom: 14px;
   margin: 0 2px;
   transition: all 0.1s ease;
-  box-shadow: 
-    0 5px 10px rgba(0,0,0,0.2),
-    inset 0 -5px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2), inset 0 -5px 10px rgba(0,0,0,0.05);
   user-select: none;
 }
 
-.whiteKey:hover {
-  background: linear-gradient(180deg, #fff 0%, #e8e8e8 100%);
-}
+.whiteKey:hover { background: linear-gradient(180deg, #fff 0%, #e8e8e8 100%); }
 
 .whiteKey:active,
 .whiteKeyActive {
   background: linear-gradient(180deg, #e0e0e0 0%, #d0d0d0 100%);
   transform: translateY(3px);
-  box-shadow: 
-    0 2px 5px rgba(0,0,0,0.2),
-    inset 0 -2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 -2px 5px rgba(0,0,0,0.05);
+}
+
+.solfege {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #6d28d9;
+  margin-bottom: 6px;
 }
 
 .keyLabel {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.keyNote {
-  font-size: 0.9rem;
-  color: #666;
+  color: #999;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  padding: 1px 7px;
 }
 
 .blackKey {
-  width: 45px;
-  height: 130px;
+  width: 44px;
+  height: 132px;
   background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
-  border-radius: 0 0 5px 5px;
+  border-radius: 0 0 6px 6px;
   cursor: pointer;
   position: absolute;
-  z-index: 1;
+  top: 0;
+  right: -24px;
+  z-index: 2;
   transition: all 0.1s ease;
-  box-shadow: 
-    0 5px 10px rgba(0,0,0,0.4),
-    inset 0 -3px 5px rgba(255,255,255,0.1);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.4), inset 0 -3px 5px rgba(255,255,255,0.1);
   user-select: none;
 }
 
-.blackKey:hover {
-  background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
-}
+.blackKey:hover { background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%); }
 
 .blackKey:active,
 .blackKeyActive {
-  background: linear-gradient(180deg, #333 0%, #222 100%);
+  background: linear-gradient(180deg, #6d28d9 0%, #4c1d95 100%);
   transform: translateY(3px);
-  box-shadow: 
-    0 2px 5px rgba(0,0,0,0.3),
-    inset 0 -2px 3px rgba(255,255,255,0.1);
 }
 
 .blackKeyLabel {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: bold;
   color: white;
   position: absolute;
@@ -121,63 +186,52 @@
   text-align: center;
 }
 
+/* ── Do-Re-Mi colorful pads ── */
+.doremiRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 26px;
+  max-width: 640px;
+}
+
+.doremiPad {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  border: 4px solid rgba(255,255,255,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+.doremiPad:hover { transform: translateY(-3px); }
+.doremiPad:active { transform: scale(0.92); }
+
+.doremiText {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+}
+
 .hintBox {
-  margin-top: 30px;
+  margin-top: 24px;
   background: rgba(255,255,255,0.15);
-  padding: 15px 25px;
-  border-radius: 10px;
+  padding: 14px 24px;
+  border-radius: 12px;
   color: white;
   font-size: 1rem;
   backdrop-filter: blur(10px);
 }
 
-.colorfulKeys {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 30px;
-  max-width: 600px;
-}
-
-.colorKey {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 4px solid rgba(255,255,255,0.3);
-  cursor: pointer;
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s ease;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.colorKey:active {
-  transform: scale(0.9);
-}
-
-.colorKeyRed { background: linear-gradient(145deg, #ff6b6b, #ee5a5a); }
-.colorKeyOrange { background: linear-gradient(145deg, #ffa502, #ff7f00); }
-.colorKeyYellow { background: linear-gradient(145deg, #ffd93d, #ffc107); }
-.colorKeyGreen { background: linear-gradient(145deg, #6bcb77, #4caf50); }
-.colorKeyBlue { background: linear-gradient(145deg, #4d96ff, #3b82f6); }
-.colorKeyPurple { background: linear-gradient(145deg, #a855f7, #9333ea); }
-.colorKeyPink { background: linear-gradient(145deg, #f472b6, #ec4899); }
-
 @media (max-width: 768px) {
-  .whiteKey {
-    width: 50px;
-    height: 160px;
-  }
-  
-  .blackKey {
-    width: 32px;
-    height: 95px;
-  }
-  
-  .keyboard {
-    transform: scale(0.85);
-  }
+  .whiteKey { width: 48px; height: 160px; }
+  .blackKey { width: 30px; height: 96px; right: -16px; }
+  .nowPlaying { margin-left: 0; }
+  .doremiPad { width: 60px; height: 60px; }
 }
