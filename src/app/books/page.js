@@ -1,9 +1,16 @@
 import { getBooks } from "@/app/admin/actions";
 import BooksClient from "./BooksClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function BooksPage() {
-  const books = await getBooks();
-  
+  let books = [];
+  try {
+    books = await getBooks();
+  } catch (e) {
+    books = [];
+  }
+
   // Group books by shelf
   const shelvesMap = {};
   books.forEach(book => {

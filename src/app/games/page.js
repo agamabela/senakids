@@ -1,9 +1,16 @@
 import { getGames } from "@/app/admin/actions";
 import GamesClient from "./GamesClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function GamesPage() {
-  const games = await getGames();
-  
+  let games = [];
+  try {
+    games = await getGames();
+  } catch (e) {
+    games = [];
+  }
+
   const zonesMap = {};
   games.forEach(game => {
     if (!zonesMap[game.zoneName]) zonesMap[game.zoneName] = { title: game.zoneName, games: [] };
