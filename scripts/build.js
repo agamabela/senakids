@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * Smart build script:
- * - On Vercel (DATABASE_URL starts with "postgres") → swap schema to PostgreSQL
- * - Otherwise (local) → use SQLite as-is
+ * Build script that handles both local (SQLite) and Vercel (PostgreSQL).
+ * Uses prisma db push instead of migrate deploy to avoid lock-file provider mismatches.
  */
 const { execSync } = require("child_process");
 const fs = require("fs");
@@ -14,27 +13,32 @@ const original = fs.readFileSync(schemaPath, "utf8");
 const dbUrl = process.env.DATABASE_URL || "";
 const isPostgres = dbUrl.startsWith("postgres");
 
+let patched = false;
 if (isPostgres) {
-  console.log("🐘 PostgreSQL detected — patching Prisma schema for Vercel...");
-  const patched = original
-    .replace('provider = "sqlite"', 'provider = "postgresql"')
-    // SQLite doesn't support @db. type hints, none exist in our schema so nothing to strip
-    ;
-  fs.writeFileSync(schemaPath, patched, "utf8");
+  console.log("🐘 PostgreSQL detected — patching Prisma schema...");
+  const updated = original.replace('provider = "sqlite"', 'provider = "postgresql"');
+  fs.writeFileSync(schemaPath, updated, "utf8");
+  patched = true;
+}
+
+function run(cmd) {
+  execSync(cmd, { stdio: "inherit" });
 }
 
 try {
-  if (isPostgres) {
-    console.log("📦 Running prisma migrate deploy...");
-    execSync("npx prisma migrate deploy", { stdio: "inherit" });
-  }
   console.log("🔧 Running prisma generate...");
-  execSync("npx prisma generate", { stdio: "inherit" });
-  console.log("🏗️  Running next build...");
-  execSync("next build", { stdio: "inherit" });
-} finally {
+  run("npx prisma generate");
+
   if (isPostgres) {
-    // Restore original schema so git stays clean
+    console.log("📦 Running prisma db push (schema sync)...");
+    run("npx prisma db push --accept-data-loss --skip-generate");
+  }
+
+  console.log("🏗️  Running next build...");
+  run("next build");
+} finally {
+  if (patched) {
+    console.log("♻️  Restoring original schema...");
     fs.writeFileSync(schemaPath, original, "utf8");
   }
 }
