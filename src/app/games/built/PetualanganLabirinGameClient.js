@@ -235,23 +235,76 @@ export default function PetualanganLabirinGameClient() {
       ctx.fillRect(px + inset + 1, py + inset + 1, Math.max(1, (cell - inset * 2) / 3), Math.max(1, (cell - inset * 2) / 3));
     });
 
-    // player — white rounded blob with eyes
+    // player — astronaut SVG drawn via canvas
     const cx = ox + playerPos.x * cell + cell / 2;
     const cy = oy + playerPos.y * cell + cell / 2;
-    const r = cell * 0.42;
-    ctx.fillStyle = "#ffffff";
-    ctx.strokeStyle = "rgba(0,0,0,0.18)";
-    ctx.lineWidth = 1.5;
+    const r = cell * 0.44;
+
+    // helmet (white circle with visor)
+    ctx.save();
     ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.arc(cx, cy - r * 0.1, r * 0.62, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "rgba(0,0,0,0.25)";
+    ctx.shadowBlur = 4;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // visor (tinted blue)
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - r * 0.15, r * 0.38, r * 0.28, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#4fc3f7";
+    ctx.globalAlpha = 0.82;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // visor shine
+    ctx.beginPath();
+    ctx.ellipse(cx - r * 0.12, cy - r * 0.25, r * 0.12, r * 0.08, -0.4, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.65)";
+    ctx.fill();
+
+    // helmet ring
+    ctx.beginPath();
+    ctx.arc(cx, cy - r * 0.1, r * 0.62, 0, Math.PI * 2);
+    ctx.strokeStyle = "#90caf9";
+    ctx.lineWidth = Math.max(1.5, r * 0.12);
+    ctx.stroke();
+
+    // suit body (rounded rect)
+    const bw = r * 1.1;
+    const bh = r * 0.72;
+    const by = cy + r * 0.38;
+    ctx.beginPath();
+    ctx.roundRect(cx - bw / 2, by - bh / 2, bw, bh, r * 0.2);
+    ctx.fillStyle = "#e3f2fd";
+    ctx.fill();
+    ctx.strokeStyle = "#90caf9";
+    ctx.lineWidth = Math.max(1, r * 0.09);
+    ctx.stroke();
+
+    // chest panel (small orange square)
+    const pw = r * 0.28;
+    const ph = r * 0.22;
+    ctx.fillStyle = "#ff9800";
+    ctx.fillRect(cx - pw / 2, by - ph / 2, pw, ph);
+
+    // left arm
+    ctx.beginPath();
+    ctx.ellipse(cx - bw / 2 - r * 0.14, by - r * 0.04, r * 0.18, r * 0.32, 0.2, 0, Math.PI * 2);
+    ctx.fillStyle = "#e3f2fd";
+    ctx.fill();
+    ctx.strokeStyle = "#90caf9";
+    ctx.lineWidth = Math.max(1, r * 0.09);
+    ctx.stroke();
+
+    // right arm
+    ctx.beginPath();
+    ctx.ellipse(cx + bw / 2 + r * 0.14, by - r * 0.04, r * 0.18, r * 0.32, -0.2, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = "#333";
-    const er = Math.max(1, cell * 0.07);
-    ctx.beginPath();
-    ctx.arc(cx - r * 0.35, cy - r * 0.1, er, 0, Math.PI * 2);
-    ctx.arc(cx + r * 0.35, cy - r * 0.1, er, 0, Math.PI * 2);
-    ctx.fill();
+
+    ctx.restore();
   }, [state, playerPos, treasures, explored, screen]);
 
   const collected = treasures.filter((t) => t.collected).length;
@@ -343,23 +396,45 @@ export default function PetualanganLabirinGameClient() {
         </button>
       </div>
 
-      {/* Board */}
+      {/* Board — also handles swipe gestures */}
       <div className={styles.boardPanel}>
         <canvas
           ref={canvasRef}
           width={BOARD_W}
           height={BOARD_H}
           className={styles.canvas}
+          onTouchStart={(e) => {
+            const t = e.touches[0];
+            canvasRef.current._tx = t.clientX;
+            canvasRef.current._ty = t.clientY;
+          }}
+          onTouchEnd={(e) => {
+            const c = canvasRef.current;
+            if (!c._tx) return;
+            const dx = e.changedTouches[0].clientX - c._tx;
+            const dy = e.changedTouches[0].clientY - c._ty;
+            const ax = Math.abs(dx), ay = Math.abs(dy);
+            if (Math.max(ax, ay) < 12) return; // too small — treat as tap
+            if (ax > ay) move(dx > 0 ? 1 : -1, 0);
+            else move(0, dy > 0 ? 1 : -1);
+            c._tx = null;
+          }}
         />
       </div>
 
-      {/* Arrow controls */}
+      {/* D-pad — bigger for tablet / touch */}
       <div className={styles.padCard}>
-        <button className={`${styles.padBtn} ${styles.padUp}`} onClick={() => move(0, -1)} aria-label="Atas">↑</button>
-        <button className={`${styles.padBtn} ${styles.padLeft}`} onClick={() => move(-1, 0)} aria-label="Kiri">←</button>
-        <button className={`${styles.padBtn} ${styles.padDown}`} onClick={() => move(0, 1)} aria-label="Bawah">↓</button>
-        <button className={`${styles.padBtn} ${styles.padRight}`} onClick={() => move(1, 0)} aria-label="Kanan">→</button>
+        <button className={`${styles.padBtn} ${styles.padUp}`}    onClick={() => move(0, -1)} aria-label="Atas">↑</button>
+        <button className={`${styles.padBtn} ${styles.padLeft}`}  onClick={() => move(-1, 0)} aria-label="Kiri">←</button>
+        <button className={`${styles.padBtn} ${styles.padDown}`}  onClick={() => move(0,  1)} aria-label="Bawah">↓</button>
+        <button className={`${styles.padBtn} ${styles.padRight}`} onClick={() => move(1,  0)} aria-label="Kanan">→</button>
       </div>
+
+      <p className={styles.swipeHint}>
+        {language === "id"
+          ? "💡 Ketuk tombol, geser layar, atau tekan ⬆⬇⬅➡ di keyboard"
+          : "💡 Tap buttons, swipe the board, or use ⬆⬇⬅➡ keyboard"}
+      </p>
     </div>
   );
 }

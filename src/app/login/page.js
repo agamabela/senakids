@@ -30,7 +30,9 @@ function LoginForm() {
       });
 
       if (result?.error) {
-        setError(result.error);
+        // NextAuth v5 returns "CredentialsSignin" as the generic error code.
+        // Show a friendly message instead.
+        setError("Email atau password salah. Coba lagi.");
       } else {
         const callbackUrl = searchParams.get("callbackUrl") || "/games";
         router.push(callbackUrl);

@@ -32,6 +32,10 @@ try {
   if (isPostgres) {
     console.log("📦 Running prisma db push (schema sync)...");
     run("npx prisma db push --accept-data-loss --skip-generate");
+    console.log("🌱 Seeding admin user...");
+    // Re-generate client after db push so seed script uses the correct provider
+    run("npx prisma generate");
+    run("node prisma/seed-admin.js");
   }
 
   console.log("🏗️  Running next build...");
