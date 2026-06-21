@@ -23,23 +23,25 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
+      const callbackUrl = searchParams.get("callbackUrl") || "/games";
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
+        callbackUrl,
       });
 
       if (result?.error) {
-        // NextAuth v5 returns "CredentialsSignin" as the generic error code.
-        // Show a friendly message instead.
-        setError("Email atau password salah. Coba lagi.");
+        // surface the real error code so we can diagnose production issues
+        setError(`Gagal masuk (${result.error}). Periksa email/password.`);
+      } else if (result?.ok || result?.url) {
+        // hard navigation so the new session cookie is picked up immediately
+        window.location.href = result?.url || callbackUrl;
       } else {
-        const callbackUrl = searchParams.get("callbackUrl") || "/games";
-        router.push(callbackUrl);
-        router.refresh();
+        setError("Gagal masuk. Coba lagi.");
       }
     } catch (error) {
-      setError("Terjadi kesalahan. Silakan coba lagi.");
+      setError(`Terjadi kesalahan: ${error?.message || "coba lagi"}`);
     } finally {
       setIsLoading(false);
     }
