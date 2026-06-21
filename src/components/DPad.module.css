@@ -1,0 +1,80 @@
+/* Floating D-pad — fixed to bottom-right (or left) of the viewport */
+.dpad {
+  position: fixed;
+  bottom: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  /* semi-transparent backing so it doesn't clash with content */
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 22px;
+  padding: 10px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.14), 0 1px 4px rgba(0, 0, 0, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  /* don't interfere with page scrolling */
+  touch-action: none;
+  user-select: none;
+}
+
+.right { right: 20px; }
+.left  { left: 20px; }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn {
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 14px;
+  background: #eef2f8;
+  color: #2a3a55;
+  font-size: 1.5rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, transform 0.08s, box-shadow 0.12s;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.btn:hover  { background: #dce6f4; }
+.btn:active { background: #b8d9a8; transform: scale(0.88); box-shadow: none; }
+
+/* slightly muted shade for left/right to visually distinguish from up/down */
+.btnLeft,
+.btnRight { background: #f0f4fb; font-size: 1.3rem; }
+
+.centre {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.04);
+  pointer-events: none;
+}
+
+/* Tablet (≥ 768px): slightly bigger buttons */
+@media (min-width: 768px) {
+  .btn    { width: 66px; height: 66px; font-size: 1.7rem; border-radius: 16px; }
+  .centre { width: 66px; height: 66px; }
+  .dpad   { gap: 6px; padding: 12px; border-radius: 26px; }
+  .row    { gap: 6px; }
+}
+
+/* Small phone: keep buttons reachable */
+@media (max-width: 380px) {
+  .btn    { width: 48px; height: 48px; font-size: 1.3rem; }
+  .centre { width: 48px; height: 48px; }
+  .dpad   { bottom: 16px; }
+  .right  { right: 12px; }
+  .left   { left: 12px; }
+}

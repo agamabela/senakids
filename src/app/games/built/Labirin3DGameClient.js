@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useActivityStore } from "@/components/BackButton";
+import DPad from "@/components/DPad";
 import styles from "./Labirin3DGameClient.module.css";
 
 const LEVELS = [
@@ -481,12 +482,15 @@ export default function Labirin3DGameClient() {
         <canvas ref={miniRef} width={132} height={132} className={styles.minimap} />
       </div>
 
-      <div className={styles.dpad}>
-        <button className={`${styles.padBtn} ${styles.padUp}`} onClick={() => moveForward(false)} aria-label="Maju">▲</button>
-        <button className={`${styles.padBtn} ${styles.padLeft}`} onClick={() => turn(true)} aria-label="Belok kiri">↺</button>
-        <button className={`${styles.padBtn} ${styles.padRight}`} onClick={() => turn(false)} aria-label="Belok kanan">↻</button>
-        <button className={`${styles.padBtn} ${styles.padDown}`} onClick={() => moveForward(true)} aria-label="Mundur">▼</button>
-      </div>
+      {/* Floating D-pad — fixed bottom-right, rotate buttons for 3D */}
+      <DPad
+        onUp={() => moveForward(false)}
+        onDown={() => moveForward(true)}
+        onRotateLeft={() => turn(true)}
+        onRotateRight={() => turn(false)}
+        upLabel="▲"
+        downLabel="▼"
+      />
 
       <div className={styles.controls}>
         <button className={styles.btn} onClick={newMaze}>🎲 {t("Labirin Baru", "New Maze")}</button>

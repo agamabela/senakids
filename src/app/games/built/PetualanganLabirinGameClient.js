@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
+import DPad from "@/components/DPad";
 import styles from "./PetualanganLabirinGameClient.module.css";
 
 // ─── Maze generator (recursive backtracker, iterative to avoid stack limits) ─
@@ -422,18 +423,18 @@ export default function PetualanganLabirinGameClient() {
         />
       </div>
 
-      {/* D-pad — bigger for tablet / touch */}
-      <div className={styles.padCard}>
-        <button className={`${styles.padBtn} ${styles.padUp}`}    onClick={() => move(0, -1)} aria-label="Atas">↑</button>
-        <button className={`${styles.padBtn} ${styles.padLeft}`}  onClick={() => move(-1, 0)} aria-label="Kiri">←</button>
-        <button className={`${styles.padBtn} ${styles.padDown}`}  onClick={() => move(0,  1)} aria-label="Bawah">↓</button>
-        <button className={`${styles.padBtn} ${styles.padRight}`} onClick={() => move(1,  0)} aria-label="Kanan">→</button>
-      </div>
+      {/* Floating D-pad — fixed bottom-right */}
+      <DPad
+        onUp={() => move(0, -1)}
+        onDown={() => move(0, 1)}
+        onLeft={() => move(-1, 0)}
+        onRight={() => move(1, 0)}
+      />
 
       <p className={styles.swipeHint}>
         {language === "id"
-          ? "💡 Ketuk tombol, geser layar, atau tekan ⬆⬇⬅➡ di keyboard"
-          : "💡 Tap buttons, swipe the board, or use ⬆⬇⬅➡ keyboard"}
+          ? "💡 Geser layar atau tekan ⬆⬇⬅➡ di keyboard"
+          : "💡 Swipe the board or use ⬆⬇⬅➡ keyboard"}
       </p>
     </div>
   );

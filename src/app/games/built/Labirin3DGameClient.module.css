@@ -230,40 +230,6 @@
   justify-content: center;
 }
 
-/* ─── D-pad controls ─────────────────────────────── */
-.dpad {
-  position: relative;
-  width: 190px;
-  height: 150px;
-  margin: 18px auto 6px;
-}
-
-.padBtn {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border: none;
-  border-radius: 16px;
-  background: linear-gradient(145deg, #ffffff, #e8eef5);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, .15);
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #3b82f6;
-  cursor: pointer;
-  transition: transform .1s, background .2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.padBtn:hover { background: linear-gradient(145deg, #ffffff, #dbe6f0); }
-.padBtn:active { transform: scale(.92); }
-
-.padUp { top: 0; left: 65px; }
-.padLeft { top: 65px; left: 0; }
-.padRight { top: 65px; right: 0; }
-.padDown { top: 65px; left: 65px; }
-
 /* ─── Controls / hint ────────────────────────────── */
 .controls {
   display: flex;
@@ -271,6 +237,8 @@
   gap: 12px;
   margin-top: 8px;
   flex-wrap: wrap;
+  /* leave room for the fixed DPad on the right */
+  padding-right: 180px;
 }
 
 .btn {
