@@ -17,6 +17,8 @@ export default function DPad({
   onRight,
   onRotateLeft,
   onRotateRight,
+  onCenter,
+  centerLabel = "",
   upLabel    = "↑",
   downLabel  = "↓",
   leftLabel  = "←",
@@ -55,8 +57,19 @@ export default function DPad({
         >
           {lLbl}
         </button>
-        {/* centre dot — non-interactive */}
-        <div className={styles.centre} aria-hidden="true" />
+        {/* centre — action button (e.g. bomb) when onCenter is provided */}
+        {onCenter ? (
+          <button
+            className={`${styles.btn} ${styles.centerBtn}`}
+            onClick={onCenter}
+            onTouchStart={(e) => { e.preventDefault(); onCenter(); }}
+            aria-label="Aksi"
+          >
+            {centerLabel}
+          </button>
+        ) : (
+          <div className={styles.centre} aria-hidden="true" />
+        )}
         <button
           className={`${styles.btn} ${styles.btnRight}`}
           onClick={right}

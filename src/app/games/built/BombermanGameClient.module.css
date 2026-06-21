@@ -125,75 +125,24 @@
 }
 .menuPill:hover { background: #f2f6fc; }
 
-/* ─── Board ──────────────────────────────────────── */
-.boardPanel {
-  background: #2e7d32;
+/* ─── 3D viewport ────────────────────────────────── */
+.viewport {
+  width: 100%;
+  max-width: 640px;
+  height: 460px;
   border-radius: 18px;
-  padding: 10px;
-  box-shadow: 0 6px 22px rgba(0,0,0,.18);
-}
-
-.board {
-  display: grid;
-  gap: 0;
-  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .18);
+  background: #9fd0e8;
+  touch-action: none;
 }
 
-.cell {
-  aspect-ratio: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: min(5.5vw, 24px);
-  line-height: 1;
-  user-select: none;
+.viewport canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
-.floor  { background: #a5d66a; }
-.wall   { background: #5b6770; box-shadow: inset 0 0 0 2px #4a555d, inset -3px -3px 0 rgba(0,0,0,.18); }
-.crate  { background: #c08a4a; box-shadow: inset 0 0 0 2px #a9763a, inset 0 0 0 6px rgba(255,255,255,.08); }
-.crate::after { content: "📦"; font-size: min(5vw, 22px); }
-.floor:nth-child(even) { background: #9ccf5f; }
-
-.player { background: #a5d66a; }
-.enemy  { background: #a5d66a; }
-.bomb   { background: #a5d66a; animation: bombPulse .4s ease-in-out infinite; }
-.star   { background: #a5d66a; }
-.blast  { background: #ffb74d; box-shadow: inset 0 0 8px rgba(255,87,34,.6); animation: blastFlash .2s ease-out; }
-
-@keyframes bombPulse {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.18); }
-}
-@keyframes blastFlash {
-  from { background: #fff176; }
-  to   { background: #ffb74d; }
-}
-
-/* ─── Bomb button (bottom-left) ──────────────────── */
-.bombBtn {
-  position: fixed;
-  bottom: 24px;
-  left: 20px;
-  z-index: 100;
-  width: 78px;
-  height: 78px;
-  border-radius: 50%;
-  border: none;
-  background: radial-gradient(circle at 35% 30%, #ff8a65, #e64a19);
-  color: #fff;
-  font-size: 2.2rem;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(230,74,25,.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform .1s;
-  -webkit-tap-highlight-color: transparent;
-}
-.bombBtn:active { transform: scale(.88); }
-
-@media (max-width: 380px) {
-  .bombBtn { width: 64px; height: 64px; font-size: 1.8rem; bottom: 16px; left: 12px; }
+@media (max-width: 520px) {
+  .viewport { height: 360px; }
 }

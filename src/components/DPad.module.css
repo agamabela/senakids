@@ -62,6 +62,16 @@
   pointer-events: none;
 }
 
+/* Center action button (e.g. bomb) */
+.centerBtn {
+  background: radial-gradient(circle at 35% 30%, #ff8a65, #e64a19) !important;
+  color: #fff;
+  font-size: 1.7rem !important;
+  box-shadow: 0 3px 10px rgba(230, 74, 25, 0.4);
+}
+.centerBtn:hover { filter: brightness(1.05); }
+.centerBtn:active { background: radial-gradient(circle at 35% 30%, #ff7043, #d84315) !important; transform: scale(0.88); }
+
 /* Tablet (≥ 768px): slightly bigger buttons */
 @media (min-width: 768px) {
   .btn    { width: 66px; height: 66px; font-size: 1.7rem; border-radius: 16px; }
