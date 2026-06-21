@@ -181,9 +181,9 @@ export default function Labirin3DGameClient() {
       }
   }, []);
 
-  // Move in an absolute world direction (0=N,1=E,2=S,3=W).
-  // The camera smoothly turns to face the direction you move — much easier
-  // for kids than tank-style rotation.
+  // Move in an absolute world direction (0=N,1=E,2=S,3=W) — exactly like the
+  // 2D maze. The camera heading stays FIXED (facing north), so there is no
+  // confusing rotation: up = away, down = toward you, left/right = sideways.
   const moveDir = useCallback((worldDir) => {
     if (wonRef.current) return;
     const p = playerRef.current;
@@ -193,14 +193,6 @@ export default function Labirin3DGameClient() {
       { dx: 0, dy: 1 },  // S
       { dx: -1, dy: 0 }, // W
     ][worldDir];
-
-    // face the chosen direction, picking the closest equivalent angle
-    const baseYaw = [0, -Math.PI / 2, Math.PI, Math.PI / 2][worldDir];
-    let target = baseYaw;
-    while (target - p.targetYaw > Math.PI) target -= 2 * Math.PI;
-    while (target - p.targetYaw < -Math.PI) target += 2 * Math.PI;
-    p.dir = worldDir;
-    p.targetYaw = target;
 
     const nx = p.cx + vec.dx;
     const ny = p.cy + vec.dy;
@@ -238,7 +230,7 @@ export default function Labirin3DGameClient() {
     const numGems = LEVELS[levelIdx].gems;
     const grid = generateMaze(size);
     gridRef.current = grid;
-    playerRef.current = { cx: 1, cy: 1, dir: 1, targetYaw: -Math.PI / 2 };
+    playerRef.current = { cx: 1, cy: 1, dir: 0 };
     exploredRef.current = new Set();
     wonRef.current = false;
     collectedRef.current = 0;
@@ -252,19 +244,19 @@ export default function Labirin3DGameClient() {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x87ceeb);
-    scene.fog = new THREE.Fog(0x87ceeb, 2.5, 9);
+    scene.fog = new THREE.Fog(0x87ceeb, 8, 20);
 
-    const camera = new THREE.PerspectiveCamera(72, width / height, 0.1, 100);
-    camera.position.set(1, 0.55, 1);
-    camera.rotation.order = "YXZ";
-    camera.rotation.y = -Math.PI / 2;
+    // Overhead follow camera — fixed orientation (never rotates) so the
+    // arrow controls map exactly like the 2D maze.
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100);
+    camera.position.set(1, 5, 5);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.78));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.82));
     const dir = new THREE.DirectionalLight(0xffffff, 0.7);
     dir.position.set(3, 8, 2);
     scene.add(dir);
@@ -317,6 +309,30 @@ export default function Labirin3DGameClient() {
     });
     gemsRef.current = gems;
 
+    // ── Astronaut avatar (3rd-person, follows the player) ──
+    const astroMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
+    const visorMat = new THREE.MeshStandardMaterial({
+      color: 0x4fc3f7,
+      emissive: 0x1a4b6b,
+      emissiveIntensity: 0.4,
+      roughness: 0.2,
+    });
+    const packMat = new THREE.MeshStandardMaterial({ color: 0xff9800, roughness: 0.5 });
+
+    const astro = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.22, 4, 10), astroMat);
+    body.position.y = 0.34;
+    const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.21, 18, 18), astroMat);
+    helmet.position.y = 0.66;
+    const visor = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), visorMat);
+    visor.position.set(0, 0.66, 0.12);
+    visor.scale.set(1, 0.72, 0.62);
+    const pack = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.14, 0.08), packMat);
+    pack.position.set(0, 0.4, -0.14);
+    astro.add(body, helmet, visor, pack);
+    astro.position.set(1, 0, 1);
+    scene.add(astro);
+
     let raf;
     const drawMini = () => {
       const mini = miniRef.current;
@@ -365,9 +381,18 @@ export default function Labirin3DGameClient() {
     const animate = () => {
       raf = requestAnimationFrame(animate);
       const p = playerRef.current;
-      camera.position.x += (p.cx - camera.position.x) * 0.18;
-      camera.position.z += (p.cy - camera.position.z) * 0.18;
-      camera.rotation.y += (p.targetYaw - camera.rotation.y) * 0.18;
+      // move astronaut toward its grid cell
+      astro.position.x += (p.cx - astro.position.x) * 0.2;
+      astro.position.z += (p.cy - astro.position.z) * 0.2;
+      // camera follows from above + behind (south), fixed orientation
+      const camTX = astro.position.x;
+      const camTY = 5;
+      const camTZ = astro.position.z + 5;
+      camera.position.x += (camTX - camera.position.x) * 0.15;
+      camera.position.y += (camTY - camera.position.y) * 0.15;
+      camera.position.z += (camTZ - camera.position.z) * 0.15;
+      camera.lookAt(astro.position.x, 0.3, astro.position.z);
+
       const time = Date.now() * 0.003;
       gems.forEach((g, i) => {
         if (g.collected) return;
@@ -400,6 +425,10 @@ export default function Labirin3DGameClient() {
       floorTex.dispose();
       gemGeo.dispose();
       gemMat.dispose();
+      astroMat.dispose();
+      visorMat.dispose();
+      packMat.dispose();
+      astro.children.forEach((c) => c.geometry && c.geometry.dispose());
       if (renderer.domElement && renderer.domElement.parentNode === mount) {
         mount.removeChild(renderer.domElement);
       }
