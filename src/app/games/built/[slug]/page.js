@@ -17,6 +17,7 @@ import WarnaGameClient from "../WarnaGameClient";
 import PianoGameClient from "../PianoGameClient";
 import PetualanganLabirinGameClient from "../PetualanganLabirinGameClient";
 import Labirin3DGameClient from "../Labirin3DGameClient";
+import BombermanGameClient from "../BombermanGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -39,6 +40,7 @@ const builtGameDetails = {
   piano: { title: "Piano", description: "Main piano interaktif!", note: "This built-in game is implemented directly in Sena Kids." },
   "petualangan-labirin": { title: "Petualangan Labirin", description: "Jelajahi labirin dan kumpulkan semua permata!", note: "This built-in game is implemented directly in Sena Kids." },
   "labirin-3d": { title: "Labirin 3D", description: "Jelajahi labirin 3D orang pertama dan kumpulkan permata!", note: "This built-in game is implemented directly in Sena Kids." },
+  bomberman: { title: "Si Bom Pintar", description: "Letakkan bom, hancurkan peti, kalahkan monster!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -60,6 +62,7 @@ const gameClients = {
   piano: PianoGameClient,
   "petualangan-labirin": PetualanganLabirinGameClient,
   "labirin-3d": Labirin3DGameClient,
+  bomberman: BombermanGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {

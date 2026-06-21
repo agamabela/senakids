@@ -1,0 +1,199 @@
+/* ─── Intro / end card ───────────────────────────── */
+.introWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 20px;
+}
+
+.introCard {
+  background: white;
+  border-radius: 24px;
+  padding: 40px 36px;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .12);
+}
+
+.introEmoji { font-size: 3.4rem; margin-bottom: 8px; }
+.introCard h1 { font-size: 1.9rem; margin: 6px 0 10px; color: var(--color-text); }
+.introDesc { color: var(--color-muted-foreground); margin-bottom: 24px; }
+
+.levelGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.levelCard {
+  border: 2px solid var(--color-border);
+  border-radius: 16px;
+  padding: 14px 12px;
+  cursor: pointer;
+  background: var(--color-card);
+  color: var(--color-text);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.levelCard:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.14); }
+.tier1 { border-color: #4ade80; }
+.tier2 { border-color: #facc15; }
+.tier3 { border-color: #f97316; }
+.tier4 { border-color: #f43f5e; }
+
+.tierBadge {
+  display: inline-block;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,.07);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 6px;
+  color: rgba(0,0,0,.6);
+}
+.lvlName { font-size: 1.05rem; font-weight: 700; margin-bottom: 2px; }
+.lvlDetail { font-size: .78rem; color: var(--color-muted-foreground); }
+.controlHint { font-size: .82rem; color: var(--color-muted-foreground); margin: 0; }
+
+.endButtons { display: flex; flex-direction: column; gap: 10px; }
+.btnPrimary, .btnSecondary, .btnGhost {
+  padding: 13px 24px; border: none; border-radius: 12px;
+  font-weight: 700; font-size: 1rem; cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.btnPrimary { background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; }
+.btnPrimary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(239,68,68,.4); }
+.btnSecondary { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; }
+.btnSecondary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(34,197,94,.4); }
+.btnGhost { background: transparent; border: 1.5px solid var(--color-border); color: var(--color-text); }
+.btnGhost:hover { background: var(--color-muted); }
+
+/* ─── Game screen ────────────────────────────────── */
+.gameWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: #dbe4f3;
+  padding: 14px 12px 24px;
+  gap: 14px;
+}
+
+.topBar {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #fff;
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+.pill {
+  background: #eef2f8;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 800;
+  font-size: .9rem;
+  color: #2a3a55;
+}
+.pillTier {
+  background: #fff3e0;
+  color: #c2410c;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: .85rem;
+}
+.menuPill {
+  margin-left: auto;
+  background: #fff;
+  color: #3a4a63;
+  border: 1.5px solid #d8e0ee;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.menuPill:hover { background: #f2f6fc; }
+
+/* ─── Board ──────────────────────────────────────── */
+.boardPanel {
+  background: #2e7d32;
+  border-radius: 18px;
+  padding: 10px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.18);
+}
+
+.board {
+  display: grid;
+  gap: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cell {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: min(5.5vw, 24px);
+  line-height: 1;
+  user-select: none;
+}
+
+.floor  { background: #a5d66a; }
+.wall   { background: #5b6770; box-shadow: inset 0 0 0 2px #4a555d, inset -3px -3px 0 rgba(0,0,0,.18); }
+.crate  { background: #c08a4a; box-shadow: inset 0 0 0 2px #a9763a, inset 0 0 0 6px rgba(255,255,255,.08); }
+.crate::after { content: "📦"; font-size: min(5vw, 22px); }
+.floor:nth-child(even) { background: #9ccf5f; }
+
+.player { background: #a5d66a; }
+.enemy  { background: #a5d66a; }
+.bomb   { background: #a5d66a; animation: bombPulse .4s ease-in-out infinite; }
+.star   { background: #a5d66a; }
+.blast  { background: #ffb74d; box-shadow: inset 0 0 8px rgba(255,87,34,.6); animation: blastFlash .2s ease-out; }
+
+@keyframes bombPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.18); }
+}
+@keyframes blastFlash {
+  from { background: #fff176; }
+  to   { background: #ffb74d; }
+}
+
+/* ─── Bomb button (bottom-left) ──────────────────── */
+.bombBtn {
+  position: fixed;
+  bottom: 24px;
+  left: 20px;
+  z-index: 100;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: none;
+  background: radial-gradient(circle at 35% 30%, #ff8a65, #e64a19);
+  color: #fff;
+  font-size: 2.2rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(230,74,25,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bombBtn:active { transform: scale(.88); }
+
+@media (max-width: 380px) {
+  .bombBtn { width: 64px; height: 64px; font-size: 1.8rem; bottom: 16px; left: 12px; }
+}
