@@ -181,15 +181,29 @@ export default function Labirin3DGameClient() {
       }
   }, []);
 
-  const moveForward = useCallback((back = false) => {
+  // Move in an absolute world direction (0=N,1=E,2=S,3=W).
+  // The camera smoothly turns to face the direction you move — much easier
+  // for kids than tank-style rotation.
+  const moveDir = useCallback((worldDir) => {
     if (wonRef.current) return;
     const p = playerRef.current;
     const vec = [
-      { dx: 0, dy: -1 }, { dx: 1, dy: 0 }, { dx: 0, dy: 1 }, { dx: -1, dy: 0 },
-    ][p.dir];
-    const sign = back ? -1 : 1;
-    const nx = p.cx + vec.dx * sign;
-    const ny = p.cy + vec.dy * sign;
+      { dx: 0, dy: -1 }, // N
+      { dx: 1, dy: 0 },  // E
+      { dx: 0, dy: 1 },  // S
+      { dx: -1, dy: 0 }, // W
+    ][worldDir];
+
+    // face the chosen direction, picking the closest equivalent angle
+    const baseYaw = [0, -Math.PI / 2, Math.PI, Math.PI / 2][worldDir];
+    let target = baseYaw;
+    while (target - p.targetYaw > Math.PI) target -= 2 * Math.PI;
+    while (target - p.targetYaw < -Math.PI) target += 2 * Math.PI;
+    p.dir = worldDir;
+    p.targetYaw = target;
+
+    const nx = p.cx + vec.dx;
+    const ny = p.cy + vec.dy;
     if (!isWall(nx, ny)) {
       p.cx = nx;
       p.cy = ny;
@@ -213,12 +227,6 @@ export default function Labirin3DGameClient() {
       }
     }
   }, [isWall, reveal, setHasChanges]);
-
-  const turn = useCallback((left) => {
-    const p = playerRef.current;
-    if (left) { p.dir = (p.dir + 3) % 4; p.targetYaw += Math.PI / 2; }
-    else { p.dir = (p.dir + 1) % 4; p.targetYaw -= Math.PI / 2; }
-  }, []);
 
   // Build / rebuild scene
   useEffect(() => {
@@ -403,14 +411,14 @@ export default function Labirin3DGameClient() {
     if (showIntro) return undefined;
     const onKey = (e) => {
       const k = e.key.toLowerCase();
-      if (["arrowup", "w"].includes(k)) { e.preventDefault(); moveForward(false); }
-      else if (["arrowdown", "s"].includes(k)) { e.preventDefault(); moveForward(true); }
-      else if (["arrowleft", "a"].includes(k)) { e.preventDefault(); turn(true); }
-      else if (["arrowright", "d"].includes(k)) { e.preventDefault(); turn(false); }
+      if (["arrowup", "w"].includes(k)) { e.preventDefault(); moveDir(0); }
+      else if (["arrowdown", "s"].includes(k)) { e.preventDefault(); moveDir(2); }
+      else if (["arrowleft", "a"].includes(k)) { e.preventDefault(); moveDir(3); }
+      else if (["arrowright", "d"].includes(k)) { e.preventDefault(); moveDir(1); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [showIntro, moveForward, turn]);
+  }, [showIntro, moveDir]);
 
   const newMaze = () => { wonRef.current = false; setSessionKey((k) => k + 1); };
   const nextLevel = () => { setLevelIdx((i) => (i + 1) % LEVELS.length); setSessionKey((k) => k + 1); };
@@ -423,7 +431,7 @@ export default function Labirin3DGameClient() {
           <h1>{t("🌀 Labirin 3D", "🌀 3D Maze")}</h1>
           <p>{t("Jelajahi labirin orang pertama dan kumpulkan semua permata!", "Explore the first-person maze and collect all the gems!")}</p>
           <div className={styles.instructions}>
-            <div className={styles.step}><span className={styles.stepNum}>1</span><span>{t("Maju, mundur, dan belok dengan tombol panah", "Move and turn with the arrow buttons")}</span></div>
+            <div className={styles.step}><span className={styles.stepNum}>1</span><span>{t("Bergerak ke segala arah dengan tombol panah", "Move in any direction with the arrow buttons")}</span></div>
             <div className={styles.step}><span className={styles.stepNum}>2</span><span>{t("Lihat peta kecil di pojok untuk panduan", "Use the minimap in the corner to guide you")}</span></div>
             <div className={styles.step}><span className={styles.stepNum}>3</span><span>{t("Kumpulkan semua 💎 untuk menang!", "Collect all 💎 to win!")}</span></div>
           </div>
@@ -482,14 +490,12 @@ export default function Labirin3DGameClient() {
         <canvas ref={miniRef} width={132} height={132} className={styles.minimap} />
       </div>
 
-      {/* Floating D-pad — fixed bottom-right, rotate buttons for 3D */}
+      {/* Floating D-pad — fixed bottom-right; arrows move in world directions */}
       <DPad
-        onUp={() => moveForward(false)}
-        onDown={() => moveForward(true)}
-        onRotateLeft={() => turn(true)}
-        onRotateRight={() => turn(false)}
-        upLabel="▲"
-        downLabel="▼"
+        onUp={() => moveDir(0)}
+        onDown={() => moveDir(2)}
+        onLeft={() => moveDir(3)}
+        onRight={() => moveDir(1)}
       />
 
       <div className={styles.controls}>
@@ -497,8 +503,8 @@ export default function Labirin3DGameClient() {
       </div>
 
       <div className={styles.hint}>
-        {t("💡 ▲ maju, ▼ mundur, ↺ ↻ belok. Bisa juga pakai panah / WASD!",
-           "💡 ▲ forward, ▼ back, ↺ ↻ turn. Arrow keys / WASD also work!")}
+        {t("💡 Tekan ⬆⬇⬅➡ untuk bergerak ke segala arah. Bisa juga pakai panah / WASD!",
+           "💡 Press ⬆⬇⬅➡ to move any direction. Arrow keys / WASD also work!")}
       </div>
     </div>
   );

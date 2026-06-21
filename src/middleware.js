@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+const SECRET =
+  process.env.NEXTAUTH_SECRET ||
+  process.env.AUTH_SECRET ||
+  "senakids-fallback-secret-change-me-in-env-vars-2024";
+
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
 
   // Protect admin routes
   if (pathname.startsWith("/admin")) {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const token = await getToken({ req, secret: SECRET });
 
     if (!token) {
       return NextResponse.redirect(new URL("/login?callbackUrl=/admin", req.url));

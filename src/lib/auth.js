@@ -72,7 +72,10 @@ export const authOptions = {
     signIn: "/login",
     error: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret:
+    process.env.NEXTAUTH_SECRET ||
+    process.env.AUTH_SECRET ||
+    "senakids-fallback-secret-change-me-in-env-vars-2024",
   trustHost: true,
 };
 
