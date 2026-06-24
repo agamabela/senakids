@@ -218,7 +218,7 @@ class RpgScene {
     makeTex("t_grass", (g) => {
       g.fillStyle(0x4a7c59); g.fillRect(0,0,S,S);
       g.fillStyle(0x5a9c6a,0.6);
-      for (let i=0;i<6;i++) g.fillCircle(2+i*2,3+i%3*3,1);
+      for (let i=0;i<6;i++) { const cx=2+i*2,cy=3+i%3*3,r=1; g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.fillPath(); }
     });
     // WATER
     makeTex("t_water", (g) => {
@@ -242,8 +242,8 @@ class RpgScene {
     // TREE
     makeTex("t_tree", (g) => {
       g.fillStyle(0x162a0e); g.fillRect(0,0,S,S);
-      g.fillStyle(0x1e4a18); g.fillCircle(S/2,S/2+1,6);
-      g.fillStyle(0x2a5a22); g.fillCircle(S/2,S/2-1,5);
+      g.fillStyle(0x1e4a18); g.beginPath(); g.arc(S/2,S/2+1,6,0,Math.PI*2); g.fillPath();
+      g.fillStyle(0x2a5a22); g.beginPath(); g.arc(S/2,S/2-1,5,0,Math.PI*2); g.fillPath();
     });
     // WALL
     makeTex("t_wall", (g) => {
@@ -257,7 +257,7 @@ class RpgScene {
     makeTex("t_chest", (g) => {
       g.fillStyle(0x885522); g.fillRect(1,3,S-2,S-5);
       g.fillStyle(0xddaa00); g.fillRect(5,6,6,4);
-      g.fillStyle(0xffd700); g.fillCircle(8,8,2);
+      g.fillStyle(0xffd700); g.beginPath(); g.arc(8,8,2,0,Math.PI*2); g.fillPath();
       g.lineStyle(1,0x552200); g.strokeRect(1,3,S-2,S-5);
     });
     // CHEST OPEN
@@ -275,7 +275,7 @@ class RpgScene {
     // FLOWER
     makeTex("t_flower", (g) => {
       g.fillStyle(0x4a7c59); g.fillRect(0,0,S,S);
-      g.fillStyle(0xffee22); g.fillCircle(5,5,2); g.fillCircle(11,9,2); g.fillCircle(7,13,2);
+      g.fillStyle(0xffee22); g.beginPath(); g.arc(5,5,2,0,Math.PI*2); g.fillPath(); g.beginPath(); g.arc(11,9,2,0,Math.PI*2); g.fillPath(); g.beginPath(); g.arc(7,13,2,0,Math.PI*2); g.fillPath();
     });
     // DARK floor
     makeTex("t_dark", (g) => {
@@ -285,7 +285,7 @@ class RpgScene {
     makeTex("t_door", (g) => {
       g.fillStyle(0xaa6644); g.fillRect(0,0,S,S);
       g.fillStyle(0x884422); g.fillRect(3,4,S-6,S-4);
-      g.fillStyle(0xddaa55); g.fillCircle(10,S/2,2);
+      g.fillStyle(0xddaa55); g.beginPath(); g.arc(10,S/2,2,0,Math.PI*2); g.fillPath();
       g.lineStyle(1,0x552200); g.strokeRect(3,4,S-6,S-4);
     });
     // SIGN
@@ -338,35 +338,35 @@ class RpgScene {
     // ── Enemy sprites 16×16 ──
     // slime
     g.clear();
-    g.fillStyle(0x33cc44); g.fillEllipse(8,10,14,10);
-    g.fillStyle(0x22aa33); g.fillEllipse(8,12,10,7);
-    g.fillStyle(0x000000); g.fillCircle(5,9,2); g.fillCircle(11,9,2);
+    g.fillStyle(0x33cc44); g.fillRect(1,5,14,10);
+    g.fillStyle(0x22aa33); g.fillRect(3,9,10,6);
+    g.fillStyle(0x000000); g.beginPath(); g.arc(5,9,2,0,Math.PI*2); g.fillPath(); g.beginPath(); g.arc(11,9,2,0,Math.PI*2); g.fillPath();
     g.generateTexture("enemy_slime", 16, 16);
 
     // bat
     g.clear();
-    g.fillStyle(0x553366); g.fillEllipse(8,9,8,7);
+    g.fillStyle(0x553366); g.fillRect(4,6,8,7);
     g.fillStyle(0x331a44);
     g.fillTriangle(1,4,7,8,3,12);  // left wing
     g.fillTriangle(15,4,9,8,13,12); // right wing
-    g.fillStyle(0xff2222); g.fillCircle(5,7,2); g.fillCircle(11,7,2);
+    g.fillStyle(0xff2222); g.beginPath(); g.arc(5,7,2,0,Math.PI*2); g.fillPath(); g.beginPath(); g.arc(11,7,2,0,Math.PI*2); g.fillPath();
     g.generateTexture("enemy_bat", 16, 16);
 
     // skeleton
     g.clear();
     g.fillStyle(0xccccaa);
-    g.fillCircle(8,5,5);  // skull
+    g.beginPath(); g.arc(8,5,5,0,Math.PI*2); g.fillPath();  // skull
     g.fillRect(5,9,6,5);  // torso
     g.fillRect(3,10,3,4); g.fillRect(10,10,3,4); // arms
     g.fillRect(5,14,3,3); g.fillRect(8,14,3,3);  // legs
-    g.fillStyle(0x000000); g.fillCircle(6,5,1); g.fillCircle(10,5,1);
+    g.fillStyle(0x000000); g.beginPath(); g.arc(6,5,1,0,Math.PI*2); g.fillPath(); g.beginPath(); g.arc(10,5,1,0,Math.PI*2); g.fillPath();
     g.generateTexture("enemy_skeleton", 16, 16);
 
     // boss
     g.clear();
-    g.fillStyle(0xcc1111); g.fillEllipse(8,10,14,14);
-    g.fillStyle(0xff3333); g.fillCircle(8,6,6); // head
-    g.fillStyle(0xffff00); g.fillCircle(6,6,2); g.fillCircle(10,6,2); // eyes
+    g.fillStyle(0xcc1111); g.fillRect(1,3,14,14);
+    g.fillStyle(0xff3333); g.beginPath(); g.arc(8,6,6,0,Math.PI*2); g.fillPath(); // head
+    g.fillStyle(0xffff00); g.beginPath(); g.arc(6,6,2,0,Math.PI*2); g.fillPath(); g.beginPath(); g.arc(10,6,2,0,Math.PI*2); g.fillPath(); // eyes
     g.fillStyle(0xcc1111);
     // horns
     g.fillTriangle(3,3,1,0,5,3); g.fillTriangle(13,3,15,0,11,3);
@@ -382,7 +382,7 @@ class RpgScene {
     const self = this;
 
     const config = {
-      type: Phaser.CANVAS,
+      type: Phaser.AUTO,
       canvas: this._canvas,
       width: MAP_W * TILE,
       height: MAP_H * TILE,
@@ -874,7 +874,7 @@ export default function PhaserRpgGameClient() {
     };
 
     // Wait for canvas to be in DOM
-    await new Promise(r => setTimeout(r, 60));
+    await new Promise(r => setTimeout(r, 200));
 
     const canvas = canvasRef.current;
     if (!canvas) return;
