@@ -169,9 +169,9 @@ function freshPlayer() {
 // Communication to React is via custom DOM events dispatched on window.
 
 class RpgScene {
-  constructor(Phaser, canvasEl, mapData, initialState) {
+  constructor(Phaser, parentEl, mapData, initialState) {
     this._Phaser = Phaser;
-    this._canvas = canvasEl;
+    this._parent = parentEl;
     this._mapData = mapData;
     this._state = initialState;   // { areaIdx, px, py, player, defeatedEnemies, takenChests }
 
@@ -383,10 +383,15 @@ class RpgScene {
 
     const config = {
       type: Phaser.AUTO,
-      canvas: this._canvas,
+      parent: this._parent,
       width: MAP_W * TILE,
       height: MAP_H * TILE,
       backgroundColor: "#0d0d1a",
+      pixelArt: true,
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+      },
       scene: {
         preload() {},
         create() { self._scene = this; self._onCreate(this); },
@@ -780,7 +785,7 @@ class RpgScene {
 // ─── React Component ────────────────────────────────────────────────────────
 export default function PhaserRpgGameClient() {
   const { language } = useLanguage();
-  const canvasRef  = useRef(null);
+  const containerRef = useRef(null);
   const sceneRef   = useRef(null);
   const mapDataRef = useRef(null);
   const extInput   = useRef({ up:false, down:false, left:false, right:false, action:false });
@@ -873,13 +878,13 @@ export default function PhaserRpgGameClient() {
       takenChests: {},
     };
 
-    // Wait for canvas to be in DOM
+    // Wait for container to be in DOM
     await new Promise(r => setTimeout(r, 200));
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    const rpg = new RpgScene(Phaser, canvas, mapDataRef.current, gameState);
+    const rpg = new RpgScene(Phaser, container, mapDataRef.current, gameState);
     sceneRef.current = rpg;
     rpg.start();
   }, []);
@@ -920,12 +925,10 @@ export default function PhaserRpgGameClient() {
     <div className={styles.wrapper}>
       <div className={styles.gameFrame}>
 
-        {/* Canvas */}
-        <canvas
-          ref={canvasRef}
+        {/* Game container (Phaser injects its canvas here) */}
+        <div
+          ref={containerRef}
           className={styles.canvas}
-          width={MAP_W * TILE}
-          height={MAP_H * TILE}
           style={{ display: screen === "playing" || screen === "gameover" || screen === "win" ? "block" : "none" }}
         />
 
