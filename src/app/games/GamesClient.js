@@ -27,6 +27,7 @@ const builtGames = [
   { title: "Labirin 3D", description: "Jelajah labirin 3D & kumpulkan permata!", emoji: "🧊", href: "/games/built/labirin-3d", color: "green" },
   { title: "Si Bom Pintar", description: "Letakkan bom & kalahkan monster!", emoji: "💣", href: "/games/built/bomberman", color: "orange" },
   { title: "Astronot Terbang", description: "Terbang, hindari pipa, kumpulkan bintang!", emoji: "🚀", href: "/games/built/astronot-terbang", color: "blue" },
+  { title: "Petualangan RPG", description: "Jelajahi dunia RPG, lawan musuh & selamatkan desa!", emoji: "⚔️", href: "/games/built/petualangan-rpg", color: "purple" },
 ];
 
 // Helper function to extract color from zone if needed, or just default to blue
