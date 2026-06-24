@@ -20,6 +20,7 @@ import Labirin3DGameClient from "../Labirin3DGameClient";
 import BombermanGameClient from "../BombermanGameClient";
 import InfiniteFlierGameClient from "../InfiniteFlierGameClient";
 import RpgGameClient from "../RpgGameClient";
+import PhaserRpgGameClient from "../PhaserRpgGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -45,6 +46,7 @@ const builtGameDetails = {
   bomberman: { title: "Si Bom Pintar", description: "Letakkan bom, hancurkan peti, kalahkan monster!", note: "This built-in game is implemented directly in Sena Kids." },
   "astronot-terbang": { title: "Astronot Terbang", description: "Terbang dan hindari rintangan, kumpulkan bintang!", note: "This built-in game is implemented directly in Sena Kids." },
   "petualangan-rpg": { title: "Petualangan RPG", description: "Jelajahi dunia RPG, lawan musuh, selamatkan desa!", note: "This built-in game is implemented directly in Sena Kids." },
+  "rpg-phaser": { title: "RPG Phaser", description: "Top-down RPG dengan Phaser.js — jelajahi, lawan, menang!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -69,6 +71,7 @@ const gameClients = {
   bomberman: BombermanGameClient,
   "astronot-terbang": InfiniteFlierGameClient,
   "petualangan-rpg": RpgGameClient,
+  "rpg-phaser": PhaserRpgGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {
