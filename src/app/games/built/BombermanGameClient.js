@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import * as THREE from "three";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useActivityStore } from "@/components/BackButton";
 import DPad from "@/components/DPad";
@@ -12,16 +11,18 @@ const WALL = 1;
 const CRATE = 2;
 
 const LEVELS = [
-  { id: 1, name: { id: "Mudah", en: "Easy" },     size: 9,  enemies: 2, range: 1, lives: 3, crate: 0.45 },
-  { id: 2, name: { id: "Sedang", en: "Medium" },  size: 11, enemies: 3, range: 2, lives: 3, crate: 0.5 },
-  { id: 3, name: { id: "Sulit", en: "Hard" },     size: 13, enemies: 4, range: 2, lives: 3, crate: 0.55 },
-  { id: 4, name: { id: "Ekstrem", en: "Extreme" },size: 13, enemies: 6, range: 2, lives: 4, crate: 0.6 },
+  { id: 1, name: { id: "Mudah", en: "Easy" },     size: 9,  enemies: 2, range: 1, lives: 3, crate: 0.40 },
+  { id: 2, name: { id: "Sedang", en: "Medium" },  size: 11, enemies: 3, range: 2, lives: 3, crate: 0.48 },
+  { id: 3, name: { id: "Sulit", en: "Hard" },     size: 13, enemies: 4, range: 2, lives: 3, crate: 0.52 },
+  { id: 4, name: { id: "Ekstrem", en: "Extreme" },size: 13, enemies: 6, range: 2, lives: 4, crate: 0.58 },
 ];
 
 const BOMB_FUSE = 1800;
 const BLAST_LIFE = 480;
 const ENEMY_INTERVAL = 520;
 const TICK = 100;
+const SPAWN_INVULN = 1600;
+const TILE = 32;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -40,7 +41,13 @@ function buildLevel(cfg) {
       if (x === 0 || y === 0 || x === N - 1 || y === N - 1) grid[y][x] = WALL;
       else if (x % 2 === 0 && y % 2 === 0) grid[y][x] = WALL;
     }
-  const safe = new Set(["1,1", "1,2", "2,1"]);
+  // Guaranteed escape corridor from the (1,1) spawn so a bomb dropped at
+  // start is never an inescapable trap (clear both arms beyond blast range).
+  const safe = new Set([
+    "1,1", "2,1", "3,1", "4,1",
+    "1,2", "1,3", "1,4",
+    "2,2",
+  ]);
   for (let y = 1; y < N - 1; y++)
     for (let x = 1; x < N - 1; x++) {
       if (grid[y][x] !== FLOOR || safe.has(`${x},${y}`)) continue;
@@ -49,7 +56,7 @@ function buildLevel(cfg) {
   const open = [];
   for (let y = 1; y < N - 1; y++)
     for (let x = 1; x < N - 1; x++)
-      if (grid[y][x] === FLOOR && x + y > 5) open.push({ x, y });
+      if (grid[y][x] === FLOOR && x + y > 6) open.push({ x, y });
   const enemyCells = shuffle(open).slice(0, cfg.enemies);
   const enemies = enemyCells.map((c, i) => ({ id: i, x: c.x, y: c.y }));
   return { grid, N, enemies };
@@ -67,7 +74,7 @@ export default function BombermanGameClient() {
   const rerender = useCallback(() => force((f) => f + 1), []);
 
   const cfg = LEVELS[levelIdx];
-  const mountRef = useRef(null);
+  const canvasRef = useRef(null);
 
   // game state refs
   const gridRef = useRef(null);
@@ -95,7 +102,7 @@ export default function BombermanGameClient() {
     starsRef.current = [];
     livesRef.current = c.lives;
     scoreRef.current = 0;
-    invulnRef.current = 0;
+    invulnRef.current = SPAWN_INVULN;
     statusRef.current = "playing";
     enemyAccRef.current = 0;
     setScreen("playing");
@@ -235,229 +242,217 @@ export default function BombermanGameClient() {
     return () => window.removeEventListener("keydown", onKey);
   }, [screen, move, placeBomb]);
 
-  // ── three.js scene ──
+  // ── 2D pixel-art renderer ──
   useEffect(() => {
     if (screen !== "playing") return undefined;
-    const mount = mountRef.current;
-    if (!mount) return undefined;
-    const grid = gridRef.current;
+    const canvas = canvasRef.current;
+    if (!canvas) return undefined;
     const N = NRef.current;
+    const grid = gridRef.current;
+    const px = N * TILE;
+    canvas.width = px;
+    canvas.height = px;
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
 
-    const width = mount.clientWidth;
-    const height = mount.clientHeight || 440;
+    // smooth render positions for player + enemies (pixel space)
+    const prender = { x: playerRef.current.x * TILE, y: playerRef.current.y * TILE };
+    const erender = new Map();
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x9fd0e8);
+    const px2 = (v) => Math.round(v);
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 200);
-    const center = (N - 1) / 2;
-    camera.position.set(center, N * 1.0, center + N * 0.92);
-    camera.lookAt(center, 0, center);
+    const drawFloor = (gx, gy) => {
+      const checker = (gx + gy) % 2 === 0;
+      ctx.fillStyle = checker ? "#7cb342" : "#8bc34a";
+      ctx.fillRect(gx * TILE, gy * TILE, TILE, TILE);
+      // little grass blades
+      ctx.fillStyle = checker ? "#689f38" : "#7cb342";
+      ctx.fillRect(gx * TILE + 6, gy * TILE + 22, 3, 5);
+      ctx.fillRect(gx * TILE + 20, gy * TILE + 10, 3, 5);
+    };
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mount.appendChild(renderer.domElement);
+    const drawWall = (gx, gy) => {
+      const x = gx * TILE, y = gy * TILE;
+      ctx.fillStyle = "#6b7785";
+      ctx.fillRect(x, y, TILE, TILE);
+      ctx.fillStyle = "#7c8a99";
+      ctx.fillRect(x + 2, y + 2, TILE - 4, 10);
+      ctx.fillStyle = "#566270";
+      ctx.fillRect(x + 2, y + TILE - 8, TILE - 4, 6);
+      // brick seams
+      ctx.fillStyle = "#4d5763";
+      ctx.fillRect(x, y + TILE / 2 - 1, TILE, 2);
+      ctx.fillRect(x + TILE / 2 - 1, y, 2, TILE / 2);
+      ctx.fillRect(x + TILE / 4, y + TILE / 2, 2, TILE / 2);
+    };
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-    const sun = new THREE.DirectionalLight(0xffffff, 0.7);
-    sun.position.set(center + 4, 12, center + 6);
-    scene.add(sun);
+    const drawCrate = (gx, gy) => {
+      const x = gx * TILE, y = gy * TILE;
+      drawFloor(gx, gy);
+      ctx.fillStyle = "#c0863c";
+      ctx.fillRect(x + 3, y + 3, TILE - 6, TILE - 6);
+      ctx.fillStyle = "#a86c28";
+      ctx.fillRect(x + 3, y + 3, TILE - 6, 5);
+      ctx.strokeStyle = "#7a4d18";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x + 3, y + 3, TILE - 6, TILE - 6);
+      ctx.beginPath();
+      ctx.moveTo(x + 4, y + 4); ctx.lineTo(x + TILE - 4, y + TILE - 4);
+      ctx.moveTo(x + TILE - 4, y + 4); ctx.lineTo(x + 4, y + TILE - 4);
+      ctx.stroke();
+    };
 
-    // floor
-    const floorGeo = new THREE.PlaneGeometry(N, N);
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x8bc34a });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.set(center, 0, center);
-    scene.add(floor);
+    const drawStar = (gx, gy, now) => {
+      const cx = gx * TILE + TILE / 2;
+      const cy = gy * TILE + TILE / 2 + Math.sin(now * 0.005) * 3;
+      const r = 9, ri = 4;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(now * 0.002);
+      ctx.fillStyle = "#ffd54f";
+      ctx.strokeStyle = "#ffb300";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const ang = (Math.PI / 5) * i - Math.PI / 2;
+        const rr = i % 2 === 0 ? r : ri;
+        ctx[i === 0 ? "moveTo" : "lineTo"](Math.cos(ang) * rr, Math.sin(ang) * rr);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    };
 
-    // shared geometries / materials
-    const boxGeo = new THREE.BoxGeometry(1, 1, 1);
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x6b7785 });
-    const crateGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
-    const crateMat = new THREE.MeshStandardMaterial({ color: 0xc0863c });
-    const bombGeo = new THREE.SphereGeometry(0.3, 18, 18);
-    const bombMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4 });
-    const blastGeo = new THREE.SphereGeometry(0.46, 16, 16);
-    const blastMat = new THREE.MeshStandardMaterial({ color: 0xff9800, emissive: 0xff5722, emissiveIntensity: 0.8, transparent: true, opacity: 0.85 });
-    const starGeo = new THREE.OctahedronGeometry(0.22, 0);
-    const starMat = new THREE.MeshStandardMaterial({ color: 0xffd54f, emissive: 0xffb300, emissiveIntensity: 0.6 });
+    const drawBomb = (b, now) => {
+      const cx = b.x * TILE + TILE / 2;
+      const cy = b.y * TILE + TILE / 2;
+      const pulse = 1 + Math.sin(now * 0.012) * 0.12;
+      const r = 11 * pulse;
+      ctx.fillStyle = "#1a1a1a";
+      ctx.beginPath();
+      ctx.arc(cx, cy + 2, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#4d4d4d";
+      ctx.beginPath();
+      ctx.arc(cx - 3, cy - 1, 3, 0, Math.PI * 2);
+      ctx.fill();
+      // fuse
+      ctx.strokeStyle = "#8d6e63";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx + 5, cy - r + 2);
+      ctx.lineTo(cx + 9, cy - r - 4);
+      ctx.stroke();
+      ctx.fillStyle = Math.floor(now / 120) % 2 ? "#ff9800" : "#ffeb3b";
+      ctx.beginPath();
+      ctx.arc(cx + 9, cy - r - 5, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    };
 
-    // static walls
-    for (let y = 0; y < N; y++)
-      for (let x = 0; x < N; x++)
-        if (grid[y][x] === WALL) {
-          const m = new THREE.Mesh(boxGeo, wallMat);
-          m.position.set(x, 0.5, y);
-          scene.add(m);
-        }
+    const drawBlast = (bl) => {
+      const cx = bl.x * TILE + TILE / 2;
+      const cy = bl.y * TILE + TILE / 2;
+      const f = bl.life / BLAST_LIFE;
+      const r = (TILE / 2) * (0.6 + f * 0.5);
+      ctx.fillStyle = `rgba(255,152,0,${0.45 + f * 0.4})`;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = `rgba(255,235,59,${0.5 + f * 0.4})`;
+      ctx.beginPath(); ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = `rgba(255,255,255,${0.4 * f})`;
+      ctx.beginPath(); ctx.arc(cx, cy, r * 0.3, 0, Math.PI * 2); ctx.fill();
+    };
 
-    // player robot
-    const playerGroup = new THREE.Group();
-    const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.42), new THREE.MeshStandardMaterial({ color: 0x42a5f5 }));
-    pBody.position.y = 0.4;
-    const pHead = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.32, 0.34), new THREE.MeshStandardMaterial({ color: 0xeceff1 }));
-    pHead.position.y = 0.78;
-    const pEyeMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
-    const pEyeL = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 0.04), pEyeMat);
-    pEyeL.position.set(-0.09, 0.8, 0.18);
-    const pEyeR = pEyeL.clone();
-    pEyeR.position.x = 0.09;
-    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.18), new THREE.MeshStandardMaterial({ color: 0xff5252 }));
-    antenna.position.y = 1.02;
-    playerGroup.add(pBody, pHead, pEyeL, pEyeR, antenna);
-    playerGroup.position.set(playerRef.current.x, 0, playerRef.current.y);
-    scene.add(playerGroup);
+    const drawPlayer = (rx, ry, now) => {
+      if (invulnRef.current > 0 && Math.floor(now / 120) % 2 === 0) return;
+      const x = rx, y = ry;
+      // body
+      ctx.fillStyle = "#42a5f5";
+      ctx.fillRect(x + 9, y + 14, 14, 13);
+      ctx.fillStyle = "#1e88e5";
+      ctx.fillRect(x + 9, y + 23, 14, 4);
+      // head
+      ctx.fillStyle = "#eceff1";
+      ctx.fillRect(x + 8, y + 5, 16, 11);
+      ctx.fillStyle = "#cfd8dc";
+      ctx.fillRect(x + 8, y + 13, 16, 3);
+      // eyes
+      ctx.fillStyle = "#222";
+      ctx.fillRect(x + 12, y + 8, 3, 4);
+      ctx.fillRect(x + 18, y + 8, 3, 4);
+      // antenna
+      ctx.fillStyle = "#90a4ae";
+      ctx.fillRect(x + 15, y + 1, 2, 5);
+      ctx.fillStyle = "#ff5252";
+      ctx.fillRect(x + 14, y - 2, 4, 4);
+    };
 
-    // dynamic mesh maps
-    const crateMeshes = new Map();
-    for (let y = 0; y < N; y++)
-      for (let x = 0; x < N; x++)
-        if (grid[y][x] === CRATE) {
-          const m = new THREE.Mesh(crateGeo, crateMat);
-          m.position.set(x, 0.45, y);
-          scene.add(m);
-          crateMeshes.set(`${x},${y}`, m);
-        }
-
-    const enemyMeshes = new Map(); // id -> group
-    const bombMeshes = new Map();  // "x,y" -> mesh
-    const blastMeshes = new Map(); // "x,y" -> mesh
-    const starMeshes = new Map();  // "x,y" -> mesh
-
-    const makeEnemy = () => {
-      const g = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.SphereGeometry(0.32, 18, 18), new THREE.MeshStandardMaterial({ color: 0xab47bc }));
-      body.position.y = 0.4;
-      const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-      const eL = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 12), eyeMat);
-      eL.position.set(-0.12, 0.46, 0.26);
-      const eR = eL.clone(); eR.position.x = 0.12;
-      const pupMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
-      const pL = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), pupMat);
-      pL.position.set(-0.12, 0.46, 0.33);
-      const pR = pL.clone(); pR.position.x = 0.12;
-      g.add(body, eL, eR, pL, pR);
-      return g;
+    const drawEnemy = (rx, ry, now, id) => {
+      const x = rx, y = ry;
+      const bob = Math.abs(Math.sin(now * 0.006 + id)) * 3;
+      // body
+      ctx.fillStyle = "#ab47bc";
+      ctx.beginPath();
+      ctx.arc(x + TILE / 2, y + TILE / 2 - bob, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#8e24aa";
+      ctx.fillRect(x + 8, y + TILE / 2 - bob, 16, 8);
+      // feet
+      ctx.fillStyle = "#6a1b9a";
+      ctx.fillRect(x + 9, y + 24 - bob, 5, 4);
+      ctx.fillRect(x + 18, y + 24 - bob, 5, 4);
+      // eyes
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(x + 12, y + 13 - bob, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x + 20, y + 13 - bob, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#111";
+      ctx.beginPath(); ctx.arc(x + 13, y + 13 - bob, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x + 21, y + 13 - bob, 2, 0, Math.PI * 2); ctx.fill();
     };
 
     let raf;
-    const lerp = (a, b, t) => a + (b - a) * t;
+    const lerp = (a, b, f) => a + (b - a) * f;
 
-    const animate = () => {
-      raf = requestAnimationFrame(animate);
+    const frame = () => {
+      raf = requestAnimationFrame(frame);
       const now = Date.now();
 
-      // crates: remove destroyed
-      for (const [key, mesh] of crateMeshes) {
-        const [cx, cy] = key.split(",").map(Number);
-        if (grid[cy][cx] !== CRATE) {
-          scene.remove(mesh);
-          crateMeshes.delete(key);
+      // tiles
+      for (let gy = 0; gy < N; gy++)
+        for (let gx = 0; gx < N; gx++) {
+          const cell = grid[gy][gx];
+          if (cell === WALL) drawWall(gx, gy);
+          else if (cell === CRATE) drawCrate(gx, gy);
+          else drawFloor(gx, gy);
         }
-      }
 
-      // bombs reconcile
-      const bombKeys = new Set(bombsRef.current.map((b) => `${b.x},${b.y}`));
-      for (const [key, mesh] of bombMeshes)
-        if (!bombKeys.has(key)) { scene.remove(mesh); bombMeshes.delete(key); }
-      bombsRef.current.forEach((b) => {
-        const key = `${b.x},${b.y}`;
-        let m = bombMeshes.get(key);
-        if (!m) {
-          m = new THREE.Mesh(bombGeo, bombMat);
-          m.position.set(b.x, 0.32, b.y);
-          scene.add(m);
-          bombMeshes.set(key, m);
-        }
-        const s = 1 + Math.sin(now * 0.012) * 0.12;
-        m.scale.set(s, s, s);
-      });
+      // stars
+      starsRef.current.forEach((s) => drawStar(s.x, s.y, now));
+      // bombs
+      bombsRef.current.forEach((b) => drawBomb(b, now));
 
-      // blasts reconcile
-      const blastKeys = new Set(blastsRef.current.map((b) => `${b.x},${b.y}`));
-      for (const [key, mesh] of blastMeshes)
-        if (!blastKeys.has(key)) { scene.remove(mesh); blastMeshes.delete(key); }
-      blastsRef.current.forEach((b) => {
-        const key = `${b.x},${b.y}`;
-        let m = blastMeshes.get(key);
-        if (!m) {
-          m = new THREE.Mesh(blastGeo, blastMat);
-          m.position.set(b.x, 0.45, b.y);
-          scene.add(m);
-          blastMeshes.set(key, m);
-        }
-        const s = 0.7 + (b.life / BLAST_LIFE) * 0.6;
-        m.scale.set(s, s, s);
-      });
-
-      // stars reconcile
-      const starKeys = new Set(starsRef.current.map((s) => `${s.x},${s.y}`));
-      for (const [key, mesh] of starMeshes)
-        if (!starKeys.has(key)) { scene.remove(mesh); starMeshes.delete(key); }
-      starsRef.current.forEach((s) => {
-        const key = `${s.x},${s.y}`;
-        let m = starMeshes.get(key);
-        if (!m) {
-          m = new THREE.Mesh(starGeo, starMat);
-          m.position.set(s.x, 0.4, s.y);
-          scene.add(m);
-          starMeshes.set(key, m);
-        }
-        m.rotation.y += 0.05;
-        m.position.y = 0.4 + Math.sin(now * 0.005) * 0.05;
-      });
-
-      // enemies reconcile + lerp
-      const enemyIds = new Set(enemiesRef.current.map((e) => e.id));
-      for (const [id, mesh] of enemyMeshes)
-        if (!enemyIds.has(id)) { scene.remove(mesh); enemyMeshes.delete(id); }
+      // enemies (smooth)
+      const liveIds = new Set(enemiesRef.current.map((e) => e.id));
+      for (const id of [...erender.keys()]) if (!liveIds.has(id)) erender.delete(id);
       enemiesRef.current.forEach((e) => {
-        let m = enemyMeshes.get(e.id);
-        if (!m) {
-          m = makeEnemy();
-          m.position.set(e.x, 0, e.y);
-          scene.add(m);
-          enemyMeshes.set(e.id, m);
-        }
-        m.position.x = lerp(m.position.x, e.x, 0.25);
-        m.position.z = lerp(m.position.z, e.y, 0.25);
-        m.position.y = Math.abs(Math.sin(now * 0.006 + e.id)) * 0.08;
+        let r = erender.get(e.id);
+        if (!r) { r = { x: e.x * TILE, y: e.y * TILE }; erender.set(e.id, r); }
+        r.x = lerp(r.x, e.x * TILE, 0.25);
+        r.y = lerp(r.y, e.y * TILE, 0.25);
+        drawEnemy(px2(r.x), px2(r.y), now, e.id);
       });
 
-      // player lerp + invuln blink
-      playerGroup.position.x = lerp(playerGroup.position.x, playerRef.current.x, 0.3);
-      playerGroup.position.z = lerp(playerGroup.position.z, playerRef.current.y, 0.3);
-      playerGroup.visible = invulnRef.current > 0 ? Math.floor(now / 120) % 2 === 0 : true;
+      // player (smooth)
+      prender.x = lerp(prender.x, playerRef.current.x * TILE, 0.3);
+      prender.y = lerp(prender.y, playerRef.current.y * TILE, 0.3);
+      drawPlayer(px2(prender.x), px2(prender.y), now);
 
-      renderer.render(scene, camera);
+      // blasts on top
+      blastsRef.current.forEach((bl) => drawBlast(bl));
     };
-    animate();
+    frame();
 
-    const onResize = () => {
-      const w = mount.clientWidth;
-      const h = mount.clientHeight || 440;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-      renderer.dispose();
-      floorGeo.dispose(); floorMat.dispose();
-      boxGeo.dispose(); wallMat.dispose();
-      crateGeo.dispose(); crateMat.dispose();
-      bombGeo.dispose(); bombMat.dispose();
-      blastGeo.dispose(); blastMat.dispose();
-      starGeo.dispose(); starMat.dispose();
-      if (renderer.domElement && renderer.domElement.parentNode === mount) {
-        mount.removeChild(renderer.domElement);
-      }
-    };
+    return () => cancelAnimationFrame(raf);
   }, [screen, sceneKey]);
 
   // ── INTRO ──
@@ -466,7 +461,7 @@ export default function BombermanGameClient() {
       <div className={styles.introWrapper}>
         <div className={styles.introCard}>
           <div className={styles.introEmoji}>💣🤖</div>
-          <h1>{t("Si Bom Pintar 3D", "Smart Bomber 3D")}</h1>
+          <h1>{t("Si Bom Pintar", "Smart Bomber")}</h1>
           <p className={styles.introDesc}>
             {t("Letakkan bom untuk menghancurkan peti dan kalahkan semua monster!",
                "Drop bombs to smash crates and defeat all the monsters!")}
@@ -531,7 +526,9 @@ export default function BombermanGameClient() {
         <button className={styles.menuPill} onClick={() => setScreen("intro")}>← {t("Menu", "Menu")}</button>
       </div>
 
-      <div className={styles.viewport} ref={mountRef} />
+      <div className={styles.viewport}>
+        <canvas ref={canvasRef} className={styles.canvas} />
+      </div>
 
       {/* D-pad with bomb in the center */}
       <DPad

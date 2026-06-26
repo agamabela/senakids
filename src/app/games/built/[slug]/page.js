@@ -19,8 +19,7 @@ import PetualanganLabirinGameClient from "../PetualanganLabirinGameClient";
 import Labirin3DGameClient from "../Labirin3DGameClient";
 import BombermanGameClient from "../BombermanGameClient";
 import InfiniteFlierGameClient from "../InfiniteFlierGameClient";
-import RpgGameClient from "../RpgGameClient";
-import PhaserRpgGameClient from "../PhaserRpgGameClient";
+import SnakeGameClient from "../SnakeGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -45,8 +44,7 @@ const builtGameDetails = {
   "labirin-3d": { title: "Labirin 3D", description: "Jelajahi labirin 3D orang pertama dan kumpulkan permata!", note: "This built-in game is implemented directly in Sena Kids." },
   bomberman: { title: "Si Bom Pintar", description: "Letakkan bom, hancurkan peti, kalahkan monster!", note: "This built-in game is implemented directly in Sena Kids." },
   "astronot-terbang": { title: "Astronot Terbang", description: "Terbang dan hindari rintangan, kumpulkan bintang!", note: "This built-in game is implemented directly in Sena Kids." },
-  "petualangan-rpg": { title: "Petualangan RPG", description: "Jelajahi dunia RPG, lawan musuh, selamatkan desa!", note: "This built-in game is implemented directly in Sena Kids." },
-  "rpg-phaser": { title: "RPG Phaser", description: "Top-down RPG dengan Phaser.js — jelajahi, lawan, menang!", note: "This built-in game is implemented directly in Sena Kids." },
+  "ular-pintar": { title: "Ular Pintar", description: "Makan buah, tumbuh panjang, jangan menabrak!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -70,8 +68,7 @@ const gameClients = {
   "labirin-3d": Labirin3DGameClient,
   bomberman: BombermanGameClient,
   "astronot-terbang": InfiniteFlierGameClient,
-  "petualangan-rpg": RpgGameClient,
-  "rpg-phaser": PhaserRpgGameClient,
+  "ular-pintar": SnakeGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {
