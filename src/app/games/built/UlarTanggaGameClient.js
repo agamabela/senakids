@@ -261,69 +261,99 @@ export default function UlarTanggaGameClient() {
 
     const drawLadder = (from, to) => {
       const a = center(from), b = center(to);
-      const ang = Math.atan2(b.cy - a.cy, b.cx - a.cx);
-      const off = TILE * 0.2;
-      const ox = Math.cos(ang + Math.PI / 2) * off, oy = Math.sin(ang + Math.PI / 2) * off;
+      const dx = b.cx - a.cx, dy = b.cy - a.cy;
+      const dist = Math.hypot(dx, dy) || 1;
+      const nx = -dy / dist, ny = dx / dist;
+      const off = TILE * 0.22;
+      const railW = Math.max(5, TILE * 0.13);
+      const rail = (s) => { ctx.beginPath(); ctx.moveTo(a.cx + nx * off * s, a.cy + ny * off * s); ctx.lineTo(b.cx + nx * off * s, b.cy + ny * off * s); };
       ctx.lineCap = "round";
-      ctx.strokeStyle = "#4f8a2a"; ctx.lineWidth = 5;
-      ctx.beginPath(); ctx.moveTo(a.cx + ox, a.cy + oy); ctx.lineTo(b.cx + ox, b.cy + oy);
-      ctx.moveTo(a.cx - ox, a.cy - oy); ctx.lineTo(b.cx - ox, b.cy - oy); ctx.stroke();
-      ctx.strokeStyle = "#6cae3f"; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(a.cx + ox, a.cy + oy); ctx.lineTo(b.cx + ox, b.cy + oy);
-      ctx.moveTo(a.cx - ox, a.cy - oy); ctx.lineTo(b.cx - ox, b.cy - oy); ctx.stroke();
-      const dist = Math.hypot(b.cx - a.cx, b.cy - a.cy);
-      const rungs = Math.max(2, Math.floor(dist / (TILE * 0.45)));
+      ctx.save(); ctx.globalAlpha = 0.16; ctx.strokeStyle = "#000"; ctx.lineWidth = railW + 4; ctx.translate(0, 2);
+      rail(1); ctx.stroke(); rail(-1); ctx.stroke(); ctx.restore();
+      for (const s of [1, -1]) {
+        ctx.strokeStyle = "#2f6b1e"; ctx.lineWidth = railW + 3; rail(s); ctx.stroke();
+        ctx.strokeStyle = "#73c23c"; ctx.lineWidth = railW; rail(s); ctx.stroke();
+        ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = railW * 0.32; rail(s); ctx.stroke();
+      }
+      const rungs = Math.max(2, Math.round(dist / (TILE * 0.55)));
       for (let i = 1; i < rungs; i++) {
-        const tt = i / rungs, mx = a.cx + (b.cx - a.cx) * tt, my = a.cy + (b.cy - a.cy) * tt;
-        ctx.strokeStyle = "#4f8a2a"; ctx.lineWidth = 4;
-        ctx.beginPath(); ctx.moveTo(mx + ox, my + oy); ctx.lineTo(mx - ox, my - oy); ctx.stroke();
-        ctx.strokeStyle = "#8fce5a"; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(mx + ox, my + oy); ctx.lineTo(mx - ox, my - oy); ctx.stroke();
+        const t = i / rungs, mx = a.cx + dx * t, my = a.cy + dy * t;
+        const L = { x: mx + nx * off, y: my + ny * off }, R = { x: mx - nx * off, y: my - ny * off };
+        ctx.strokeStyle = "#2f6b1e"; ctx.lineWidth = railW * 0.85 + 2;
+        ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(R.x, R.y); ctx.stroke();
+        ctx.strokeStyle = "#8fd24f"; ctx.lineWidth = railW * 0.6;
+        ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(R.x, R.y); ctx.stroke();
       }
     };
 
     const drawSnake = (from, to) => {
-      const a = center(from), b = center(to); // head at 'from' (higher number)
-      const dist = Math.hypot(b.cx - a.cx, b.cy - a.cy);
-      const ang = Math.atan2(b.cy - a.cy, b.cx - a.cx);
-      const px = Math.cos(ang + Math.PI / 2), py = Math.sin(ang + Math.PI / 2);
-      const waves = Math.max(2, Math.floor(dist / (TILE * 0.85)));
-      const pts = [];
-      for (let i = 0; i <= waves; i++) {
-        const tt = i / waves;
-        const amp = Math.sin(tt * Math.PI * waves) * TILE * 0.32;
-        pts.push({ x: a.cx + (b.cx - a.cx) * tt + px * amp, y: a.cy + (b.cy - a.cy) * tt + py * amp, tt });
+      const a = center(from), b = center(to); // a = head (high number), b = tail (low)
+      const dx = b.cx - a.cx, dy = b.cy - a.cy;
+      const dist = Math.hypot(dx, dy) || 1;
+      const nx = -dy / dist, ny = dx / dist;
+      const bend = (from % 2 ? 1 : -1) * Math.min(dist * 0.18, TILE * 1.4);
+      const cpx = (a.cx + b.cx) / 2 + nx * bend, cpy = (a.cy + b.cy) / 2 + ny * bend;
+      const bodyW = Math.max(11, TILE * 0.34);
+      const spine = () => { ctx.beginPath(); ctx.moveTo(a.cx, a.cy); ctx.quadraticCurveTo(cpx, cpy, b.cx, b.cy); };
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      // shadow
+      ctx.save(); ctx.globalAlpha = 0.16; ctx.strokeStyle = "#000"; ctx.lineWidth = bodyW + 6; ctx.translate(0, 3); spine(); ctx.stroke(); ctx.restore();
+      // dark outline
+      ctx.strokeStyle = "#bd4f29"; ctx.lineWidth = bodyW + 5; spine(); ctx.stroke();
+      // body gradient
+      const g = ctx.createLinearGradient(a.cx, a.cy, b.cx, b.cy);
+      g.addColorStop(0, "#f2965d"); g.addColorStop(1, "#e07a45");
+      ctx.strokeStyle = g; ctx.lineWidth = bodyW; spine(); ctx.stroke();
+      // belly highlight
+      ctx.strokeStyle = "rgba(255,224,180,.5)"; ctx.lineWidth = bodyW * 0.38; spine(); ctx.stroke();
+
+      // sample curve for spots + segment ticks
+      const NS = 36, P = [];
+      for (let i = 0; i <= NS; i++) {
+        const t = i / NS, mt = 1 - t;
+        P.push({ x: mt * mt * a.cx + 2 * mt * t * cpx + t * t * b.cx, y: mt * mt * a.cy + 2 * mt * t * cpy + t * t * b.cy });
       }
-      // body taper
-      for (let i = 0; i < pts.length - 1; i++) {
-        ctx.strokeStyle = i % 2 ? "#d9703a" : "#e8804f";
-        ctx.lineWidth = Math.max(4, TILE * 0.30 * (1 - pts[i].tt * 0.55));
-        ctx.lineCap = "round";
-        ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[i + 1].x, pts[i + 1].y); ctx.stroke();
+      ctx.strokeStyle = "rgba(150,70,30,.3)"; ctx.lineWidth = 1.5;
+      for (let i = 4; i < NS - 1; i += 3) {
+        const p = P[i], q = P[i + 1];
+        let tx = q.x - p.x, ty = q.y - p.y; const tl = Math.hypot(tx, ty) || 1;
+        const npx = -ty / tl, npy = tx / tl;
+        ctx.beginPath(); ctx.moveTo(p.x + npx * bodyW * 0.42, p.y + npy * bodyW * 0.42); ctx.lineTo(p.x - npx * bodyW * 0.42, p.y - npy * bodyW * 0.42); ctx.stroke();
       }
-      // spots
-      ctx.fillStyle = "rgba(120,50,20,.5)";
-      for (let i = 1; i < pts.length - 1; i += 1) {
-        ctx.beginPath(); ctx.arc(pts[i].x, pts[i].y, TILE * 0.06, 0, Math.PI * 2); ctx.fill();
-      }
-      // head
-      const hr = TILE * 0.26;
-      ctx.fillStyle = "#e8804f";
-      ctx.beginPath(); ctx.arc(a.cx, a.cy, hr, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#fff";
-      ctx.beginPath(); ctx.arc(a.cx - hr * 0.4, a.cy - hr * 0.3, hr * 0.32, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(a.cx + hr * 0.4, a.cy - hr * 0.3, hr * 0.32, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#222";
-      ctx.beginPath(); ctx.arc(a.cx - hr * 0.4, a.cy - hr * 0.3, hr * 0.15, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(a.cx + hr * 0.4, a.cy - hr * 0.3, hr * 0.15, 0, Math.PI * 2); ctx.fill();
-      // tongue
-      ctx.strokeStyle = "#d11";
-      ctx.lineWidth = 2;
-      const td = ang + Math.PI; // pointing away from body roughly
+      ctx.fillStyle = "rgba(165,78,32,.38)";
+      for (let i = 5; i < NS - 2; i += 7) { ctx.beginPath(); ctx.arc(P[i].x, P[i].y, bodyW * 0.17, 0, Math.PI * 2); ctx.fill(); }
+
+      // head, oriented along initial tangent (a -> control)
+      let hx = cpx - a.cx, hy = cpy - a.cy; const hl = Math.hypot(hx, hy) || 1; hx /= hl; hy /= hl;
+      const hr = bodyW * 0.95;
+      ctx.save();
+      ctx.translate(a.cx, a.cy);
+      ctx.rotate(Math.atan2(hy, hx)); // +x points toward the body
+      // forked tongue (front = -x)
+      ctx.strokeStyle = "#e0152b"; ctx.lineWidth = 2.6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(-hr * 0.95, 0); ctx.lineTo(-hr * 1.75, 0); ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(a.cx, a.cy + hr * 0.6);
-      ctx.lineTo(a.cx, a.cy + hr * 1.3);
+      ctx.moveTo(-hr * 1.75, 0); ctx.lineTo(-hr * 2.1, -hr * 0.28);
+      ctx.moveTo(-hr * 1.75, 0); ctx.lineTo(-hr * 2.1, hr * 0.28);
       ctx.stroke();
+      // head
+      ctx.fillStyle = "#bd4f29"; ctx.beginPath(); ctx.ellipse(-hr * 0.1, 0, hr * 1.12, hr * 0.95, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#f2965d"; ctx.beginPath(); ctx.ellipse(-hr * 0.1, 0, hr * 0.98, hr * 0.8, 0, 0, Math.PI * 2); ctx.fill();
+      // nostrils
+      ctx.fillStyle = "#7a2e12";
+      ctx.beginPath(); ctx.arc(-hr * 0.85, -hr * 0.14, hr * 0.08, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(-hr * 0.85, hr * 0.14, hr * 0.08, 0, Math.PI * 2); ctx.fill();
+      // eyes (big, on top, side by side)
+      for (const sy of [-1, 1]) {
+        ctx.fillStyle = "#fff";
+        ctx.beginPath(); ctx.arc(-hr * 0.15, sy * hr * 0.45, hr * 0.38, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = "#bd4f29"; ctx.lineWidth = 1.6; ctx.stroke();
+        ctx.fillStyle = "#1a1a1a";
+        ctx.beginPath(); ctx.arc(-hr * 0.26, sy * hr * 0.45, hr * 0.17, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.beginPath(); ctx.arc(-hr * 0.32, sy * hr * 0.45 - hr * 0.05, hr * 0.06, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
     };
 
     let raf;
