@@ -50,6 +50,143 @@ function drawPawn(ctx, cx, cy, r, color, dark, hop = 0) {
   ctx.beginPath(); ctx.ellipse(cx, cy + r * 0.46, r * 0.46, r * 0.15, 0, 0, Math.PI * 2); ctx.fill();
 }
 
+// pixel-space ladder between cell-centres a and b
+function drawLadderShape(ctx, a, b, TILE) {
+  const dx = b.cx - a.cx, dy = b.cy - a.cy;
+  const dist = Math.hypot(dx, dy) || 1;
+  const nx = -dy / dist, ny = dx / dist;
+  const off = TILE * 0.22;
+  const railW = Math.max(5, TILE * 0.13);
+  const rail = (s) => { ctx.beginPath(); ctx.moveTo(a.cx + nx * off * s, a.cy + ny * off * s); ctx.lineTo(b.cx + nx * off * s, b.cy + ny * off * s); };
+  ctx.lineCap = "round";
+  ctx.save(); ctx.globalAlpha = 0.16; ctx.strokeStyle = "#000"; ctx.lineWidth = railW + 4; ctx.translate(0, 2);
+  rail(1); ctx.stroke(); rail(-1); ctx.stroke(); ctx.restore();
+  for (const s of [1, -1]) {
+    ctx.strokeStyle = "#2f6b1e"; ctx.lineWidth = railW + 3; rail(s); ctx.stroke();
+    ctx.strokeStyle = "#73c23c"; ctx.lineWidth = railW; rail(s); ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = railW * 0.32; rail(s); ctx.stroke();
+  }
+  const rungs = Math.max(2, Math.round(dist / (TILE * 0.55)));
+  for (let i = 1; i < rungs; i++) {
+    const t = i / rungs, mx = a.cx + dx * t, my = a.cy + dy * t;
+    const L = { x: mx + nx * off, y: my + ny * off }, R = { x: mx - nx * off, y: my - ny * off };
+    ctx.strokeStyle = "#2f6b1e"; ctx.lineWidth = railW * 0.85 + 2;
+    ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(R.x, R.y); ctx.stroke();
+    ctx.strokeStyle = "#8fd24f"; ctx.lineWidth = railW * 0.6;
+    ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(R.x, R.y); ctx.stroke();
+  }
+}
+
+// pixel-space snake; head at a, tail at b
+function drawSnakeShape(ctx, a, b, TILE, seed = 0) {
+  const dx = b.cx - a.cx, dy = b.cy - a.cy;
+  const dist = Math.hypot(dx, dy) || 1;
+  const ux = dx / dist, uy = dy / dist;
+  const nx = -uy, ny = ux;
+  const headHalf = Math.max(8, TILE * 0.24);
+  const tailHalf = Math.max(2.5, TILE * 0.07);
+  const amp = Math.min(TILE * 0.5, dist * 0.16);
+  const cycles = dist > TILE * 4 ? 2.5 : 1.5;
+  const dir = seed % 2 ? 1 : -1;
+  const NS = 60;
+  const P = [];
+  for (let i = 0; i <= NS; i++) {
+    const t = i / NS;
+    const env = Math.sin(t * Math.PI);
+    const o = dir * amp * env * Math.sin(t * Math.PI * cycles);
+    P.push({ x: a.cx + ux * dist * t + nx * o, y: a.cy + uy * dist * t + ny * o, t });
+  }
+  const L = [], R = [], NN = [];
+  for (let i = 0; i <= NS; i++) {
+    const p0 = P[Math.max(0, i - 1)], p1 = P[Math.min(NS, i + 1)];
+    let tx = p1.x - p0.x, ty = p1.y - p0.y; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+    const npx = -ty, npy = tx;
+    NN.push({ x: npx, y: npy });
+    const hw = headHalf + (tailHalf - headHalf) * P[i].t;
+    L.push({ x: P[i].x + npx * hw, y: P[i].y + npy * hw });
+    R.push({ x: P[i].x - npx * hw, y: P[i].y - npy * hw });
+  }
+  const tubePath = () => {
+    ctx.beginPath(); ctx.moveTo(L[0].x, L[0].y);
+    for (let i = 1; i <= NS; i++) ctx.lineTo(L[i].x, L[i].y);
+    for (let i = NS; i >= 0; i--) ctx.lineTo(R[i].x, R[i].y);
+    ctx.closePath();
+  };
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.save(); ctx.translate(0, 3); ctx.globalAlpha = 0.16; tubePath(); ctx.fillStyle = "#000"; ctx.fill(); ctx.restore();
+  const g = ctx.createLinearGradient(a.cx, a.cy, b.cx, b.cy);
+  g.addColorStop(0, "#f0985c"); g.addColorStop(1, "#dd7038");
+  tubePath(); ctx.fillStyle = g; ctx.fill();
+  ctx.lineWidth = 3; ctx.strokeStyle = "#b04a26"; ctx.stroke();
+  ctx.beginPath();
+  for (let i = 0; i <= NS; i++) { const hw = (headHalf + (tailHalf - headHalf) * P[i].t) * 0.5; const x = P[i].x + NN[i].x * hw, y = P[i].y + NN[i].y * hw; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+  for (let i = NS; i >= 0; i--) { const hw = (headHalf + (tailHalf - headHalf) * P[i].t) * 0.5; ctx.lineTo(P[i].x - NN[i].x * hw, P[i].y - NN[i].y * hw); }
+  ctx.closePath(); ctx.fillStyle = "rgba(255,224,180,.5)"; ctx.fill();
+  ctx.strokeStyle = "rgba(150,65,25,.32)"; ctx.lineWidth = 2;
+  for (let i = 4; i < NS - 2; i += 3) {
+    const hw = headHalf + (tailHalf - headHalf) * P[i].t;
+    ctx.beginPath();
+    ctx.moveTo(P[i].x + NN[i].x * hw * 0.9, P[i].y + NN[i].y * hw * 0.9);
+    ctx.quadraticCurveTo(P[i + 1].x, P[i + 1].y, P[i].x - NN[i].x * hw * 0.9, P[i].y - NN[i].y * hw * 0.9);
+    ctx.stroke();
+  }
+  const ha = Math.atan2(P[1].y - P[0].y, P[1].x - P[0].x);
+  const hr = headHalf * 1.5;
+  ctx.save();
+  ctx.translate(a.cx, a.cy); ctx.rotate(ha);
+  ctx.strokeStyle = "#e0152b"; ctx.lineWidth = 2.6; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(-hr * 0.85, 0); ctx.lineTo(-hr * 1.6, 0); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-hr * 1.6, 0); ctx.lineTo(-hr * 1.95, -hr * 0.26);
+  ctx.moveTo(-hr * 1.6, 0); ctx.lineTo(-hr * 1.95, hr * 0.26);
+  ctx.stroke();
+  ctx.fillStyle = "#b04a26"; ctx.beginPath(); ctx.ellipse(-hr * 0.05, 0, hr * 1.1, hr * 0.92, 0, 0, Math.PI * 2); ctx.fill();
+  const hg = ctx.createLinearGradient(0, -hr, 0, hr);
+  hg.addColorStop(0, "#f6a268"); hg.addColorStop(1, "#e07a40");
+  ctx.fillStyle = hg; ctx.beginPath(); ctx.ellipse(-hr * 0.05, 0, hr * 0.96, hr * 0.78, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#8a3c18";
+  ctx.beginPath(); ctx.arc(-hr * 0.82, -hr * 0.14, hr * 0.07, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-hr * 0.82, hr * 0.14, hr * 0.07, 0, Math.PI * 2); ctx.fill();
+  for (const sy of [-1, 1]) {
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(-hr * 0.12, sy * hr * 0.44, hr * 0.36, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#b04a26"; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.fillStyle = "#1a1a1a";
+    ctx.beginPath(); ctx.arc(-hr * 0.22, sy * hr * 0.44, hr * 0.16, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(-hr * 0.28, sy * hr * 0.44 - hr * 0.05, hr * 0.06, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// draw the numbered board cells
+function drawBoardCells(ctx, N, cols, rows, TILE) {
+  for (let n = 1; n <= N; n++) {
+    const { x, y } = numToCell(n, cols, rows);
+    ctx.fillStyle = n === N ? "#ffe082" : CELL_PALETTE[(x * 2 + y) % CELL_PALETTE.length];
+    ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+    ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1.5;
+    ctx.strokeRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = `700 ${Math.max(9, TILE * 0.3)}px 'Segoe UI', sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.shadowColor = "rgba(0,0,0,.35)"; ctx.shadowBlur = 2;
+    ctx.fillText(String(n), x * TILE + TILE / 2, y * TILE + TILE / 2);
+    ctx.shadowBlur = 0;
+  }
+  const s1 = numToCell(1, cols, rows), sN = numToCell(N, cols, rows);
+  ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.font = `700 ${TILE * 0.2}px sans-serif`;
+  ctx.fillText("START", s1.x * TILE + TILE / 2, s1.y * TILE + TILE * 0.82);
+  ctx.fillText("FINISH", sN.x * TILE + TILE / 2, sN.y * TILE + TILE * 0.82);
+}
+
+// inverse of numToCell: grid (col,rowTop) -> cell number
+function colRowToNum(col, rowTop, cols, rows) {
+  const r = rows - 1 - rowTop;
+  const p = r % 2 === 0 ? col : cols - 1 - col;
+  return r * cols + p + 1;
+}
+
 export default function UlarTanggaGameClient() {
   const { language } = useLanguage();
   const setHasChanges = useActivityStore((s) => s.setHasChanges);
@@ -66,11 +203,16 @@ export default function UlarTanggaGameClient() {
   const [cN, setCN] = useState(64);
   const [ladders, setLadders] = useState([]);
   const [snakes, setSnakes] = useState([]);
-  const [lFrom, setLFrom] = useState(""); const [lTo, setLTo] = useState("");
-  const [sFrom, setSFrom] = useState(""); const [sTo, setSTo] = useState("");
+  const [tool, setTool] = useState("ladder"); // ladder | snake | erase
   const [buildErr, setBuildErr] = useState("");
 
   const canvasRef = useRef(null);
+  const buildCanvasRef = useRef(null);
+  const dragRef = useRef(null);        // { start, x, y } during a drag
+  const laddersRef = useRef(ladders); laddersRef.current = ladders;
+  const snakesRef = useRef(snakes); snakesRef.current = snakes;
+  const toolRef = useRef(tool); toolRef.current = tool;
+  const cNRef = useRef(cN); cNRef.current = cN;
 
   const cfgRef = useRef(CLASSIC);
   const posRef = useRef([]);
@@ -117,29 +259,87 @@ export default function UlarTanggaGameClient() {
 
   const startClassic = useCallback(() => beginGame(CLASSIC, roster), [beginGame, roster]);
 
-  const usedFrom = useMemo(() => {
+  const usedCells = useMemo(() => {
     const s = new Set();
     ladders.forEach((l) => { s.add(l.from); s.add(l.to); });
     snakes.forEach((k) => { s.add(k.from); s.add(k.to); });
     return s;
   }, [ladders, snakes]);
 
-  const addLadder = () => {
-    const f = parseInt(lFrom, 10), to = parseInt(lTo, 10);
-    if (!f || !to) return setBuildErr(t("Isi kotak asal & tujuan tangga.", "Enter ladder start & end."));
-    if (f < 1 || to > cN || f >= to) return setBuildErr(t("Tangga naik (asal < tujuan) di dalam papan.", "Ladder goes up (start < end), within board."));
-    if (f === 1 || to === cN) return setBuildErr(t("Hindari kotak pertama/terakhir.", "Avoid first/last square."));
-    if (usedFrom.has(f) || usedFrom.has(to)) return setBuildErr(t("Kotak itu sudah dipakai.", "That square is already used."));
-    setLadders((a) => [...a, { from: f, to }]); setLFrom(""); setLTo(""); setBuildErr("");
+  // ── drag-to-place builder ──
+  const buildGeom = () => {
+    const N = cNRef.current;
+    const cols = colsFor(N);
+    const rows = Math.ceil(N / cols);
+    const TILE = Math.max(20, Math.floor(460 / cols));
+    return { N, cols, rows, TILE, W: cols * TILE, H: rows * TILE };
   };
-  const addSnake = () => {
-    const f = parseInt(sFrom, 10), to = parseInt(sTo, 10);
-    if (!f || !to) return setBuildErr(t("Isi kepala & ekor ular.", "Enter snake head & tail."));
-    if (to < 1 || f > cN || f <= to) return setBuildErr(t("Ular turun (kepala > ekor) di dalam papan.", "Snake goes down (head > tail), within board."));
-    if (f === cN || to === 1) return setBuildErr(t("Hindari kotak pertama/terakhir.", "Avoid first/last square."));
-    if (usedFrom.has(f) || usedFrom.has(to)) return setBuildErr(t("Kotak itu sudah dipakai.", "That square is already used."));
-    setSnakes((a) => [...a, { from: f, to }]); setSFrom(""); setSTo(""); setBuildErr("");
+
+  const cellFromEvent = (e) => {
+    const canvas = buildCanvasRef.current;
+    if (!canvas) return null;
+    const { cols, rows, W, H, N } = buildGeom();
+    const rect = canvas.getBoundingClientRect();
+    const px = (e.clientX - rect.left) * (W / rect.width);
+    const py = (e.clientY - rect.top) * (H / rect.height);
+    const TILE = W / cols;
+    const col = Math.floor(px / TILE), rowTop = Math.floor(py / TILE);
+    if (col < 0 || col >= cols || rowTop < 0 || rowTop >= rows) return null;
+    const n = colRowToNum(col, rowTop, cols, rows);
+    return n >= 1 && n <= N ? n : null;
   };
+
+  const removeAtCell = (n) => {
+    setLadders((a) => a.filter((l) => l.from !== n && l.to !== n));
+    setSnakes((a) => a.filter((s) => s.from !== n && s.to !== n));
+  };
+
+  const placeLink = (a, b) => {
+    if (a == null || b == null || a === b) { dragRef.current = null; rerender(); return; }
+    const N = cNRef.current;
+    if (usedCells.has(a) || usedCells.has(b)) {
+      setBuildErr(t("Kotak itu sudah dipakai.", "That square is already used."));
+      dragRef.current = null; rerender(); return;
+    }
+    if (tool === "ladder") {
+      const from = Math.min(a, b), to = Math.max(a, b);
+      if (from === N || to === 1) { setBuildErr(""); dragRef.current = null; rerender(); return; }
+      setLadders((arr) => [...arr, { from, to }]);
+    } else if (tool === "snake") {
+      const head = Math.max(a, b), tail = Math.min(a, b);
+      setSnakes((arr) => [...arr, { from: head, to: tail }]);
+    }
+    setBuildErr("");
+    dragRef.current = null;
+    rerender();
+  };
+
+  const onBuildDown = (e) => {
+    e.preventDefault();
+    const n = cellFromEvent(e);
+    if (n == null) return;
+    if (toolRef.current === "erase") { removeAtCell(n); return; }
+    const rect = buildCanvasRef.current.getBoundingClientRect();
+    const { W, H } = buildGeom();
+    dragRef.current = { start: n, x: (e.clientX - rect.left) * (W / rect.width), y: (e.clientY - rect.top) * (H / rect.height) };
+    rerender();
+  };
+  const onBuildMove = (e) => {
+    if (!dragRef.current) return;
+    e.preventDefault();
+    const rect = buildCanvasRef.current.getBoundingClientRect();
+    const { W, H } = buildGeom();
+    dragRef.current.x = (e.clientX - rect.left) * (W / rect.width);
+    dragRef.current.y = (e.clientY - rect.top) * (H / rect.height);
+  };
+  const onBuildUp = (e) => {
+    if (!dragRef.current) return;
+    e.preventDefault();
+    const start = dragRef.current.start;
+    const end = cellFromEvent(e);
+    placeLink(start, end);
+  };
+
   const startCustom = () => {
     if (cN < MIN_N || cN > MAX_N) return setBuildErr(t(`Jumlah kotak ${MIN_N}–${MAX_N}.`, `Squares ${MIN_N}–${MAX_N}.`));
     beginGame({
@@ -258,156 +458,15 @@ export default function UlarTanggaGameClient() {
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext("2d");
     const center = (n) => { const { x, y } = numToCell(n, cols, rows); return { cx: x * TILE + TILE / 2, cy: y * TILE + TILE / 2 }; };
-
-    const drawLadder = (from, to) => {
-      const a = center(from), b = center(to);
-      const dx = b.cx - a.cx, dy = b.cy - a.cy;
-      const dist = Math.hypot(dx, dy) || 1;
-      const nx = -dy / dist, ny = dx / dist;
-      const off = TILE * 0.22;
-      const railW = Math.max(5, TILE * 0.13);
-      const rail = (s) => { ctx.beginPath(); ctx.moveTo(a.cx + nx * off * s, a.cy + ny * off * s); ctx.lineTo(b.cx + nx * off * s, b.cy + ny * off * s); };
-      ctx.lineCap = "round";
-      ctx.save(); ctx.globalAlpha = 0.16; ctx.strokeStyle = "#000"; ctx.lineWidth = railW + 4; ctx.translate(0, 2);
-      rail(1); ctx.stroke(); rail(-1); ctx.stroke(); ctx.restore();
-      for (const s of [1, -1]) {
-        ctx.strokeStyle = "#2f6b1e"; ctx.lineWidth = railW + 3; rail(s); ctx.stroke();
-        ctx.strokeStyle = "#73c23c"; ctx.lineWidth = railW; rail(s); ctx.stroke();
-        ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = railW * 0.32; rail(s); ctx.stroke();
-      }
-      const rungs = Math.max(2, Math.round(dist / (TILE * 0.55)));
-      for (let i = 1; i < rungs; i++) {
-        const t = i / rungs, mx = a.cx + dx * t, my = a.cy + dy * t;
-        const L = { x: mx + nx * off, y: my + ny * off }, R = { x: mx - nx * off, y: my - ny * off };
-        ctx.strokeStyle = "#2f6b1e"; ctx.lineWidth = railW * 0.85 + 2;
-        ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(R.x, R.y); ctx.stroke();
-        ctx.strokeStyle = "#8fd24f"; ctx.lineWidth = railW * 0.6;
-        ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(R.x, R.y); ctx.stroke();
-      }
-    };
-
-    const drawSnake = (from, to) => {
-      const a = center(from), b = center(to); // a = head (high number), b = tail (low)
-      const dx = b.cx - a.cx, dy = b.cy - a.cy;
-      const dist = Math.hypot(dx, dy) || 1;
-      const ux = dx / dist, uy = dy / dist;       // along head->tail
-      const nx = -uy, ny = ux;                      // normal
-      const headHalf = Math.max(8, TILE * 0.24);
-      const tailHalf = Math.max(2.5, TILE * 0.07);
-      const amp = Math.min(TILE * 0.5, dist * 0.16);
-      const cycles = dist > TILE * 4 ? 2.5 : 1.5;
-      const dir = from % 2 ? 1 : -1;
-
-      // sample a serpentine spine (amplitude fades to 0 at both ends)
-      const NS = 60;
-      const P = [];
-      for (let i = 0; i <= NS; i++) {
-        const t = i / NS;
-        const env = Math.sin(t * Math.PI); // 0 at ends, 1 mid
-        const off = dir * amp * env * Math.sin(t * Math.PI * cycles);
-        P.push({ x: a.cx + ux * dist * t + nx * off, y: a.cy + uy * dist * t + ny * off, t });
-      }
-      // per-point tangent/normal/half-width
-      const L = [], R = [], NN = [];
-      for (let i = 0; i <= NS; i++) {
-        const p0 = P[Math.max(0, i - 1)], p1 = P[Math.min(NS, i + 1)];
-        let tx = p1.x - p0.x, ty = p1.y - p0.y; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
-        const npx = -ty, npy = tx;
-        NN.push({ x: npx, y: npy });
-        const hw = headHalf + (tailHalf - headHalf) * P[i].t;
-        L.push({ x: P[i].x + npx * hw, y: P[i].y + npy * hw });
-        R.push({ x: P[i].x - npx * hw, y: P[i].y - npy * hw });
-      }
-      const tubePath = () => {
-        ctx.beginPath();
-        ctx.moveTo(L[0].x, L[0].y);
-        for (let i = 1; i <= NS; i++) ctx.lineTo(L[i].x, L[i].y);
-        for (let i = NS; i >= 0; i--) ctx.lineTo(R[i].x, R[i].y);
-        ctx.closePath();
-      };
-      ctx.lineJoin = "round"; ctx.lineCap = "round";
-      // shadow
-      ctx.save(); ctx.translate(0, 3); ctx.globalAlpha = 0.16; tubePath(); ctx.fillStyle = "#000"; ctx.fill(); ctx.restore();
-      // body fill (gradient) + dark outline
-      const g = ctx.createLinearGradient(a.cx, a.cy, b.cx, b.cy);
-      g.addColorStop(0, "#f0985c"); g.addColorStop(1, "#dd7038");
-      tubePath();
-      ctx.fillStyle = g; ctx.fill();
-      ctx.lineWidth = 3; ctx.strokeStyle = "#b04a26"; ctx.stroke();
-      // belly stripe (lighter), down the centre
-      ctx.beginPath();
-      for (let i = 0; i <= NS; i++) { const hw = (headHalf + (tailHalf - headHalf) * P[i].t) * 0.5; const x = P[i].x + NN[i].x * hw, y = P[i].y + NN[i].y * hw; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
-      for (let i = NS; i >= 0; i--) { const hw = (headHalf + (tailHalf - headHalf) * P[i].t) * 0.5; ctx.lineTo(P[i].x - NN[i].x * hw, P[i].y - NN[i].y * hw); }
-      ctx.closePath(); ctx.fillStyle = "rgba(255,224,180,.5)"; ctx.fill();
-      // scale bands across the body
-      ctx.strokeStyle = "rgba(150,65,25,.32)"; ctx.lineWidth = 2;
-      for (let i = 4; i < NS - 2; i += 3) {
-        const hw = headHalf + (tailHalf - headHalf) * P[i].t;
-        ctx.beginPath();
-        ctx.moveTo(P[i].x + NN[i].x * hw * 0.9, P[i].y + NN[i].y * hw * 0.9);
-        ctx.quadraticCurveTo(P[i + 1].x, P[i + 1].y, P[i].x - NN[i].x * hw * 0.9, P[i].y - NN[i].y * hw * 0.9);
-        ctx.stroke();
-      }
-
-      // head oriented along the body tangent at the head end
-      const ha = Math.atan2(P[1].y - P[0].y, P[1].x - P[0].x); // points toward body
-      const hr = headHalf * 1.5;
-      ctx.save();
-      ctx.translate(a.cx, a.cy);
-      ctx.rotate(ha);
-      // tongue (front = -x, away from body)
-      ctx.strokeStyle = "#e0152b"; ctx.lineWidth = 2.6; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(-hr * 0.85, 0); ctx.lineTo(-hr * 1.6, 0); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(-hr * 1.6, 0); ctx.lineTo(-hr * 1.95, -hr * 0.26);
-      ctx.moveTo(-hr * 1.6, 0); ctx.lineTo(-hr * 1.95, hr * 0.26);
-      ctx.stroke();
-      // head shape
-      ctx.fillStyle = "#b04a26"; ctx.beginPath(); ctx.ellipse(-hr * 0.05, 0, hr * 1.1, hr * 0.92, 0, 0, Math.PI * 2); ctx.fill();
-      const hg = ctx.createLinearGradient(0, -hr, 0, hr);
-      hg.addColorStop(0, "#f6a268"); hg.addColorStop(1, "#e07a40");
-      ctx.fillStyle = hg; ctx.beginPath(); ctx.ellipse(-hr * 0.05, 0, hr * 0.96, hr * 0.78, 0, 0, Math.PI * 2); ctx.fill();
-      // nostrils
-      ctx.fillStyle = "#8a3c18";
-      ctx.beginPath(); ctx.arc(-hr * 0.82, -hr * 0.14, hr * 0.07, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(-hr * 0.82, hr * 0.14, hr * 0.07, 0, Math.PI * 2); ctx.fill();
-      // eyes
-      for (const sy of [-1, 1]) {
-        ctx.fillStyle = "#fff";
-        ctx.beginPath(); ctx.arc(-hr * 0.12, sy * hr * 0.44, hr * 0.36, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = "#b04a26"; ctx.lineWidth = 1.6; ctx.stroke();
-        ctx.fillStyle = "#1a1a1a";
-        ctx.beginPath(); ctx.arc(-hr * 0.22, sy * hr * 0.44, hr * 0.16, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = "#fff";
-        ctx.beginPath(); ctx.arc(-hr * 0.28, sy * hr * 0.44 - hr * 0.05, hr * 0.06, 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.restore();
-    };
+    const drawLadder = (from, to) => drawLadderShape(ctx, center(from), center(to), TILE);
+    const drawSnake = (from, to) => drawSnakeShape(ctx, center(from), center(to), TILE, from);
 
     let raf;
     const draw = () => {
       raf = requestAnimationFrame(draw);
       const now = Date.now();
       ctx.clearRect(0, 0, W, H);
-      // cells
-      for (let n = 1; n <= N; n++) {
-        const { x, y } = numToCell(n, cols, rows);
-        ctx.fillStyle = n === N ? "#ffe082" : CELL_PALETTE[(x * 2 + y) % CELL_PALETTE.length];
-        ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
-        ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1.5;
-        ctx.strokeRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
-        ctx.fillStyle = "#ffffff";
-        ctx.font = `700 ${Math.max(9, TILE * 0.3)}px 'Segoe UI', sans-serif`;
-        ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.shadowColor = "rgba(0,0,0,.35)"; ctx.shadowBlur = 2;
-        ctx.fillText(String(n), x * TILE + TILE / 2, y * TILE + TILE / 2);
-        ctx.shadowBlur = 0;
-      }
-      // start / finish labels
-      const s1 = numToCell(1, cols, rows), sN = numToCell(N, cols, rows);
-      ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.font = `700 ${TILE * 0.2}px sans-serif`;
-      ctx.fillText("START", s1.x * TILE + TILE / 2, s1.y * TILE + TILE * 0.82);
-      ctx.fillText("FINISH", sN.x * TILE + TILE / 2, sN.y * TILE + TILE * 0.82);
+      drawBoardCells(ctx, N, cols, rows, TILE);
 
       Object.entries(lad).forEach(([f, to]) => drawLadder(+f, +to));
       Object.entries(sn).forEach(([f, to]) => drawSnake(+f, +to));
@@ -430,6 +489,39 @@ export default function UlarTanggaGameClient() {
           drawPawn(ctx, cx + ox, cy + oy, TILE * 0.3, PLAYER_COLORS[pi].color, PLAYER_COLORS[pi].dark, hop);
         });
       });
+    };
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }, [screen]);
+
+  // ── build-mode interactive board ──
+  useEffect(() => {
+    if (screen !== "build") return undefined;
+    const canvas = buildCanvasRef.current;
+    if (!canvas) return undefined;
+    const ctx = canvas.getContext("2d");
+    let raf;
+    const draw = () => {
+      raf = requestAnimationFrame(draw);
+      const { N, cols, rows, TILE, W, H } = buildGeom();
+      if (canvas.width !== W) canvas.width = W;
+      if (canvas.height !== H) canvas.height = H;
+      const center = (n) => { const { x, y } = numToCell(n, cols, rows); return { cx: x * TILE + TILE / 2, cy: y * TILE + TILE / 2 }; };
+      ctx.clearRect(0, 0, W, H);
+      drawBoardCells(ctx, N, cols, rows, TILE);
+      laddersRef.current.forEach((l) => { if (l.from <= N && l.to <= N) drawLadderShape(ctx, center(l.from), center(l.to), TILE); });
+      snakesRef.current.forEach((s) => { if (s.from <= N && s.to <= N) drawSnakeShape(ctx, center(s.from), center(s.to), TILE, s.from); });
+      const d = dragRef.current;
+      if (d) {
+        const a = center(d.start);
+        const sc = numToCell(d.start, cols, rows);
+        ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+        ctx.strokeRect(sc.x * TILE + 2, sc.y * TILE + 2, TILE - 4, TILE - 4);
+        ctx.setLineDash([7, 6]); ctx.lineWidth = 4;
+        ctx.strokeStyle = toolRef.current === "snake" ? "#dd7038" : "#2f6b1e";
+        ctx.beginPath(); ctx.moveTo(a.cx, a.cy); ctx.lineTo(d.x, d.y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
     };
     draw();
     return () => cancelAnimationFrame(raf);
@@ -484,39 +576,44 @@ export default function UlarTanggaGameClient() {
           <div className={styles.field}>
             <label>{t("Jumlah kotak", "Number of squares")} ({MIN_N}–{MAX_N})</label>
             <div className={styles.sliderRow}>
-              <input type="range" min={MIN_N} max={MAX_N} value={cN} onChange={(e) => setCN(+e.target.value)} />
+              <input type="range" min={MIN_N} max={MAX_N} step={1} value={cN} onChange={(e) => setCN(+e.target.value)} />
               <input type="number" min={MIN_N} max={MAX_N} value={cN}
                 onChange={(e) => setCN(Math.max(MIN_N, Math.min(MAX_N, +e.target.value || MIN_N)))} className={styles.numInput} />
             </div>
           </div>
-          <div className={styles.builderGrid}>
-            <div className={styles.builderCol}>
-              <h3>🪜 {t("Tangga", "Ladders")}</h3>
-              <div className={styles.addRow}>
-                <input type="number" placeholder={t("dari", "from")} value={lFrom} onChange={(e) => setLFrom(e.target.value)} />
-                <span>→</span>
-                <input type="number" placeholder={t("ke", "to")} value={lTo} onChange={(e) => setLTo(e.target.value)} />
-                <button onClick={addLadder}>+</button>
-              </div>
-              <ul className={styles.itemList}>
-                {ladders.map((l, i) => (<li key={i}><span>{l.from} → {l.to}</span><button onClick={() => setLadders((a) => a.filter((_, j) => j !== i))}>✕</button></li>))}
-                {ladders.length === 0 && <li className={styles.empty}>{t("Belum ada", "None yet")}</li>}
-              </ul>
-            </div>
-            <div className={styles.builderCol}>
-              <h3>🐍 {t("Ular", "Snakes")}</h3>
-              <div className={styles.addRow}>
-                <input type="number" placeholder={t("kepala", "head")} value={sFrom} onChange={(e) => setSFrom(e.target.value)} />
-                <span>→</span>
-                <input type="number" placeholder={t("ekor", "tail")} value={sTo} onChange={(e) => setSTo(e.target.value)} />
-                <button onClick={addSnake}>+</button>
-              </div>
-              <ul className={styles.itemList}>
-                {snakes.map((s, i) => (<li key={i}><span>{s.from} → {s.to}</span><button onClick={() => setSnakes((a) => a.filter((_, j) => j !== i))}>✕</button></li>))}
-                {snakes.length === 0 && <li className={styles.empty}>{t("Belum ada", "None yet")}</li>}
-              </ul>
-            </div>
+
+          <div className={styles.toolRow}>
+            <button className={`${styles.toolBtn} ${tool === "ladder" ? styles.toolActive : ""}`} onClick={() => setTool("ladder")}>🪜 {t("Tangga", "Ladder")}</button>
+            <button className={`${styles.toolBtn} ${tool === "snake" ? styles.toolActive : ""}`} onClick={() => setTool("snake")}>🐍 {t("Ular", "Snake")}</button>
+            <button className={`${styles.toolBtn} ${tool === "erase" ? styles.toolActive : ""}`} onClick={() => setTool("erase")}>🧽 {t("Hapus", "Erase")}</button>
           </div>
+          <p className={styles.buildHint}>
+            {tool === "erase"
+              ? t("Ketuk tangga/ular untuk menghapus.", "Tap a ladder/snake to remove it.")
+              : tool === "snake"
+              ? t("Seret dari kepala ke ekor untuk membuat ular.", "Drag from head to tail to make a snake.")
+              : t("Seret dari kotak bawah ke kotak atas untuk membuat tangga.", "Drag from a lower square to a higher one to make a ladder.")}
+          </p>
+
+          <div className={styles.buildBoardWrap}>
+            <canvas
+              ref={buildCanvasRef}
+              className={styles.buildCanvas}
+              onPointerDown={onBuildDown}
+              onPointerMove={onBuildMove}
+              onPointerUp={onBuildUp}
+              onPointerLeave={onBuildUp}
+            />
+          </div>
+
+          <div className={styles.countRow}>
+            <span>🪜 {ladders.length}</span>
+            <span>🐍 {snakes.length}</span>
+            <button className={styles.clearBtn} onClick={() => { setLadders([]); setSnakes([]); setBuildErr(""); }}>
+              🗑️ {t("Bersihkan", "Clear")}
+            </button>
+          </div>
+
           <RosterPicker />
           {buildErr && <p className={styles.buildErr}>{buildErr}</p>}
           <div className={styles.endButtons}>
