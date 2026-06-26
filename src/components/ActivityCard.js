@@ -50,7 +50,7 @@ export default function ActivityCard({
         </div>
         <div className={styles.content}>
           <h3 className={styles.title}>{title}</h3>
-          <p className={styles.subtitle}>{description || "Tap untuk main!"}</p>
+          <p className={styles.subtitle}>{description}</p>
         </div>
       </Link>
     </motion.div>

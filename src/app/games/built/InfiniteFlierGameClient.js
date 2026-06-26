@@ -7,13 +7,14 @@ import styles from "./InfiniteFlierGameClient.module.css";
 
 const W = 480;
 const H = 320;
-const GRAVITY = 0.36;
-const FLAP = -7.2;
-const PIPE_SPEED = 3.2;
-const PIPE_GAP = 110;
-const PIPE_MIN_Y = 60;
-const PIPE_MAX_Y = H - PIPE_GAP - 60;
-const PIPE_INTERVAL = 1500; // ms between pipes
+const GRAVITY = 0.17;
+const FLAP = -5.0;
+const MAX_FALL = 4.6;     // terminal velocity so it never plummets
+const PIPE_SPEED = 1.8;
+const PIPE_GAP = 165;
+const PIPE_MIN_Y = 55;
+const PIPE_MAX_Y = H - PIPE_GAP - 55;
+const PIPE_INTERVAL = 2300; // ms between pipes
 
 // ─── Procedural canvas art helpers ───────────────────────────────────────────
 
@@ -269,6 +270,7 @@ export default function InfiniteFlierGameClient() {
 
       // physics
       g.vy += GRAVITY;
+      if (g.vy > MAX_FALL) g.vy = MAX_FALL;
       g.py += g.vy;
       g.offset += PIPE_SPEED;
 
@@ -316,12 +318,12 @@ export default function InfiniteFlierGameClient() {
         return;
       }
 
-      // collision — pipes
+      // collision — pipes (forgiving hitbox for little kids)
       for (const p of g.pipes) {
         const pw = 44;
-        const inX = g.px + 10 > p.x && g.px - 10 < p.x + pw;
-        const inTop = g.py - 10 < p.topH;
-        const inBot = g.py + 10 > p.topH + PIPE_GAP;
+        const inX = g.px + 7 > p.x && g.px - 7 < p.x + pw;
+        const inTop = g.py - 7 < p.topH;
+        const inBot = g.py + 7 > p.topH + PIPE_GAP;
         if (inX && (inTop || inBot)) {
           g.alive = false;
           setBestScore((b) => Math.max(b, g.score));

@@ -78,7 +78,7 @@ export default function MenuModal({ isOpen, onClose }) {
                 className={styles.donationLink}
               >
                 <Heart size={20} fill="currentColor" />
-                <span>Dukung Sena Kids</span>
+                <span>{t("menuModal.support")}</span>
               </a>
             </div>
           </motion.div>

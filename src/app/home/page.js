@@ -9,29 +9,29 @@ import styles from "./page.module.css";
 
 const bookActivities = [
   {
-    title: "Belajar Membaca",
-    description: "Membaca rangkaian 3 huruf",
+    title: { id: "Belajar Membaca", en: "Learn to Read" },
+    description: { id: "Membaca rangkaian 3 huruf", en: "Read three-letter words" },
     emoji: "📚",
     href: "/belajar-membaca",
     color: "yellow",
   },
   {
-    title: "Sejarah Sepeda",
-    description: "Ensiklopedia untuk Anak",
+    title: { id: "Sejarah Sepeda", en: "History of Bicycles" },
+    description: { id: "Ensiklopedia untuk Anak", en: "Encyclopedia for Kids" },
     emoji: "🚲",
     href: "/sejarah-sepeda",
     color: "green",
   },
   {
-    title: "Petualangan Tetes Air",
-    description: "Kisah Siklus Air",
+    title: { id: "Petualangan Tetes Air", en: "The Water Drop's Adventure" },
+    description: { id: "Kisah Siklus Air", en: "The Water Cycle Story" },
     emoji: "💧",
     href: "/petualangan-tetes-air",
     color: "blue",
   },
   {
-    title: "Mengenal Hujan",
-    description: "Proses Terjadinya Hujan",
+    title: { id: "Mengenal Hujan", en: "All About Rain" },
+    description: { id: "Proses Terjadinya Hujan", en: "How Rain Happens" },
     emoji: "🌧️",
     href: "/mengenal-hujan",
     color: "pink",
@@ -40,64 +40,64 @@ const bookActivities = [
 
 const letsReadBooks = [
   {
-    title: "Gadis Lentera",
-    description: "Kisah Nora dan cahaya keberanian",
+    title: { id: "Gadis Lentera", en: "The Lantern Girl" },
+    description: { id: "Kisah Nora dan cahaya keberanian", en: "Nora and the light of courage" },
     emoji: "🏮",
     href: "/buku-cerita",
     color: "orange",
     cover: "https://lh3.googleusercontent.com/HI63_B-B1iII6oL3ubZ-79TjisVyHzHCWX2i09lbBsSrCBpUyl0J5wlo1X27mZoEqgV1hwws76x4W2O0vo1ATfr5dJORK26M6XKDqA=s512",
   },
   {
-    title: "Benih Istimewa",
-    description: "Kesabaran membuahkan hasil",
+    title: { id: "Benih Istimewa", en: "The Special Seed" },
+    description: { id: "Kesabaran membuahkan hasil", en: "Patience pays off" },
     emoji: "🌱",
     href: "/buku-cerita",
     color: "green",
     cover: "https://lh3.googleusercontent.com/d2j83Xjfl0jtYQbm0zk5jOhvm4W3WsDwhKdldcEuLON8yec0jbKWtEtaNVrVCqGPsVbQI5sYVlB_uoI9TF790L-zWIl-GDB9y5IYQA=s512",
   },
   {
-    title: "Kuat Seperti Ibu",
-    description: "Kekuatan yang sesungguhnya",
+    title: { id: "Kuat Seperti Ibu", en: "Strong Like Mom" },
+    description: { id: "Kekuatan yang sesungguhnya", en: "What real strength means" },
     emoji: "💪",
     href: "/buku-cerita",
     color: "pink",
     cover: "https://lh3.googleusercontent.com/Hf4_Wn-ZwyzHQ7_2xf0EjBboCi_DA4jdtEI0gigxwH_Xsb01hBw55nWpLgVRAb2sRfvI13fHaPFmBBlF-cKL3AU58Gx29WHRFwV1IA=s512",
   },
   {
-    title: "Ayo Tumbuh!",
-    description: "Merawat tanaman dengan sabar",
+    title: { id: "Ayo Tumbuh!", en: "Grow, Grow, Grow!" },
+    description: { id: "Merawat tanaman dengan sabar", en: "Caring for plants patiently" },
     emoji: "🌻",
     href: "/buku-cerita",
     color: "yellow",
     cover: "https://lh3.googleusercontent.com/QJO60yrveQ96fKjIsznYu3z7MSmEBA-NUd5sgNTQsESfVC2W5C3ltPh_Q66mvREKX4I4Uadp9Q0UHBZDXmxX2BPc_0DxlHPcUYIG=s512",
   },
   {
-    title: "Kolam Ikan Kakek",
-    description: "Kasih sayang pada makhluk hidup",
+    title: { id: "Kolam Ikan Kakek", en: "Grandpa's Fish Pond" },
+    description: { id: "Kasih sayang pada makhluk hidup", en: "Caring for living things" },
     emoji: "🐟",
     href: "/buku-cerita",
     color: "blue",
     cover: "https://lh3.googleusercontent.com/Cb2WZWP0CFcxYnJ6fRHs6qk1Nn8Y_jG2cgjxiQEUpSK8XIW_C3RDdB2IK9KZJ-X0RRdmeyLIF0-wtmneIMspl1Ezq-SiZNdDQ6Albg=s512",
   },
   {
-    title: "Vroom! Vroom!",
-    description: "Petualangan kendaraan seru",
+    title: { id: "Vroom! Vroom!", en: "Vroom! Vroom!" },
+    description: { id: "Petualangan kendaraan seru", en: "A fun vehicle adventure" },
     emoji: "🚗",
     href: "/buku-cerita",
     color: "purple",
     cover: "https://lh3.googleusercontent.com/bAdLD9j1sn95tJBqnYGGXoyfcDk52dws6gOCPJncmEJRGeODr1ageY8fsVLnX4nlP1zvZ8sHkC8_7pNxMhrvQZpv8uxSTHxJxVt3rg=s512",
   },
   {
-    title: "Mencari Ibu",
-    description: "Kiki si bebek tersesat",
+    title: { id: "Mencari Ibu", en: "Looking for Mom" },
+    description: { id: "Kiki si bebek tersesat", en: "Kiki the lost duckling" },
     emoji: "🦆",
     href: "/buku-cerita",
     color: "teal",
     cover: "https://lh3.googleusercontent.com/dy1n_jSxArehNamUBH71q48xTtqzwHJYODe7NwWwCTlyiWHJzjFHnpJIXSmfD6uhOFcO8V97ekgWBAGtN8WvKnuu-C9eOxgC1oVGpQY=s512",
   },
   {
-    title: "Tangan Ajaib",
-    description: "Cinta di tangan Nenek",
+    title: { id: "Tangan Ajaib", en: "Magic Hands" },
+    description: { id: "Cinta di tangan Nenek", en: "Love in Grandma's hands" },
     emoji: "✨",
     href: "/buku-cerita",
     color: "orange",
@@ -106,15 +106,17 @@ const letsReadBooks = [
 ];
 
 const gameActivities = [
-  { title: "Drum", description: "Tap untuk main!", emoji: "🥁", href: "/games/built/drum", color: "purple" },
-  { title: "Membuat Jalur", description: "Bangun rute yang benar.", emoji: "🧭", href: "/games/built/membuat-jalur", color: "blue" },
-  { title: "Flashcard Simple", description: "Ingat gambar dan kata.", emoji: "🃏", href: "/games/built/flashcard-simple", color: "orange" },
-  { title: "Piano", description: "Main piano interaktif!", emoji: "🎹", href: "/games/built/piano", color: "purple" },
-  { title: "Petualangan Labirin", description: "Kumpulkan bintang!", emoji: "🧑‍🚀", href: "/games/built/petualangan-labirin", color: "blue" },
+  { title: { id: "Drum", en: "Drum" }, description: { id: "Ketuk untuk main!", en: "Tap to play!" }, emoji: "🥁", href: "/games/built/drum", color: "purple" },
+  { title: { id: "Membuat Jalur", en: "Build the Path" }, description: { id: "Bangun rute yang benar.", en: "Build the right route." }, emoji: "🧭", href: "/games/built/membuat-jalur", color: "blue" },
+  { title: { id: "Flashcard Simple", en: "Simple Flashcards" }, description: { id: "Ingat gambar dan kata.", en: "Remember pictures and words." }, emoji: "🃏", href: "/games/built/flashcard-simple", color: "orange" },
+  { title: { id: "Piano", en: "Piano" }, description: { id: "Main piano interaktif!", en: "Play the interactive piano!" }, emoji: "🎹", href: "/games/built/piano", color: "purple" },
+  { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, description: { id: "Kumpulkan permata!", en: "Collect the gems!" }, emoji: "🧑‍🚀", href: "/games/built/petualangan-labirin", color: "blue" },
 ];
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const L = (o) => (o && typeof o === "object" ? (o[language] ?? o.id) : o);
+  const tx = (id, en) => (language === "id" ? id : en);
 
   return (
     <div className={styles.container}>
@@ -149,8 +151,10 @@ export default function Home() {
         <div className={styles.cardGrid}>
           {bookActivities.map((activity, index) => (
             <ActivityCard
-              key={activity.title}
+              key={activity.href}
               {...activity}
+              title={L(activity.title)}
+              description={L(activity.description)}
               delay={0.1 * index}
             />
           ))}
@@ -160,16 +164,16 @@ export default function Home() {
       {/* Let's Read Asia Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>📖 Buku Cerita</h2>
+          <h2 className={styles.sectionTitle}>📖 {tx("Buku Cerita", "Story Books")}</h2>
           <Link href="/buku-cerita" className={styles.seeAllBtn}>
-            Lihat Semua <ChevronRight size={16} />
+            {tx("Lihat Semua", "See All")} <ChevronRight size={16} />
           </Link>
         </div>
-        <p className={styles.sectionSubtitle}>Cerita anak dalam Bahasa Indonesia — baca langsung di sini!</p>
+        <p className={styles.sectionSubtitle}>{tx("Cerita anak — baca langsung di sini!", "Children's stories — read right here!")}</p>
         <div className={styles.letsReadGrid}>
           {letsReadBooks.map((book, index) => (
             <motion.div
-              key={book.title}
+              key={book.title.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -180,15 +184,15 @@ export default function Home() {
               <Link href={book.href} className={styles.letsReadCard}>
                 <div className={styles.letsReadCover}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={book.cover} alt={book.title} className={styles.coverImage} />
+                  <img src={book.cover} alt={L(book.title)} className={styles.coverImage} />
                   <div className={styles.readBadge}>
                     <BookOpen size={12} />
-                    Baca
+                    {tx("Baca", "Read")}
                   </div>
                 </div>
                 <div className={styles.letsReadInfo}>
-                  <h3 className={styles.letsReadTitle}>{book.title}</h3>
-                  <p className={styles.letsReadDesc}>{book.description}</p>
+                  <h3 className={styles.letsReadTitle}>{L(book.title)}</h3>
+                  <p className={styles.letsReadDesc}>{L(book.description)}</p>
                 </div>
               </Link>
             </motion.div>
@@ -205,8 +209,10 @@ export default function Home() {
         <div className={styles.cardGrid}>
           {gameActivities.map((activity, index) => (
             <ActivityCard
-              key={activity.title}
+              key={activity.href}
               {...activity}
+              title={L(activity.title)}
+              description={L(activity.description)}
               delay={0.1 * index}
             />
           ))}
@@ -221,10 +227,10 @@ export default function Home() {
         viewport={{ once: true }}
       >
         <Gamepad2 size={40} />
-        <h2>Lihat Semua Permainan</h2>
-        <p>Ada banyak game seru yang menanti!</p>
+        <h2>{tx("Lihat Semua Permainan", "See All Games")}</h2>
+        <p>{tx("Ada banyak game seru yang menanti!", "Lots of fun games are waiting!")}</p>
         <Link href="/games" className={styles.ctaButton}>
-          Jelajahi Permainan →
+          {tx("Jelajahi Permainan →", "Explore Games →")}
         </Link>
       </motion.div>
 

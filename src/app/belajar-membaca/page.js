@@ -222,8 +222,8 @@ export default function BelajarMembacaPage() {
     } catch (error) {
       console.error('TTS Error:', error.message);
       Swal.fire({
-        title: 'Audio Error',
-        text: 'Could not play audio. Please try again.',
+        title: language === "id" ? 'Audio Bermasalah' : 'Audio Error',
+        text: language === "id" ? 'Tidak dapat memutar audio. Coba lagi.' : 'Could not play audio. Please try again.',
         icon: 'error',
         confirmButtonText: 'OK',
         confirmButtonColor: '#C87A65',
@@ -366,18 +366,18 @@ export default function BelajarMembacaPage() {
       {/* Control Buttons */}
       <div className={styles.buttonRow}>
         <button className={styles.speakBtn} onClick={() => speak()}>
-          {isSpeaking ? '⏹️ Stop' : '🔊 Dengar'}
+          {isSpeaking ? (language === "id" ? '⏹️ Berhenti' : '⏹️ Stop') : (language === "id" ? '🔊 Dengar' : '🔊 Listen')}
         </button>
 
         <button className={styles.bothBtn} onClick={speakBoth}>
-          🔤 Semua
+          🔤 {language === "id" ? "Semua" : "All"}
         </button>
       </div>
 
       {/* Navigation */}
       <div className={styles.controls}>
         <button className={styles.navBtn} onClick={prevWord}>
-          ◀️ Prev
+          ◀️ {language === "id" ? "Sebelumnya" : "Prev"}
         </button>
 
         <div className={styles.counter}>
@@ -385,7 +385,7 @@ export default function BelajarMembacaPage() {
         </div>
 
         <button className={styles.navBtn} onClick={nextWord}>
-          Next ▶️
+          {language === "id" ? "Berikutnya" : "Next"} ▶️
         </button>
       </div>
 

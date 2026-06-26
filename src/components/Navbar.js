@@ -22,7 +22,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const tx = (id, en) => (language === "id" ? id : en);
   const { data: session, status } = useSession();
 
   const handleLogout = async () => {
@@ -104,23 +105,23 @@ export default function Navbar() {
                     {session.user?.role === "admin" && (
                       <Link href="/admin" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
                         <Shield size={16} />
-                        Admin Panel
+                        {tx("Panel Admin", "Admin Panel")}
                       </Link>
                     )}
                     <button onClick={handleLogout} className={styles.dropdownItem}>
                       <LogOut size={16} />
-                      Keluar
+                      {tx("Keluar", "Log Out")}
                     </button>
                   </>
                 ) : (
                   <>
                     <Link href="/login" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
                       <LogIn size={16} />
-                      Masuk
+                      {tx("Masuk", "Log In")}
                     </Link>
                     <Link href="/register" className={styles.dropdownItem} onClick={() => setShowUserMenu(false)}>
                       <UserRound size={16} />
-                      Daftar
+                      {tx("Daftar", "Sign Up")}
                     </Link>
                   </>
                 )}

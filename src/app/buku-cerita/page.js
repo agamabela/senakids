@@ -4,7 +4,24 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, X, ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
+
+// English descriptions keyed by book id (titles use originalTitle in English)
+const DESC_EN = {
+  "the-lantern-girl": "Nora searches for light in the dark",
+  "special-seeds": "Patience bears beautiful fruit",
+  "strong-like-mom": "What real strength means",
+  "please-grow": "Caring for plants patiently",
+  "grandpas-fish-pond": "Caring for living things",
+  "vroom-vroom": "A fun vehicle adventure",
+  "finding-momma": "A little duckling who got lost",
+  "magic-hands": "Love in Grandma's hands",
+  "cant-get-in-my-way": "A story of courage and determination",
+  "girl-against-chickens": "A funny adventure on the farm",
+  "oma-and-the-grasshoppers": "A grandmother's wisdom",
+  "a-day-at-the-workshop": "Learning about jobs",
+};
 
 const books = [
   {
@@ -130,8 +147,12 @@ const books = [
 ];
 
 export default function BukuCeritaPage() {
+  const { language } = useLanguage();
+  const tx = (id, en) => (language === "id" ? id : en);
   const [selectedBook, setSelectedBook] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const bookTitle = (b) => (language === "en" && b.originalTitle ? b.originalTitle : b.title);
+  const bookDesc = (b) => (language === "en" ? (DESC_EN[b.id] || b.description) : b.description);
 
   const openBook = (book) => {
     setSelectedBook(book);
@@ -151,8 +172,8 @@ export default function BukuCeritaPage() {
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h1 className={styles.title}>📖 Buku Cerita</h1>
-          <p className={styles.subtitle}>Baca buku cerita anak gratis dalam Bahasa Indonesia</p>
+          <h1 className={styles.title}>📖 {tx("Buku Cerita", "Story Books")}</h1>
+          <p className={styles.subtitle}>{tx("Baca buku cerita anak gratis dalam Bahasa Indonesia", "Read free children's story books")}</p>
         </div>
       </div>
 
@@ -174,9 +195,9 @@ export default function BukuCeritaPage() {
               <img src={book.cover} alt={book.title} className={styles.coverImg} />
             </div>
             <div className={styles.bookInfo}>
-              <h3 className={styles.bookTitle}>{book.title}</h3>
+              <h3 className={styles.bookTitle}>{bookTitle(book)}</h3>
               <p className={styles.bookAuthor}>{book.author}</p>
-              <p className={styles.bookDesc}>{book.description}</p>
+              <p className={styles.bookDesc}>{bookDesc(book)}</p>
             </div>
           </motion.div>
         ))}
@@ -184,7 +205,7 @@ export default function BukuCeritaPage() {
 
       {/* Attribution */}
       <div className={styles.attribution}>
-        <p>Buku disediakan oleh <a href="https://www.letsreadasia.org" target="_blank" rel="noopener noreferrer">Let&apos;s Read</a> — The Asia Foundation. Gratis untuk dibaca!</p>
+        <p>{tx("Buku disediakan oleh", "Books provided by")} <a href="https://www.letsreadasia.org" target="_blank" rel="noopener noreferrer">Let&apos;s Read</a> — The Asia Foundation. {tx("Gratis untuk dibaca!", "Free to read!")}</p>
       </div>
 
       {/* Reader Modal */}
@@ -210,7 +231,7 @@ export default function BukuCeritaPage() {
                     <X size={20} />
                   </button>
                   <div className={styles.readerBookInfo}>
-                    <h2 className={styles.readerTitle}>{selectedBook.title}</h2>
+                    <h2 className={styles.readerTitle}>{bookTitle(selectedBook)}</h2>
                     <span className={styles.readerAuthor}>{selectedBook.author}</span>
                   </div>
                 </div>
@@ -221,7 +242,7 @@ export default function BukuCeritaPage() {
                   className={styles.externalLink}
                 >
                   <ExternalLink size={16} />
-                  Buka di Let&apos;s Read
+                  {tx("Buka di Let's Read", "Open in Let's Read")}
                 </a>
               </div>
 
@@ -230,7 +251,7 @@ export default function BukuCeritaPage() {
                 {isLoading && (
                   <div className={styles.loadingOverlay}>
                     <div className={styles.spinner} />
-                    <p>Memuat buku...</p>
+                    <p>{tx("Memuat buku...", "Loading book...")}</p>
                   </div>
                 )}
                 <iframe

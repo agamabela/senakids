@@ -148,11 +148,11 @@ export default function PetualanganTetesAirPage() {
           {language === "id" ? "♻️ Siklus Air" : "♻️ Water Cycle"}
         </div>
         <div className={styles.cycleSteps}>
-          <span>💧 Embun</span>
-          <span>🌊 Sungai</span>
-          <span>🐚 Laut</span>
-          <span>♨️ Uap</span>
-          <span>☁️ Awan</span>
+          <span>💧 {language === "id" ? "Embun" : "Dew"}</span>
+          <span>🌊 {language === "id" ? "Sungai" : "River"}</span>
+          <span>🐚 {language === "id" ? "Laut" : "Sea"}</span>
+          <span>♨️ {language === "id" ? "Uap" : "Vapor"}</span>
+          <span>☁️ {language === "id" ? "Awan" : "Cloud"}</span>
         </div>
       </div>
     </div>

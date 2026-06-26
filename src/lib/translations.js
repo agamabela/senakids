@@ -18,6 +18,7 @@ export const translations = {
     menuModal: {
       title: "Semua Aplikasi",
       close: "Tutup menu",
+      support: "Dukung Sena Kids",
       home: "Beranda",
       tv: "TV",
       books: "Buku",
@@ -71,6 +72,7 @@ export const translations = {
       videoTitle: "Petualangan Luar Angkasa 🚀",
       videoDesc: "Ayo ikuti petualangan seru astronot cilik kita menjelajahi planet-planet di tata surya!",
       playlistTitle: "Playlist Pilihan",
+      noVideoHint: "Video belum tersedia. Tambahkan tautan YouTube di Panel Admin.",
     },
     create: {
       pageTitle: "Ayo Berkarya!",
@@ -182,6 +184,7 @@ export const translations = {
     menuModal: {
       title: "All Apps",
       close: "Close menu",
+      support: "Support Sena Kids",
       home: "Home",
       tv: "TV",
       books: "Books",
@@ -235,6 +238,7 @@ export const translations = {
       videoTitle: "Space Adventure 🚀",
       videoDesc: "Join our brave little astronaut on an exciting journey through the solar system!",
       playlistTitle: "Featured Playlist",
+      noVideoHint: "No video yet. Add a YouTube link in the Admin Panel.",
     },
     create: {
       pageTitle: "Let's Create!",

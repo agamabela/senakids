@@ -17,12 +17,9 @@ export function LanguageProvider({ children }) {
       const stored = window.localStorage.getItem("language");
       if (stored && SUPPORTED_LANGUAGES.includes(stored)) {
         setLanguageState(stored);
-        return;
       }
-      const locale = window.navigator.language;
-      if (locale?.startsWith("en")) {
-        setLanguageState("en");
-      }
+      // Default stays Indonesian ("id"); we no longer auto-switch based on
+      // the browser locale so the app is consistently Indonesian-first.
     } catch (error) {
       // ignore localStorage errors in private browsing
     }

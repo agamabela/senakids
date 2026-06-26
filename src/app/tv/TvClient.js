@@ -73,7 +73,7 @@ export default function TvClient({ videos }) {
                   {active?.title || t("tv.screenLabel")}
                 </div>
                 <p className={styles.screenHint}>
-                  Video belum tersedia. Tambahkan tautan YouTube di Admin Panel.
+                  {t("tv.noVideoHint")}
                 </p>
               </div>
             )}
