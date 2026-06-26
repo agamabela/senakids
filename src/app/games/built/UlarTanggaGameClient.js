@@ -17,8 +17,9 @@ const CELL_PALETTE = ["#f6a35c", "#f7c948", "#8fbf5a", "#56b4c4", "#ec7b5a", "#6
 
 const CLASSIC = {
   N: 100,
-  ladders: { 1: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 80: 100 },
-  snakes: { 16: 6, 47: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 },
+  image: "/snl-board.png",
+  ladders: { 2: 38, 9: 33, 57: 82, 68: 73, 72: 92 },
+  snakes: { 16: 6, 26: 15, 28: 13, 42: 39, 53: 48, 64: 56, 83: 78 },
 };
 
 const MIN_N = 50;
@@ -250,14 +251,18 @@ export default function UlarTanggaGameClient() {
     if (screen !== "playing") return undefined;
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
-    const { N, ladders: lad, snakes: sn } = cfgRef.current;
-    const cols = colsFor(N);
-    const rows = Math.ceil(N / cols);
-    const TILE = Math.max(22, Math.floor(620 / cols));
-    const W = cols * TILE, H = rows * TILE;
+    const { N, ladders: lad, snakes: sn, image } = cfgRef.current;
+    const useImg = !!image;
+    const cols = useImg ? 10 : colsFor(N);
+    const rows = useImg ? 10 : Math.ceil(N / cols);
+    const TILE = useImg ? 62 : Math.max(22, Math.floor(620 / cols));
+    const W = useImg ? 620 : cols * TILE, H = useImg ? 624 : rows * TILE;
+    const CW = W / cols, CH = H / rows;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext("2d");
-    const center = (n) => { const { x, y } = numToCell(n, cols, rows); return { cx: x * TILE + TILE / 2, cy: y * TILE + TILE / 2 }; };
+    let boardImg = null;
+    if (useImg) { boardImg = new Image(); boardImg.src = image; }
+    const center = (n) => { const { x, y } = numToCell(n, cols, rows); return { cx: x * CW + CW / 2, cy: y * CH + CH / 2 }; };
 
     const drawLadder = (from, to) => {
       const a = center(from), b = center(to);
@@ -361,6 +366,11 @@ export default function UlarTanggaGameClient() {
       raf = requestAnimationFrame(draw);
       const now = Date.now();
       ctx.clearRect(0, 0, W, H);
+
+      if (useImg) {
+        if (boardImg.complete && boardImg.naturalWidth) ctx.drawImage(boardImg, 0, 0, W, H);
+        else { ctx.fillStyle = "#efe6d6"; ctx.fillRect(0, 0, W, H); }
+      } else {
       // cells
       for (let n = 1; n <= N; n++) {
         const { x, y } = numToCell(n, cols, rows);
@@ -383,6 +393,7 @@ export default function UlarTanggaGameClient() {
 
       Object.entries(lad).forEach(([f, to]) => drawLadder(+f, +to));
       Object.entries(sn).forEach(([f, to]) => drawSnake(+f, +to));
+      }
 
       // tokens
       const byCell = {};

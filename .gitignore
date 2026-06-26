@@ -48,3 +48,7 @@ dev.db
 
 # Security - credentials files
 ADMIN_CREDENTIALS.md
+
+# large source asset (sliced into public/snl-board.png) + local previews
+/asset.png
+/ular-tangga-preview.png
