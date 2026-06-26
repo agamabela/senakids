@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useActivityStore } from "@/components/BackButton";
+import Dice from "@/components/Dice";
 import styles from "./LudoGameClient.module.css";
 
 const TILE = 30;
@@ -74,9 +75,20 @@ export default function LudoGameClient() {
   const t = (id, en) => (language === "id" ? id : en);
 
   const [screen, setScreen] = useState("intro");
-  const [numPlayers, setNumPlayers] = useState(4);
+  const [roster, setRoster] = useState(["human", "bot", "bot", "bot"]);
   const [, force] = useState(0);
   const rerender = useCallback(() => force((f) => f + 1), []);
+  const rosterRef = useRef(roster);
+  rosterRef.current = roster;
+
+  const setCount = (n) => setRoster((cur) => {
+    const next = [...cur];
+    while (next.length < n) next.push("bot");
+    next.length = n;
+    if (next.every((x) => x === "bot")) next[0] = "human";
+    return next;
+  });
+  const toggleType = (i) => setRoster((cur) => cur.map((x, j) => (j === i ? (x === "human" ? "bot" : "human") : x)));
 
   const canvasRef = useRef(null);
   const tokenHitsRef = useRef([]); // {pi, ti, x, y, r}
@@ -85,17 +97,20 @@ export default function LudoGameClient() {
   const tokensRef = useRef([]);     // tokens[pi][ti] = progress (-1 base .. 56 goal)
   const turnRef = useRef(0);        // current player index
   const diceRef = useRef(null);     // last rolled value
-  const phaseRef = useRef("roll");  // "roll" | "move" | "over"
+  const rollingRef = useRef(false);
+  const phaseRef = useRef("roll");  // "roll" | "rolling" | "move" | "over"
   const movableRef = useRef([]);    // token indices movable this roll
   const winnerRef = useRef(null);
   const msgRef = useRef("");
   const activeCountRef = useRef(4);
 
-  const start = useCallback((n) => {
-    activeCountRef.current = n;
+  const start = useCallback((rost) => {
+    activeCountRef.current = rost.length;
+    rosterRef.current = rost;
     tokensRef.current = PLAYERS.map(() => [-1, -1, -1, -1]);
     turnRef.current = 0;
     diceRef.current = null;
+    rollingRef.current = false;
     phaseRef.current = "roll";
     movableRef.current = [];
     winnerRef.current = null;
@@ -105,7 +120,7 @@ export default function LudoGameClient() {
   }, [rerender]);
 
   const isActive = (pi) => pi < activeCountRef.current;
-  const isAI = (pi) => pi !== 0; // player 0 is human
+  const isAI = (pi) => rosterRef.current[pi] === "bot";
 
   const computeMovable = (pi, dice) => {
     const toks = tokensRef.current[pi];
@@ -191,25 +206,32 @@ export default function LudoGameClient() {
 
   const roll = useCallback(() => {
     if (phaseRef.current !== "roll") return;
-    const dice = 1 + Math.floor(Math.random() * 6);
-    diceRef.current = dice;
-    const pi = turnRef.current;
-    const mv = computeMovable(pi, dice);
-    movableRef.current = mv;
-    if (mv.length === 0) {
-      msgRef.current = t("Tidak ada langkah.", "No moves.");
-      phaseRef.current = "move";
-      rerender();
-      setTimeout(() => finishTurn(dice === 6, false), 700);
-      return;
-    }
-    phaseRef.current = "move";
+    phaseRef.current = "rolling";
+    rollingRef.current = true;
     msgRef.current = "";
     rerender();
-    // auto-move if only one option and it's not a meaningful choice
-    if (mv.length === 1) {
-      setTimeout(() => { if (phaseRef.current === "move") doMove(mv[0]); }, 350);
-    }
+    setTimeout(() => {
+      const dice = 1 + Math.floor(Math.random() * 6);
+      diceRef.current = dice;
+      rollingRef.current = false;
+      const pi = turnRef.current;
+      const mv = computeMovable(pi, dice);
+      movableRef.current = mv;
+      if (mv.length === 0) {
+        msgRef.current = t("Tidak ada langkah.", "No moves.");
+        phaseRef.current = "move";
+        rerender();
+        setTimeout(() => finishTurn(dice === 6, false), 700);
+        return;
+      }
+      phaseRef.current = "move";
+      msgRef.current = "";
+      rerender();
+      // auto-move if only one option (human convenience)
+      if (mv.length === 1 && rosterRef.current[turnRef.current] === "human") {
+        setTimeout(() => { if (phaseRef.current === "move") doMove(mv[0]); }, 350);
+      }
+    }, 650);
   }, [doMove, finishTurn, rerender, t]);
 
   // ── AI driver ──
@@ -223,6 +245,7 @@ export default function LudoGameClient() {
       timers.push(setTimeout(() => roll(), 600));
     } else if (phaseRef.current === "move" && movableRef.current.length > 0) {
       timers.push(setTimeout(() => {
+        if (phaseRef.current !== "move") return;
         const dice = diceRef.current;
         const mv = movableRef.current;
         if (!mv.length) return;
@@ -317,7 +340,8 @@ export default function LudoGameClient() {
 
       // tokens
       tokenHitsRef.current = [];
-      const movableSet = (turnRef.current === 0 && phaseRef.current === "move")
+      const humanTurn = rosterRef.current[turnRef.current] === "human";
+      const movableSet = (humanTurn && phaseRef.current === "move")
         ? new Set(movableRef.current) : new Set();
       PLAYERS.forEach((p, pi) => {
         if (!isActive(pi)) return;
@@ -333,7 +357,7 @@ export default function LudoGameClient() {
             cx = x * TILE + TILE / 2; cy = y * TILE + TILE / 2;
           }
           const r = TILE * 0.34;
-          const isMv = pi === 0 && movableSet.has(ti);
+          const isMv = pi === turnRef.current && movableSet.has(ti);
           ctx.beginPath();
           ctx.arc(cx, cy + 2, r, 0, Math.PI * 2);
           ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fill();
@@ -362,15 +386,16 @@ export default function LudoGameClient() {
 
   // ── Canvas tap (human token selection) ──
   const onCanvasPointer = useCallback((e) => {
-    if (turnRef.current !== 0 || phaseRef.current !== "move") return;
+    if (rosterRef.current[turnRef.current] !== "human" || phaseRef.current !== "move") return;
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const scale = SIZE / rect.width;
     const px = (e.clientX - rect.left) * scale;
     const py = (e.clientY - rect.top) * scale;
     const mv = new Set(movableRef.current);
+    const cur = turnRef.current;
     for (const h of tokenHitsRef.current) {
-      if (h.pi !== 0 || !mv.has(h.ti)) continue;
+      if (h.pi !== cur || !mv.has(h.ti)) continue;
       const d = Math.hypot(px - h.x, py - h.y);
       if (d <= h.r) { doMove(h.ti); return; }
     }
@@ -384,27 +409,38 @@ export default function LudoGameClient() {
           <div className={styles.introEmoji}>🎲🟥🟩🟨🟦</div>
           <h1>{t("Ludo", "Ludo")}</h1>
           <p className={styles.introDesc}>
-            {t("Keluarkan semua bidakmu dari markas, kelilingi papan, dan capai pusat lebih dulu! Kamu bermain Merah melawan komputer.",
-               "Get all your tokens out, travel around the board, and reach the center first! You play Red against the computer.")}
+            {t("Keluarkan semua bidakmu dari markas, kelilingi papan, dan capai pusat lebih dulu!",
+               "Get all your tokens out, travel around the board, and reach the center first!")}
           </p>
           <p className={styles.pickLabel}>{t("Jumlah pemain", "Number of players")}</p>
           <div className={styles.pickRow}>
             {[2, 3, 4].map((n) => (
               <button
                 key={n}
-                className={`${styles.pickBtn} ${numPlayers === n ? styles.pickActive : ""}`}
-                onClick={() => setNumPlayers(n)}
+                className={`${styles.pickBtn} ${roster.length === n ? styles.pickActive : ""}`}
+                onClick={() => setCount(n)}
               >
                 {n}
               </button>
             ))}
           </div>
-          <button className={styles.btnPrimary} onClick={() => start(numPlayers)}>
+          <div className={styles.playerList}>
+            {roster.map((type, i) => (
+              <div key={i} className={styles.playerRow}>
+                <span className={styles.dot} style={{ background: PLAYERS[i].color }} />
+                <span className={styles.pName}>{PLAYERS[i].name[language] ?? PLAYERS[i].name.id}</span>
+                <button className={styles.typeBtn} onClick={() => toggleType(i)}>
+                  {type === "human" ? `🧑 ${t("Orang", "Human")}` : `🤖 ${t("Bot", "Bot")}`}
+                </button>
+              </div>
+            ))}
+          </div>
+          <button className={styles.btnPrimary} onClick={() => start(roster)}>
             ▶️ {t("Mulai Main", "Start Game")}
           </button>
           <p className={styles.controlHint}>
-            {t("Lempar dadu, lalu ketuk bidak yang menyala untuk bergerak. Angka 6 untuk keluar markas & lempar lagi.",
-               "Roll the dice, then tap a glowing token to move. Roll a 6 to leave base & roll again.")}
+            {t("Ketuk dadu untuk lempar, lalu ketuk bidak yang menyala. Angka 6 untuk keluar markas & lempar lagi.",
+               "Tap the dice to roll, then tap a glowing token. Roll a 6 to leave base & roll again.")}
           </p>
         </div>
       </div>
@@ -414,20 +450,19 @@ export default function LudoGameClient() {
   // ── WIN ──
   if (screen === "win") {
     const w = winnerRef.current;
-    const won = w === 0;
+    const won = rosterRef.current[w] === "human";
     return (
       <div className={styles.introWrapper}>
         <div className={styles.introCard}>
           <div className={styles.introEmoji}>{won ? "🏆🎉" : "🤖"}</div>
-          <h1>{won ? t("Kamu Menang!", "You Win!") : t("Komputer Menang", "Computer Wins")}</h1>
+          <h1>{PLAYERS[w].name[language] ?? PLAYERS[w].name.id} {t("Menang!", "Wins!")}</h1>
           <p className={styles.introDesc}>
             {won
-              ? t("Semua bidak Merah sampai di pusat. Hebat!", "All Red tokens reached the center. Great job!")
-              : t(`${PLAYERS[w].name[language] ?? PLAYERS[w].name.id} menang. Coba lagi ya!`,
-                  `${PLAYERS[w].name.en} won. Try again!`)}
+              ? t("Semua bidak sampai di pusat. Hebat!", "All tokens reached the center. Great job!")
+              : t("Bot menang. Coba lagi ya!", "A bot won. Try again!")}
           </p>
           <div className={styles.endButtons}>
-            <button className={styles.btnPrimary} onClick={() => start(activeCountRef.current)}>
+            <button className={styles.btnPrimary} onClick={() => start(rosterRef.current)}>
               🔄 {t("Main Lagi", "Play Again")}
             </button>
             <button className={styles.btnGhost} onClick={() => setScreen("intro")}>
@@ -442,15 +477,15 @@ export default function LudoGameClient() {
   // ── PLAYING ──
   const cur = turnRef.current;
   const curP = PLAYERS[cur];
-  const myTurn = cur === 0;
+  const myTurn = rosterRef.current[cur] === "human";
   return (
     <div className={styles.gameWrapper}>
       <div className={styles.topBar}>
         <div className={styles.turnPill} style={{ background: curP.color }}>
-          {myTurn ? t("Giliranmu", "Your turn") : `${curP.name[language] ?? curP.name.id}`}
+          {(curP.name[language] ?? curP.name.id)} {myTurn ? `· ${t("giliranmu", "your turn")}` : "· 🤖"}
         </div>
         <div className={styles.msg}>{msgRef.current}</div>
-        <button className={styles.menuPill} onClick={() => setScreen("intro")}>← {t("Menu", "Menu")}</button>
+        <button className={styles.menuPill} onClick={() => setScreen("intro")}>🔄 {t("Baru", "New")}</button>
       </div>
 
       <div className={styles.boardWrap}>
@@ -458,18 +493,13 @@ export default function LudoGameClient() {
       </div>
 
       <div className={styles.controls}>
-        <div className={`${styles.die} ${diceRef.current ? styles.dieRolled : ""}`}>
-          {diceRef.current ? diceRef.current : "🎲"}
+        <Dice value={diceRef.current} rolling={rollingRef.current} onRoll={roll} disabled={!myTurn || phaseRef.current !== "roll"} />
+        <div className={styles.rollHint}>
+          {phaseRef.current === "rolling" ? t("Mengocok…", "Rolling…")
+            : phaseRef.current === "move" && myTurn ? t("Ketuk bidak yang menyala →", "Tap a glowing token →")
+            : myTurn ? t("Ketuk dadu untuk lempar!", "Tap the dice to roll!")
+            : t("Menunggu…", "Waiting…")}
         </div>
-        <button
-          className={styles.rollBtn}
-          disabled={!myTurn || phaseRef.current !== "roll"}
-          onClick={roll}
-        >
-          {phaseRef.current === "move" && myTurn
-            ? t("Ketuk bidak →", "Tap a token →")
-            : t("Lempar Dadu", "Roll Dice")}
-        </button>
       </div>
     </div>
   );

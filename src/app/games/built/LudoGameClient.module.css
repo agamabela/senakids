@@ -28,6 +28,14 @@
 .pickActive { border-color: #7c3aed; background: #7c3aed; color: #fff; transform: translateY(-2px); }
 .controlHint { font-size: .8rem; color: var(--color-muted-foreground); margin: 16px 0 0; line-height: 1.5; }
 
+.playerList { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.playerRow { display: flex; align-items: center; gap: 10px; background: #f6f8fb; border-radius: 12px; padding: 8px 12px; }
+.dot { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.3); flex-shrink: 0; }
+.pName { flex: 1; text-align: left; font-weight: 700; font-size: .9rem; color: var(--color-text); }
+.typeBtn { border: 1.5px solid var(--color-border); background: #fff; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: .82rem; cursor: pointer; color: var(--color-text); }
+.typeBtn:hover { background: var(--color-muted); }
+.rollHint { font-weight: 800; color: #5b21b6; font-size: .95rem; }
+
 .btnPrimary, .btnGhost {
   padding: 13px 24px; border: none; border-radius: 12px;
   font-weight: 700; font-size: 1rem; cursor: pointer; transition: transform .2s, box-shadow .2s;
