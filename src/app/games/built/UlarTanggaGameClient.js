@@ -17,9 +17,8 @@ const CELL_PALETTE = ["#f6a35c", "#f7c948", "#8fbf5a", "#56b4c4", "#ec7b5a", "#6
 
 const CLASSIC = {
   N: 100,
-  image: "/snl-board.png",
-  ladders: { 2: 38, 9: 33, 57: 82, 68: 73, 72: 92 },
-  snakes: { 16: 6, 26: 15, 28: 13, 42: 39, 53: 48, 64: 56, 83: 78 },
+  ladders: { 1: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 80: 100 },
+  snakes: { 16: 6, 47: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 },
 };
 
 const MIN_N = 50;
@@ -251,18 +250,14 @@ export default function UlarTanggaGameClient() {
     if (screen !== "playing") return undefined;
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
-    const { N, ladders: lad, snakes: sn, image } = cfgRef.current;
-    const useImg = !!image;
-    const cols = useImg ? 10 : colsFor(N);
-    const rows = useImg ? 10 : Math.ceil(N / cols);
-    const TILE = useImg ? 62 : Math.max(22, Math.floor(620 / cols));
-    const W = useImg ? 620 : cols * TILE, H = useImg ? 624 : rows * TILE;
-    const CW = W / cols, CH = H / rows;
+    const { N, ladders: lad, snakes: sn } = cfgRef.current;
+    const cols = colsFor(N);
+    const rows = Math.ceil(N / cols);
+    const TILE = Math.max(22, Math.floor(620 / cols));
+    const W = cols * TILE, H = rows * TILE;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext("2d");
-    let boardImg = null;
-    if (useImg) { boardImg = new Image(); boardImg.src = image; }
-    const center = (n) => { const { x, y } = numToCell(n, cols, rows); return { cx: x * CW + CW / 2, cy: y * CH + CH / 2 }; };
+    const center = (n) => { const { x, y } = numToCell(n, cols, rows); return { cx: x * TILE + TILE / 2, cy: y * TILE + TILE / 2 }; };
 
     const drawLadder = (from, to) => {
       const a = center(from), b = center(to);
@@ -295,68 +290,96 @@ export default function UlarTanggaGameClient() {
       const a = center(from), b = center(to); // a = head (high number), b = tail (low)
       const dx = b.cx - a.cx, dy = b.cy - a.cy;
       const dist = Math.hypot(dx, dy) || 1;
-      const nx = -dy / dist, ny = dx / dist;
-      const bend = (from % 2 ? 1 : -1) * Math.min(dist * 0.18, TILE * 1.4);
-      const cpx = (a.cx + b.cx) / 2 + nx * bend, cpy = (a.cy + b.cy) / 2 + ny * bend;
-      const bodyW = Math.max(11, TILE * 0.34);
-      const spine = () => { ctx.beginPath(); ctx.moveTo(a.cx, a.cy); ctx.quadraticCurveTo(cpx, cpy, b.cx, b.cy); };
-      ctx.lineCap = "round"; ctx.lineJoin = "round";
-      // shadow
-      ctx.save(); ctx.globalAlpha = 0.16; ctx.strokeStyle = "#000"; ctx.lineWidth = bodyW + 6; ctx.translate(0, 3); spine(); ctx.stroke(); ctx.restore();
-      // dark outline
-      ctx.strokeStyle = "#bd4f29"; ctx.lineWidth = bodyW + 5; spine(); ctx.stroke();
-      // body gradient
-      const g = ctx.createLinearGradient(a.cx, a.cy, b.cx, b.cy);
-      g.addColorStop(0, "#f2965d"); g.addColorStop(1, "#e07a45");
-      ctx.strokeStyle = g; ctx.lineWidth = bodyW; spine(); ctx.stroke();
-      // belly highlight
-      ctx.strokeStyle = "rgba(255,224,180,.5)"; ctx.lineWidth = bodyW * 0.38; spine(); ctx.stroke();
+      const ux = dx / dist, uy = dy / dist;       // along head->tail
+      const nx = -uy, ny = ux;                      // normal
+      const headHalf = Math.max(8, TILE * 0.24);
+      const tailHalf = Math.max(2.5, TILE * 0.07);
+      const amp = Math.min(TILE * 0.5, dist * 0.16);
+      const cycles = dist > TILE * 4 ? 2.5 : 1.5;
+      const dir = from % 2 ? 1 : -1;
 
-      // sample curve for spots + segment ticks
-      const NS = 36, P = [];
+      // sample a serpentine spine (amplitude fades to 0 at both ends)
+      const NS = 60;
+      const P = [];
       for (let i = 0; i <= NS; i++) {
-        const t = i / NS, mt = 1 - t;
-        P.push({ x: mt * mt * a.cx + 2 * mt * t * cpx + t * t * b.cx, y: mt * mt * a.cy + 2 * mt * t * cpy + t * t * b.cy });
+        const t = i / NS;
+        const env = Math.sin(t * Math.PI); // 0 at ends, 1 mid
+        const off = dir * amp * env * Math.sin(t * Math.PI * cycles);
+        P.push({ x: a.cx + ux * dist * t + nx * off, y: a.cy + uy * dist * t + ny * off, t });
       }
-      ctx.strokeStyle = "rgba(150,70,30,.3)"; ctx.lineWidth = 1.5;
-      for (let i = 4; i < NS - 1; i += 3) {
-        const p = P[i], q = P[i + 1];
-        let tx = q.x - p.x, ty = q.y - p.y; const tl = Math.hypot(tx, ty) || 1;
-        const npx = -ty / tl, npy = tx / tl;
-        ctx.beginPath(); ctx.moveTo(p.x + npx * bodyW * 0.42, p.y + npy * bodyW * 0.42); ctx.lineTo(p.x - npx * bodyW * 0.42, p.y - npy * bodyW * 0.42); ctx.stroke();
+      // per-point tangent/normal/half-width
+      const L = [], R = [], NN = [];
+      for (let i = 0; i <= NS; i++) {
+        const p0 = P[Math.max(0, i - 1)], p1 = P[Math.min(NS, i + 1)];
+        let tx = p1.x - p0.x, ty = p1.y - p0.y; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+        const npx = -ty, npy = tx;
+        NN.push({ x: npx, y: npy });
+        const hw = headHalf + (tailHalf - headHalf) * P[i].t;
+        L.push({ x: P[i].x + npx * hw, y: P[i].y + npy * hw });
+        R.push({ x: P[i].x - npx * hw, y: P[i].y - npy * hw });
       }
-      ctx.fillStyle = "rgba(165,78,32,.38)";
-      for (let i = 5; i < NS - 2; i += 7) { ctx.beginPath(); ctx.arc(P[i].x, P[i].y, bodyW * 0.17, 0, Math.PI * 2); ctx.fill(); }
+      const tubePath = () => {
+        ctx.beginPath();
+        ctx.moveTo(L[0].x, L[0].y);
+        for (let i = 1; i <= NS; i++) ctx.lineTo(L[i].x, L[i].y);
+        for (let i = NS; i >= 0; i--) ctx.lineTo(R[i].x, R[i].y);
+        ctx.closePath();
+      };
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      // shadow
+      ctx.save(); ctx.translate(0, 3); ctx.globalAlpha = 0.16; tubePath(); ctx.fillStyle = "#000"; ctx.fill(); ctx.restore();
+      // body fill (gradient) + dark outline
+      const g = ctx.createLinearGradient(a.cx, a.cy, b.cx, b.cy);
+      g.addColorStop(0, "#f0985c"); g.addColorStop(1, "#dd7038");
+      tubePath();
+      ctx.fillStyle = g; ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = "#b04a26"; ctx.stroke();
+      // belly stripe (lighter), down the centre
+      ctx.beginPath();
+      for (let i = 0; i <= NS; i++) { const hw = (headHalf + (tailHalf - headHalf) * P[i].t) * 0.5; const x = P[i].x + NN[i].x * hw, y = P[i].y + NN[i].y * hw; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      for (let i = NS; i >= 0; i--) { const hw = (headHalf + (tailHalf - headHalf) * P[i].t) * 0.5; ctx.lineTo(P[i].x - NN[i].x * hw, P[i].y - NN[i].y * hw); }
+      ctx.closePath(); ctx.fillStyle = "rgba(255,224,180,.5)"; ctx.fill();
+      // scale bands across the body
+      ctx.strokeStyle = "rgba(150,65,25,.32)"; ctx.lineWidth = 2;
+      for (let i = 4; i < NS - 2; i += 3) {
+        const hw = headHalf + (tailHalf - headHalf) * P[i].t;
+        ctx.beginPath();
+        ctx.moveTo(P[i].x + NN[i].x * hw * 0.9, P[i].y + NN[i].y * hw * 0.9);
+        ctx.quadraticCurveTo(P[i + 1].x, P[i + 1].y, P[i].x - NN[i].x * hw * 0.9, P[i].y - NN[i].y * hw * 0.9);
+        ctx.stroke();
+      }
 
-      // head, oriented along initial tangent (a -> control)
-      let hx = cpx - a.cx, hy = cpy - a.cy; const hl = Math.hypot(hx, hy) || 1; hx /= hl; hy /= hl;
-      const hr = bodyW * 0.95;
+      // head oriented along the body tangent at the head end
+      const ha = Math.atan2(P[1].y - P[0].y, P[1].x - P[0].x); // points toward body
+      const hr = headHalf * 1.5;
       ctx.save();
       ctx.translate(a.cx, a.cy);
-      ctx.rotate(Math.atan2(hy, hx)); // +x points toward the body
-      // forked tongue (front = -x)
+      ctx.rotate(ha);
+      // tongue (front = -x, away from body)
       ctx.strokeStyle = "#e0152b"; ctx.lineWidth = 2.6; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(-hr * 0.95, 0); ctx.lineTo(-hr * 1.75, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-hr * 0.85, 0); ctx.lineTo(-hr * 1.6, 0); ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(-hr * 1.75, 0); ctx.lineTo(-hr * 2.1, -hr * 0.28);
-      ctx.moveTo(-hr * 1.75, 0); ctx.lineTo(-hr * 2.1, hr * 0.28);
+      ctx.moveTo(-hr * 1.6, 0); ctx.lineTo(-hr * 1.95, -hr * 0.26);
+      ctx.moveTo(-hr * 1.6, 0); ctx.lineTo(-hr * 1.95, hr * 0.26);
       ctx.stroke();
-      // head
-      ctx.fillStyle = "#bd4f29"; ctx.beginPath(); ctx.ellipse(-hr * 0.1, 0, hr * 1.12, hr * 0.95, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#f2965d"; ctx.beginPath(); ctx.ellipse(-hr * 0.1, 0, hr * 0.98, hr * 0.8, 0, 0, Math.PI * 2); ctx.fill();
+      // head shape
+      ctx.fillStyle = "#b04a26"; ctx.beginPath(); ctx.ellipse(-hr * 0.05, 0, hr * 1.1, hr * 0.92, 0, 0, Math.PI * 2); ctx.fill();
+      const hg = ctx.createLinearGradient(0, -hr, 0, hr);
+      hg.addColorStop(0, "#f6a268"); hg.addColorStop(1, "#e07a40");
+      ctx.fillStyle = hg; ctx.beginPath(); ctx.ellipse(-hr * 0.05, 0, hr * 0.96, hr * 0.78, 0, 0, Math.PI * 2); ctx.fill();
       // nostrils
-      ctx.fillStyle = "#7a2e12";
-      ctx.beginPath(); ctx.arc(-hr * 0.85, -hr * 0.14, hr * 0.08, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(-hr * 0.85, hr * 0.14, hr * 0.08, 0, Math.PI * 2); ctx.fill();
-      // eyes (big, on top, side by side)
+      ctx.fillStyle = "#8a3c18";
+      ctx.beginPath(); ctx.arc(-hr * 0.82, -hr * 0.14, hr * 0.07, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(-hr * 0.82, hr * 0.14, hr * 0.07, 0, Math.PI * 2); ctx.fill();
+      // eyes
       for (const sy of [-1, 1]) {
         ctx.fillStyle = "#fff";
-        ctx.beginPath(); ctx.arc(-hr * 0.15, sy * hr * 0.45, hr * 0.38, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = "#bd4f29"; ctx.lineWidth = 1.6; ctx.stroke();
+        ctx.beginPath(); ctx.arc(-hr * 0.12, sy * hr * 0.44, hr * 0.36, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = "#b04a26"; ctx.lineWidth = 1.6; ctx.stroke();
         ctx.fillStyle = "#1a1a1a";
-        ctx.beginPath(); ctx.arc(-hr * 0.26, sy * hr * 0.45, hr * 0.17, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(-hr * 0.22, sy * hr * 0.44, hr * 0.16, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = "#fff";
-        ctx.beginPath(); ctx.arc(-hr * 0.32, sy * hr * 0.45 - hr * 0.05, hr * 0.06, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(-hr * 0.28, sy * hr * 0.44 - hr * 0.05, hr * 0.06, 0, Math.PI * 2); ctx.fill();
       }
       ctx.restore();
     };
@@ -366,11 +389,6 @@ export default function UlarTanggaGameClient() {
       raf = requestAnimationFrame(draw);
       const now = Date.now();
       ctx.clearRect(0, 0, W, H);
-
-      if (useImg) {
-        if (boardImg.complete && boardImg.naturalWidth) ctx.drawImage(boardImg, 0, 0, W, H);
-        else { ctx.fillStyle = "#efe6d6"; ctx.fillRect(0, 0, W, H); }
-      } else {
       // cells
       for (let n = 1; n <= N; n++) {
         const { x, y } = numToCell(n, cols, rows);
@@ -393,7 +411,6 @@ export default function UlarTanggaGameClient() {
 
       Object.entries(lad).forEach(([f, to]) => drawLadder(+f, +to));
       Object.entries(sn).forEach(([f, to]) => drawSnake(+f, +to));
-      }
 
       // tokens
       const byCell = {};
