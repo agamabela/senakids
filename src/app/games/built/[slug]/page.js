@@ -20,6 +20,8 @@ import Labirin3DGameClient from "../Labirin3DGameClient";
 import BombermanGameClient from "../BombermanGameClient";
 import InfiniteFlierGameClient from "../InfiniteFlierGameClient";
 import SnakeGameClient from "../SnakeGameClient";
+import LudoGameClient from "../LudoGameClient";
+import UlarTanggaGameClient from "../UlarTanggaGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -45,6 +47,8 @@ const builtGameDetails = {
   bomberman: { title: "Si Bom Pintar", description: "Letakkan bom, hancurkan peti, kalahkan monster!", note: "This built-in game is implemented directly in Sena Kids." },
   "astronot-terbang": { title: "Astronot Terbang", description: "Terbang dan hindari rintangan, kumpulkan bintang!", note: "This built-in game is implemented directly in Sena Kids." },
   "ular-pintar": { title: "Ular Pintar", description: "Makan buah, tumbuh panjang, jangan menabrak!", note: "This built-in game is implemented directly in Sena Kids." },
+  ludo: { title: "Ludo", description: "Balapan bidak mengelilingi papan, capai pusat lebih dulu!", note: "This built-in game is implemented directly in Sena Kids." },
+  "ular-tangga": { title: "Ular Tangga", description: "Naik tangga, hindari ular — klasik atau buat papanmu sendiri!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -69,6 +73,8 @@ const gameClients = {
   bomberman: BombermanGameClient,
   "astronot-terbang": InfiniteFlierGameClient,
   "ular-pintar": SnakeGameClient,
+  ludo: LudoGameClient,
+  "ular-tangga": UlarTanggaGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {

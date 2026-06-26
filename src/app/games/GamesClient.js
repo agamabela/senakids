@@ -28,6 +28,8 @@ const builtGames = [
   { title: "Si Bom Pintar", description: "Letakkan bom & kalahkan monster!", emoji: "💣", href: "/games/built/bomberman", color: "orange" },
   { title: "Astronot Terbang", description: "Terbang, hindari pipa, kumpulkan bintang!", emoji: "🚀", href: "/games/built/astronot-terbang", color: "blue" },
   { title: "Ular Pintar", description: "Makan buah & tumbuh panjang, jangan menabrak!", emoji: "🐍", href: "/games/built/ular-pintar", color: "green" },
+  { title: "Ludo", description: "Balapan bidak mengelilingi papan, capai pusat dulu!", emoji: "🎲", href: "/games/built/ludo", color: "purple" },
+  { title: "Ular Tangga", description: "Naik tangga, hindari ular — atau buat papanmu sendiri!", emoji: "🪜", href: "/games/built/ular-tangga", color: "teal" },
 ];
 
 // Helper function to extract color from zone if needed, or just default to blue
