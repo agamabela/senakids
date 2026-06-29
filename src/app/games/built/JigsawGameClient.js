@@ -89,14 +89,14 @@ async function buildPieces(imgSrc, N) {
       // draw the centered-square-cropped source so this cell + its tabs align
       ctx.drawImage(img, offX + c * cell - margin, offY + r * cell - margin, cw, cw, 0, 0, cw, cw);
       ctx.restore();
-      // inner shading + light outline for definition
+      // inner shading + clear outline so transparent/object-only pieces stay visible
       ctx.save();
       piecePath(ctx, margin, cell, edges[r][c]);
-      ctx.lineWidth = Math.max(1.2, cell * 0.025);
-      ctx.strokeStyle = "rgba(255,255,255,0.55)";
+      ctx.lineWidth = Math.max(2, cell * 0.045);
+      ctx.strokeStyle = "rgba(255,255,255,0.9)";
       ctx.stroke();
-      ctx.lineWidth = Math.max(0.6, cell * 0.012);
-      ctx.strokeStyle = "rgba(0,0,0,0.28)";
+      ctx.lineWidth = Math.max(1, cell * 0.02);
+      ctx.strokeStyle = "rgba(60,70,90,0.55)";
       ctx.stroke();
       ctx.restore();
       pieces.push({ id: `${r}-${c}`, row: r, col: c, url: cv.toDataURL("image/png") });
