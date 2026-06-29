@@ -52,6 +52,16 @@ const videos = [
   { title: "Bluey Usil Sama Mama", category: "Kartun", color: COLORS.kartun2, id: "heQeCJaIHEs" },
 ];
 
+// Group videos into per-show playlists on the TV page by storing the show name as category.
+const SHOW_BY_COLOR = {
+  "#a855f7": "Nussa",
+  "#ec4899": "Omar & Hana",
+  "#22c55e": "Riko The Series",
+  "#3b82f6": "Kok Bisa",
+  "#f97316": "Diva The Series",
+  "#f59e0b": "Bluey",
+};
+
 async function main() {
   console.log("Seeding TV videos ...");
   let added = 0, skipped = 0;
@@ -60,7 +70,7 @@ async function main() {
     const existing = await prisma.video.findFirst({ where: { url } });
     if (existing) { skipped++; continue; }
     await prisma.video.create({
-      data: { title: v.title, duration: "", category: v.category, color: v.color, url },
+      data: { title: v.title, duration: "", category: SHOW_BY_COLOR[v.color] || v.category, color: v.color, url },
     });
     added++;
   }

@@ -1480,12 +1480,13 @@ const videos = [
 
 async function main() {
   console.log("Seeding channel videos ...");
+  const SHOW_BY_COLOR = { "#14b8a6": "Shimajiro", "#eab308": "Shaun the Sheep" };
   let added = 0, skipped = 0;
   for (const v of videos) {
     const url = `https://www.youtube.com/watch?v=${v.id}`;
     const existing = await prisma.video.findFirst({ where: { url } });
     if (existing) { skipped++; continue; }
-    await prisma.video.create({ data: { title: v.title, duration: "", category: v.category, color: v.color, url } });
+    await prisma.video.create({ data: { title: v.title, duration: "", category: SHOW_BY_COLOR[v.color] || v.category, color: v.color, url } });
     added++;
   }
   console.log(`Done. Added ${added}, skipped ${skipped}.`);
