@@ -110,7 +110,7 @@ export default function TvClient({ videos }) {
                   className={`${styles.ticketCard} ${isActive ? styles.ticketActive : ""}`}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08 }}
+                  transition={{ delay: Math.min(i * 0.04, 0.6) }}
                   whileHover={{ x: -4 }}
                   onClick={() => setActiveIndex(i)}
                 >
@@ -124,6 +124,7 @@ export default function TvClient({ videos }) {
                         src={`https://img.youtube.com/vi/${thumbId}/default.jpg`}
                         alt={item.title}
                         className={styles.ticketThumb}
+                        loading="lazy"
                       />
                     ) : (
                       <Star fill="white" color="white" size={24} />
