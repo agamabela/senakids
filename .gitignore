@@ -52,3 +52,6 @@ ADMIN_CREDENTIALS.md
 # large source asset (sliced into public/snl-board.png) + local previews
 /asset.png
 /ular-tangga-preview.png
+
+# large source images for puzzles (downscaled runtime copies live in /public/images)
+/assests/

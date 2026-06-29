@@ -24,6 +24,7 @@ import LudoGameClient from "../LudoGameClient";
 import UlarTanggaGameClient from "../UlarTanggaGameClient";
 import LacakHurufGameClient from "../LacakHurufGameClient";
 import LacakAngkaGameClient from "../LacakAngkaGameClient";
+import JigsawGameClient from "../JigsawGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -53,6 +54,7 @@ const builtGameDetails = {
   "ular-tangga": { title: "Ular Tangga", description: "Naik tangga, hindari ular — klasik atau buat papanmu sendiri!", note: "This built-in game is implemented directly in Sena Kids." },
   "lacak-huruf": { title: "Lacak Huruf", description: "Belajar menulis huruf A-Z dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
   "lacak-angka": { title: "Lacak Angka", description: "Belajar menulis angka 0-9 dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
+  "puzzle-gambar": { title: "Puzzle Gambar", description: "Susun keping puzzle jigsaw menjadi gambar utuh!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -81,6 +83,7 @@ const gameClients = {
   "ular-tangga": UlarTanggaGameClient,
   "lacak-huruf": LacakHurufGameClient,
   "lacak-angka": LacakAngkaGameClient,
+  "puzzle-gambar": JigsawGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {

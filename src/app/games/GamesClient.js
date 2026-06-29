@@ -32,6 +32,7 @@ const builtGames = [
   { title: { id: "Ular Tangga", en: "Snakes & Ladders" }, description: { id: "Naik tangga, hindari ular — atau buat papanmu sendiri!", en: "Climb ladders, dodge snakes — or build your own board!" }, emoji: "🪜", href: "/games/built/ular-tangga", color: "teal" },
   { title: { id: "Lacak Huruf", en: "Trace Letters" }, description: { id: "Tulis huruf A-Z dengan menelusuri titik!", en: "Write letters A-Z by tracing the dots!" }, emoji: "✏️", href: "/games/built/lacak-huruf", color: "blue" },
   { title: { id: "Lacak Angka", en: "Trace Numbers" }, description: { id: "Tulis angka 0-9 dengan menelusuri titik!", en: "Write numbers 0-9 by tracing the dots!" }, emoji: "🔢", href: "/games/built/lacak-angka", color: "green" },
+  { title: { id: "Puzzle Gambar", en: "Jigsaw Puzzle" }, description: { id: "Susun keping jadi gambar utuh!", en: "Fit the pieces into a picture!" }, emoji: "🧩", href: "/games/built/puzzle-gambar", color: "orange" },
 ];
 
 // Helper function to extract color from zone if needed, or just default to blue
