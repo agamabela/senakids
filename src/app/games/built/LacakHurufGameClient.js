@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useActivityStore } from "@/components/BackButton";
 import TraceStage from "@/components/TraceStage";
@@ -25,8 +25,9 @@ export default function LacakHurufGameClient() {
   const setHasChanges = useActivityStore((s) => s.setHasChanges);
   const t = (id, en) => (language === "id" ? id : en);
 
+  const [screen, setScreen] = useState("menu"); // menu | trace
   const [idx, setIdx] = useState(0);
-  const [caseMode, setCaseMode] = useState("upper"); // upper | lower
+  const [caseMode, setCaseMode] = useState("upper");
   const [resetKey, setResetKey] = useState(0);
   const [celebrate, setCelebrate] = useState(false);
   const advTimer = useRef(null);
@@ -37,15 +38,16 @@ export default function LacakHurufGameClient() {
   const strokes = caseMode === "upper" ? STROKES_UPPER[U] : STROKES_LOWER[Lc];
   const word = (LETTER_WORDS[U] && LETTER_WORDS[U][language]) || LETTER_WORDS[U].id;
 
+  const openLetter = useCallback((i) => {
+    clearTimeout(advTimer.current);
+    setIdx(i); setCaseMode("upper"); setResetKey((k) => k + 1); setCelebrate(false); setScreen("trace");
+  }, []);
   const goLetter = useCallback((n) => {
     clearTimeout(advTimer.current);
-    setIdx((n + 26) % 26);
-    setCaseMode("upper");
-    setResetKey((k) => k + 1);
-    setCelebrate(false);
+    setIdx((n + 26) % 26); setCaseMode("upper"); setResetKey((k) => k + 1); setCelebrate(false);
   }, []);
-
   const clearInk = () => { setResetKey((k) => k + 1); setCelebrate(false); };
+  const switchCase = (m) => { if (m !== caseMode) { setCaseMode(m); setResetKey((k) => k + 1); setCelebrate(false); } };
 
   const onComplete = useCallback(() => {
     setHasChanges(true);
@@ -53,25 +55,41 @@ export default function LacakHurufGameClient() {
     speak(glyph, language);
     clearTimeout(advTimer.current);
     advTimer.current = setTimeout(() => {
-      if (caseMode === "upper") {
-        setCaseMode("lower");
-        setResetKey((k) => k + 1);
-        setCelebrate(false);
-      }
-    }, 1100);
+      if (caseMode === "upper") { setCaseMode("lower"); setResetKey((k) => k + 1); setCelebrate(false); }
+    }, 1300);
   }, [caseMode, glyph, language, setHasChanges]);
 
-  const switchCase = (m) => { if (m !== caseMode) { setCaseMode(m); setResetKey((k) => k + 1); setCelebrate(false); } };
+  // ── MENU: choose a letter ──
+  if (screen === "menu") {
+    return (
+      <div className={styles.menuWrap}>
+        <h1 className={styles.menuTitle}>✏️ {t("Pilih Huruf", "Pick a Letter")}</h1>
+        <p className={styles.menuSub}>{t("Ketuk huruf untuk mulai menulis!", "Tap a letter to start writing!")}</p>
+        <div className={styles.letterGrid}>
+          {LETTERS.map((c, i) => {
+            const w = (LETTER_WORDS[c] && LETTER_WORDS[c][language]) || LETTER_WORDS[c].id;
+            return (
+              <button key={c} className={styles.letterCard} onClick={() => openLetter(i)}>
+                <span className={styles.cardLetters}>{c}{c.toLowerCase()}</span>
+                <span className={styles.cardEmoji}>{w.emoji}</span>
+                <span className={styles.cardWord}>{w.word}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
+  // ── TRACE ──
   return (
     <div className={styles.wrapper}>
-      {/* word / letter panel */}
+      <button className={styles.backToMenu} onClick={() => { clearTimeout(advTimer.current); setScreen("menu"); }}>
+        ◀ {t("Semua Huruf", "All Letters")}
+      </button>
+
       <div className={styles.headerCard}>
-        <button
-          className={styles.speakBtn}
-          onClick={() => speak(`${glyph}. ${word.word}`, language)}
-          aria-label="Dengar"
-        >🔊</button>
+        <button className={styles.speakBtn} onClick={() => speak(`${glyph}. ${word.word}`, language)} aria-label="Dengar">🔊</button>
         <div className={styles.bigLetters}>
           <span className={styles.upper}>{U}</span>
           <span className={styles.lower}>{Lc}</span>
@@ -82,7 +100,6 @@ export default function LacakHurufGameClient() {
         </div>
       </div>
 
-      {/* case tabs */}
       <div className={styles.caseTabs}>
         <button className={`${styles.caseTab} ${caseMode === "upper" ? styles.caseActive : ""}`} onClick={() => switchCase("upper")}>
           {t("Huruf Besar", "Uppercase")} <b>{U}</b>
@@ -92,34 +109,24 @@ export default function LacakHurufGameClient() {
         </button>
       </div>
 
-      {/* tracing board */}
       <div className={styles.stageWrap}>
         <TraceStage glyph={glyph} strokes={strokes} accent="#3b82d6" resetKey={`${U}-${caseMode}-${resetKey}`} onComplete={onComplete} />
-        {celebrate && (
-          <div className={styles.celebrate}>⭐ {t("Bagus!", "Great!")}</div>
-        )}
+        {celebrate && <div className={styles.celebrate}>⭐ {t("Bagus!", "Great!")}</div>}
       </div>
 
       <p className={styles.hint}>
-        {t("Ikuti titik-titik dan panah. Mulai dari titik hijau!",
-           "Follow the dots and arrows. Start at the green dot!")}
+        {t("Mulai dari titik oranye, ikuti panah & titik-titik!", "Start at the orange dot, follow the arrow & dots!")}
       </p>
 
-      {/* controls */}
       <div className={styles.controls}>
         <button className={styles.ctrlBtn} onClick={() => goLetter(idx - 1)}>◀</button>
         <button className={styles.clearBtn} onClick={clearInk}>🧽 {t("Ulangi", "Clear")}</button>
         <button className={styles.ctrlBtn} onClick={() => goLetter(idx + 1)}>▶</button>
       </div>
 
-      {/* progress */}
       <div className={styles.progress}>
         {LETTERS.map((c, i) => (
-          <button
-            key={c}
-            className={`${styles.progDot} ${i === idx ? styles.progActive : ""}`}
-            onClick={() => goLetter(i)}
-          >{c}</button>
+          <button key={c} className={`${styles.progDot} ${i === idx ? styles.progActive : ""}`} onClick={() => goLetter(i)}>{c}</button>
         ))}
       </div>
     </div>
