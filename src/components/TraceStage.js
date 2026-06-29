@@ -5,8 +5,8 @@ import styles from "./TraceStage.module.css";
 
 const W = 300, H = 340, PAD = 30;
 const BW = W - PAD * 2, BH = H - PAD * 2;
-const HIT_R = 34;          // how close ink must be to count
-const DONE_RATIO = 0.5;    // fraction of guide that must be traced
+const HIT_R = 24;          // ink must be near the dotted path to count
+const DONE_RATIO = 0.55;   // must trace most of the path (rejects quick flicks)
 
 const mapX = (x) => PAD + x * BW;
 const mapY = (y) => PAD + y * BH;
@@ -70,21 +70,26 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
       ctx.fillStyle = "#fbfdff";
       ctx.fillRect(0, 0, W, H);
 
-      // faint glyph silhouette (correct shape reference)
+      // thick light guide body drawn from the SAME skeleton (so the shape,
+      // the dots, and the checked path all line up exactly)
       ctx.save();
-      ctx.fillStyle = "rgba(60,80,120,0.09)";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "alphabetic";
-      ctx.font = `900 ${Math.round(BH * 0.92)}px "Arial Rounded MT Bold", "Trebuchet MS", Arial, sans-serif`;
-      ctx.fillText(glyph, PAD + BW / 2, PAD + BH * 0.88);
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      ctx.strokeStyle = "#e6edf6";
+      ctx.lineWidth = 30;
+      for (const stroke of strokes) {
+        ctx.beginPath();
+        ctx.moveTo(mapX(stroke[0][0]), mapY(stroke[0][1]));
+        for (let i = 1; i < stroke.length; i++) ctx.lineTo(mapX(stroke[i][0]), mapY(stroke[i][1]));
+        ctx.stroke();
+      }
       ctx.restore();
 
-      // dotted guide along skeleton
+      // dotted centreline along skeleton
       ctx.save();
       ctx.lineCap = "round";
-      ctx.setLineDash([1, 13]);
-      ctx.lineWidth = 7;
-      ctx.strokeStyle = "#c4d0e0";
+      ctx.setLineDash([1, 12]);
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "#9fb3cd";
       for (const stroke of strokes) {
         ctx.beginPath();
         ctx.moveTo(mapX(stroke[0][0]), mapY(stroke[0][1]));
@@ -140,11 +145,26 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
     const r = canvasRef.current.getBoundingClientRect();
     return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (H / r.height) };
   };
-  const markCovered = (p) => {
+  const markCovered = (a, b) => {
+    // mark guide samples near the segment a->b (b optional = single point)
     const samples = samplesRef.current, covered = coveredRef.current;
     if (!covered) return;
+    const r2 = HIT_R * HIT_R;
     for (let i = 0; i < samples.length; i++) {
-      if (!covered[i] && Math.hypot(samples[i].x - p.x, samples[i].y - p.y) <= HIT_R) covered[i] = 1;
+      if (covered[i]) continue;
+      const s = samples[i];
+      let d2;
+      if (!b) {
+        d2 = (s.x - a.x) ** 2 + (s.y - a.y) ** 2;
+      } else {
+        const vx = b.x - a.x, vy = b.y - a.y;
+        const len2 = vx * vx + vy * vy || 1;
+        let t = ((s.x - a.x) * vx + (s.y - a.y) * vy) / len2;
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        const cx = a.x + vx * t, cy = a.y + vy * t;
+        d2 = (s.x - cx) ** 2 + (s.y - cy) ** 2;
+      }
+      if (d2 <= r2) covered[i] = 1;
     }
     if (!doneRef.current) {
       let c = 0;
@@ -167,10 +187,11 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
     if (!drawingRef.current) return;
     e.preventDefault();
     const p = toLocal(e);
-    let cur = inkRef.current[inkRef.current.length - 1];
-    if (!cur) { cur = [p]; inkRef.current.push(cur); }
-    else cur.push(p);
-    markCovered(p);
+    const cur = inkRef.current[inkRef.current.length - 1];
+    if (!cur) { inkRef.current.push([p]); markCovered(p); return; }
+    const prev = cur[cur.length - 1];
+    cur.push(p);
+    markCovered(prev || p, p);
   };
   const up = () => { drawingRef.current = false; };
 
