@@ -5,11 +5,8 @@ import { useLanguage } from "@/components/LanguageProvider";
 import { useActivityStore } from "@/components/BackButton";
 import styles from "./JigsawGameClient.module.css";
 
-const LEVELS = [
-  { key: "easy", n: 4, id: "Mudah", en: "Easy", icon: "🟢" },
-  { key: "medium", n: 8, id: "Sedang", en: "Medium", icon: "🟡" },
-  { key: "hard", n: 10, id: "Sulit", en: "Hard", icon: "🔴" },
-];
+// single difficulty: slice the picture into N x N simple square parts
+const N = 3;
 
 const IMAGES = [
   "/images/puzzle-1.png", "/images/puzzle-2.png", "/images/puzzle-3.png",
@@ -26,83 +23,32 @@ function loadImage(src) {
   });
 }
 
-// random ±1 (tab / blank) for internal edges
-const rnd = () => (Math.random() < 0.5 ? 1 : -1);
-
-function generateEdges(N) {
-  const e = Array.from({ length: N }, () => Array.from({ length: N }, () => ({ t: 0, r: 0, b: 0, l: 0 })));
-  for (let r = 0; r < N; r++) {
-    for (let c = 0; c < N; c++) {
-      e[r][c].t = r === 0 ? 0 : -e[r - 1][c].b;
-      e[r][c].l = c === 0 ? 0 : -e[r][c - 1].r;
-      e[r][c].r = c === N - 1 ? 0 : rnd();
-      e[r][c].b = r === N - 1 ? 0 : rnd();
-    }
-  }
-  return e;
-}
-
-// draw one edge from a->b with outward normal (ox,oy); dir 0 flat, +1 tab(out), -1 blank(in)
-function edgeTo(ctx, ax, ay, bx, by, ox, oy, dir) {
-  const dx = bx - ax, dy = by - ay;
-  const L = Math.hypot(dx, dy) || 1;
-  const ux = dx / L, uy = dy / L;
-  if (dir === 0) { ctx.lineTo(bx, by); return; }
-  const P = (al, pe) => [ax + ux * al * L + ox * pe * L * dir, ay + uy * al * L + oy * pe * L * dir];
-  let p = P(0.4, 0); ctx.lineTo(p[0], p[1]);
-  const c1 = P(0.32, 0.05), c2 = P(0.30, 0.27), e1 = P(0.5, 0.27);
-  ctx.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], e1[0], e1[1]);
-  const c3 = P(0.70, 0.27), c4 = P(0.68, 0.05), e2 = P(0.6, 0);
-  ctx.bezierCurveTo(c3[0], c3[1], c4[0], c4[1], e2[0], e2[1]);
-  ctx.lineTo(bx, by);
-}
-
-function piecePath(ctx, m, s, e) {
-  // m = margin (px), s = cell (px). content box [m,m]..[m+s,m+s]
-  const x0 = m, y0 = m, x1 = m + s, y1 = m + s;
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  edgeTo(ctx, x0, y0, x1, y0, 0, -1, e.t);   // top, outward up
-  edgeTo(ctx, x1, y0, x1, y1, 1, 0, e.r);    // right, outward right
-  edgeTo(ctx, x1, y1, x0, y1, 0, 1, e.b);    // bottom, outward down
-  edgeTo(ctx, x0, y1, x0, y0, -1, 0, e.l);   // left, outward left
-  ctx.closePath();
-}
-
-async function buildPieces(imgSrc, N) {
+// slice the centered-square crop of the image into N x N plain square pieces
+async function buildPieces(imgSrc) {
   const img = await loadImage(imgSrc);
   const S = Math.min(img.width, img.height);
   const offX = (img.width - S) / 2, offY = (img.height - S) / 2;
   const cell = Math.floor(S / N);
-  const margin = Math.round(cell * 0.3);
-  const edges = generateEdges(N);
   const pieces = [];
-  const cw = cell + margin * 2;
   for (let r = 0; r < N; r++) {
     for (let c = 0; c < N; c++) {
       const cv = document.createElement("canvas");
-      cv.width = cw; cv.height = cw;
+      cv.width = cell; cv.height = cell;
       const ctx = cv.getContext("2d");
-      ctx.save();
-      piecePath(ctx, margin, cell, edges[r][c]);
-      ctx.clip();
-      // draw the centered-square-cropped source so this cell + its tabs align
-      ctx.drawImage(img, offX + c * cell - margin, offY + r * cell - margin, cw, cw, 0, 0, cw, cw);
-      ctx.restore();
-      // inner shading + clear outline so transparent/object-only pieces stay visible
-      ctx.save();
-      piecePath(ctx, margin, cell, edges[r][c]);
-      ctx.lineWidth = Math.max(2, cell * 0.045);
+      // draw this cell's portion of the (transparent-bg) picture
+      ctx.drawImage(img, offX + c * cell, offY + r * cell, cell, cell, 0, 0, cell, cell);
+      // clear rectangular outline so every part is visible & grabbable
+      const lw = Math.max(2, cell * 0.03);
+      ctx.lineWidth = lw + 2;
       ctx.strokeStyle = "rgba(255,255,255,0.9)";
-      ctx.stroke();
-      ctx.lineWidth = Math.max(1, cell * 0.02);
+      ctx.strokeRect(lw / 2 + 1, lw / 2 + 1, cell - lw - 2, cell - lw - 2);
+      ctx.lineWidth = lw;
       ctx.strokeStyle = "rgba(60,70,90,0.55)";
-      ctx.stroke();
-      ctx.restore();
+      ctx.strokeRect(lw / 2 + 1, lw / 2 + 1, cell - lw - 2, cell - lw - 2);
       pieces.push({ id: `${r}-${c}`, row: r, col: c, url: cv.toDataURL("image/png") });
     }
   }
-  return { pieces, marginRatio: margin / cell };
+  return pieces;
 }
 
 function shuffle(arr) {
@@ -121,26 +67,22 @@ export default function JigsawGameClient() {
   const t = (id, en) => (language === "id" ? id : en);
 
   const [screen, setScreen] = useState("start"); // start | loading | playing | win
-  const [levelKey, setLevelKey] = useState("easy");
   const [imageSrc, setImageSrc] = useState(IMAGES[0]);
   const [pieces, setPieces] = useState([]);
-  const [marginRatio, setMarginRatio] = useState(0.3);
   const [placed, setPlaced] = useState({});      // id -> true
   const [panel, setPanel] = useState([]);        // ids in panel
-  const [drag, setDrag] = useState(null);        // {id, x, y, ox, oy}
+  const [drag, setDrag] = useState(null);        // {id, x, y}
   const [hover, setHover] = useState(null);      // {row,col,ok}
   const [shakeId, setShakeId] = useState(null);
   const [popId, setPopId] = useState(null);
   const [boardSize, setBoardSize] = useState(360);
   const [elapsed, setElapsed] = useState(0);
 
-  const N = LEVELS.find((l) => l.key === levelKey).n;
   const total = N * N;
   const placedCount = Object.keys(placed).length;
 
   const boardRef = useRef(null);
   const startRef = useRef(0);
-  const dragRef = useRef(null);
   const pieceMap = useRef({});
 
   pieceMap.current = {};
@@ -155,7 +97,7 @@ export default function JigsawGameClient() {
     ro.observe(el);
     setBoardSize(el.clientWidth);
     return () => ro.disconnect();
-  }, [screen, N]);
+  }, [screen]);
 
   // timer
   useEffect(() => {
@@ -164,14 +106,12 @@ export default function JigsawGameClient() {
     return () => clearInterval(id);
   }, [screen]);
 
-  const startGame = useCallback(async (lvl, img) => {
-    setLevelKey(lvl); setImageSrc(img);
+  const startGame = useCallback(async (img) => {
+    setImageSrc(img);
     setScreen("loading");
-    const n = LEVELS.find((l) => l.key === lvl).n;
     try {
-      const { pieces: pcs, marginRatio: mr } = await buildPieces(img, n);
+      const pcs = await buildPieces(img);
       setPieces(pcs);
-      setMarginRatio(mr);
       setPlaced({});
       setPanel(shuffle(pcs.map((p) => p.id)));
       setDrag(null); setHover(null); setElapsed(0);
@@ -184,16 +124,14 @@ export default function JigsawGameClient() {
 
   const reshuffle = () => setPanel((p) => shuffle(p));
 
+  // keep a ref of placed for the pointer closure
+  const placedRef = useRef(placed);
+  placedRef.current = placed;
+
   // ── pointer drag ──
   const beginDrag = (id, e) => {
     e.preventDefault();
-    const targetRect = e.currentTarget.getBoundingClientRect();
-    const cell = boardSize / N;
-    const disp = cell * (1 + 2 * marginRatio);
-    // grab offset relative to a board-sized piece centered under the finger
-    const ox = disp / 2, oy = disp / 2;
-    dragRef.current = { id, ox, oy };
-    setDrag({ id, x: e.clientX, y: e.clientY, ox, oy });
+    setDrag({ id, x: e.clientX, y: e.clientY });
 
     const onMove = (ev) => {
       if (ev.cancelable) ev.preventDefault();
@@ -238,10 +176,6 @@ export default function JigsawGameClient() {
     window.addEventListener("pointercancel", onUp);
   };
 
-  // keep a ref of placed for the pointer closure
-  const placedRef = useRef(placed);
-  placedRef.current = placed;
-
   // win check
   useEffect(() => {
     if (screen === "playing" && total > 0 && placedCount === total) {
@@ -258,8 +192,8 @@ export default function JigsawGameClient() {
       <div className={styles.startWrap}>
         <div className={styles.clouds} aria-hidden />
         <div className={styles.startCard}>
-          <h1 className={styles.title}>🧩 {t("Puzzle Gambar", "Jigsaw Puzzle")}</h1>
-          <p className={styles.subtitle}>{t("Pilih gambar & tingkat, lalu susun puzzle-nya!", "Pick a picture & level, then solve the puzzle!")}</p>
+          <h1 className={styles.title}>🧩 {t("Puzzle Gambar", "Picture Puzzle")}</h1>
+          <p className={styles.subtitle}>{t("Pilih gambar, lalu seret tiap bagian ke tempatnya!", "Pick a picture, then drag each part into place!")}</p>
 
           <p className={styles.pickLabel}>{t("Pilih Gambar", "Pick a Picture")}</p>
           <div className={styles.imageGrid}>
@@ -271,18 +205,7 @@ export default function JigsawGameClient() {
             ))}
           </div>
 
-          <p className={styles.pickLabel}>{t("Pilih Tingkat", "Pick a Level")}</p>
-          <div className={styles.levelRow}>
-            {LEVELS.map((lv) => (
-              <button key={lv.key} className={`${styles.levelBtn} ${levelKey === lv.key ? styles.levelActive : ""}`} onClick={() => setLevelKey(lv.key)}>
-                <span className={styles.levelIcon}>{lv.icon}</span>
-                <span>{t(lv.id, lv.en)}</span>
-                <span className={styles.levelN}>{lv.n}×{lv.n}</span>
-              </button>
-            ))}
-          </div>
-
-          <button className={styles.startBtn} onClick={() => startGame(levelKey, imageSrc)}>
+          <button className={styles.startBtn} onClick={() => startGame(imageSrc)}>
             ▶️ {t("Mulai Main", "Start Game")}
           </button>
         </div>
@@ -311,12 +234,12 @@ export default function JigsawGameClient() {
           <div className={styles.winEmoji}>🏆🎉</div>
           <h1 className={styles.title}>{t("Hebat! Selesai!", "Awesome! Solved!")}</h1>
           <p className={styles.subtitle}>
-            {t("Waktu", "Time")}: <strong>{fmtTime(elapsed)}</strong> · {total} {t("keping", "pieces")}
+            {t("Waktu", "Time")}: <strong>{fmtTime(elapsed)}</strong> · {total} {t("bagian", "parts")}
           </p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={imageSrc} alt="solved" className={styles.winImage} />
           <div className={styles.winBtns}>
-            <button className={styles.startBtn} onClick={() => startGame(levelKey, imageSrc)}>🔄 {t("Main Lagi", "Play Again")}</button>
+            <button className={styles.startBtn} onClick={() => startGame(imageSrc)}>🔄 {t("Main Lagi", "Play Again")}</button>
             <button className={styles.ghostBtn} onClick={() => setScreen("start")}>🏠 {t("Menu", "Menu")}</button>
           </div>
         </div>
@@ -326,19 +249,12 @@ export default function JigsawGameClient() {
 
   // ── PLAYING ──
   const cell = boardSize / N;
-  const marginD = cell * marginRatio;
-  const disp = cell + marginD * 2;
 
   return (
     <div className={styles.gameWrap}>
       <div className={styles.clouds} aria-hidden />
       <div className={styles.topBar}>
         <button className={styles.menuPill} onClick={() => setScreen("start")}>🏠 {t("Menu", "Menu")}</button>
-        <div className={styles.levelMini}>
-          {LEVELS.map((lv) => (
-            <button key={lv.key} className={`${styles.levelMiniBtn} ${levelKey === lv.key ? styles.levelMiniActive : ""}`} onClick={() => startGame(lv.key, imageSrc)}>{lv.n}×{lv.n}</button>
-          ))}
-        </div>
         <div className={styles.counter}>🧩 {placedCount} / {total}</div>
         <div className={styles.timer}>⏱️ {fmtTime(elapsed)}</div>
         <button className={styles.shuffleBtn} onClick={reshuffle}>🔀 {t("Acak", "Shuffle")}</button>
@@ -370,7 +286,7 @@ export default function JigsawGameClient() {
                 src={p.url}
                 alt=""
                 className={`${styles.placed} ${popId === p.id ? styles.pop : ""}`}
-                style={{ left: p.col * cell - marginD, top: p.row * cell - marginD, width: disp, height: disp }}
+                style={{ left: p.col * cell, top: p.row * cell, width: cell, height: cell }}
               />
             ))}
           </div>
@@ -395,7 +311,7 @@ export default function JigsawGameClient() {
                 />
               );
             })}
-            {panel.length === 0 && <p className={styles.panelEmpty}>{t("Semua keping terpasang!", "All pieces placed!")}</p>}
+            {panel.length === 0 && <p className={styles.panelEmpty}>{t("Semua bagian terpasang!", "All parts placed!")}</p>}
           </div>
         </div>
       </div>
@@ -407,7 +323,7 @@ export default function JigsawGameClient() {
           src={pieceMap.current[drag.id].url}
           alt=""
           className={styles.floating}
-          style={{ left: drag.x - disp / 2, top: drag.y - disp / 2, width: disp, height: disp }}
+          style={{ left: drag.x - cell / 2, top: drag.y - cell / 2, width: cell, height: cell }}
         />
       )}
     </div>
