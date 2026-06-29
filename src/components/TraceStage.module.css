@@ -1,0 +1,12 @@
+.canvas {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 300 / 340;
+  margin: 0 auto;
+  border-radius: 18px;
+  background: #fbfdff;
+  border: 2px dashed #d7e0ec;
+  touch-action: none;
+  cursor: crosshair;
+}

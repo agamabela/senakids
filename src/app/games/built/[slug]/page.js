@@ -22,6 +22,8 @@ import InfiniteFlierGameClient from "../InfiniteFlierGameClient";
 import SnakeGameClient from "../SnakeGameClient";
 import LudoGameClient from "../LudoGameClient";
 import UlarTanggaGameClient from "../UlarTanggaGameClient";
+import LacakHurufGameClient from "../LacakHurufGameClient";
+import LacakAngkaGameClient from "../LacakAngkaGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -49,6 +51,8 @@ const builtGameDetails = {
   "ular-pintar": { title: "Ular Pintar", description: "Makan buah, tumbuh panjang, jangan menabrak!", note: "This built-in game is implemented directly in Sena Kids." },
   ludo: { title: "Ludo", description: "Balapan bidak mengelilingi papan, capai pusat lebih dulu!", note: "This built-in game is implemented directly in Sena Kids." },
   "ular-tangga": { title: "Ular Tangga", description: "Naik tangga, hindari ular — klasik atau buat papanmu sendiri!", note: "This built-in game is implemented directly in Sena Kids." },
+  "lacak-huruf": { title: "Lacak Huruf", description: "Belajar menulis huruf A-Z dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
+  "lacak-angka": { title: "Lacak Angka", description: "Belajar menulis angka 0-9 dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -75,6 +79,8 @@ const gameClients = {
   "ular-pintar": SnakeGameClient,
   ludo: LudoGameClient,
   "ular-tangga": UlarTanggaGameClient,
+  "lacak-huruf": LacakHurufGameClient,
+  "lacak-angka": LacakAngkaGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {
