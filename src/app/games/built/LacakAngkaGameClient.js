@@ -20,15 +20,24 @@ function speak(text, lang) {
   } catch { /* ignore */ }
 }
 
+const LEVELS = [
+  { key: "easy", id: "Mudah", en: "Easy", icon: "🟢" },
+  { key: "medium", id: "Sedang", en: "Medium", icon: "🟡" },
+  { key: "hard", id: "Sulit", en: "Hard", icon: "🔴" },
+];
+
 export default function LacakAngkaGameClient() {
   const { language } = useLanguage();
   const setHasChanges = useActivityStore((s) => s.setHasChanges);
   const t = (id, en) => (language === "id" ? id : en);
 
-  const [screen, setScreen] = useState("menu"); // menu | trace
+  const [screen, setScreen] = useState("menu");
   const [idx, setIdx] = useState(1);
+  const [level, setLevel] = useState("easy");
   const [resetKey, setResetKey] = useState(0);
   const [celebrate, setCelebrate] = useState(false);
+  const [fail, setFail] = useState(false);
+  const stageRef = useRef(null);
 
   const D = DIGITS[idx];
   const strokes = STROKES_DIGIT[D];
@@ -36,11 +45,13 @@ export default function LacakAngkaGameClient() {
   const word = language === "id" ? info.id : info.en;
   const count = parseInt(D, 10);
 
-  const openDigit = useCallback((i) => { setIdx(i); setResetKey((k) => k + 1); setCelebrate(false); setScreen("trace"); }, []);
-  const goDigit = useCallback((n) => { setIdx((n + 10) % 10); setResetKey((k) => k + 1); setCelebrate(false); }, []);
-  const clearInk = () => { setResetKey((k) => k + 1); setCelebrate(false); };
+  const reset = () => { setResetKey((k) => k + 1); setCelebrate(false); setFail(false); };
+  const openDigit = useCallback((i) => { setIdx(i); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setScreen("trace"); }, []);
+  const goDigit = useCallback((n) => { setIdx((n + 10) % 10); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); }, []);
+  const switchLevel = (m) => { if (m !== level) { setLevel(m); reset(); } };
 
-  const onComplete = useCallback(() => { setHasChanges(true); setCelebrate(true); speak(word, language); }, [word, language, setHasChanges]);
+  const onComplete = useCallback(() => { setHasChanges(true); setCelebrate(true); setFail(false); speak(word, language); }, [word, language, setHasChanges]);
+  const onCheck = () => { const ok = stageRef.current?.check(); if (!ok) { setFail(true); setTimeout(() => setFail(false), 1400); } };
 
   if (screen === "menu") {
     return (
@@ -71,25 +82,37 @@ export default function LacakAngkaGameClient() {
         <button className={styles.speakBtn} onClick={() => speak(`${D}. ${word}`, language)} aria-label="Dengar">🔊</button>
         <div className={styles.bigLetters}><span className={styles.upper}>{D}</span></div>
         <div className={styles.wordBox}>
-          <span className={styles.wordEmoji} style={{ fontSize: "1.5rem", letterSpacing: "1px" }}>
-            {count === 0 ? "🫧" : info.emoji.repeat(Math.min(count, 9))}
-          </span>
+          <span className={styles.wordEmoji} style={{ fontSize: "1.5rem", letterSpacing: "1px" }}>{count === 0 ? "🫧" : info.emoji.repeat(Math.min(count, 9))}</span>
           <span className={styles.wordText}>{word}</span>
         </div>
       </div>
 
+      <div className={styles.levelTabs}>
+        {LEVELS.map((lv) => (
+          <button key={lv.key} className={`${styles.levelTab} ${level === lv.key ? styles.levelActive : ""}`} onClick={() => switchLevel(lv.key)}>
+            {lv.icon} {t(lv.id, lv.en)}
+          </button>
+        ))}
+      </div>
+
       <div className={styles.stageWrap}>
-        <TraceStage glyph={D} strokes={strokes} accent="#16a34a" resetKey={`${D}-${resetKey}`} onComplete={onComplete} />
+        <TraceStage ref={stageRef} glyph={D} strokes={strokes} accent="#16a34a" level={level} resetKey={`${D}-${level}-${resetKey}`} onComplete={onComplete} />
         {celebrate && <div className={styles.celebrate}>⭐ {t("Bagus!", "Great!")}</div>}
+        {fail && <div className={`${styles.celebrate} ${styles.failMsg}`}>🤔 {t("Coba lagi ya!", "Try again!")}</div>}
       </div>
 
       <p className={styles.hint}>
-        {t("Mulai dari titik oranye, ikuti panah & titik-titik!", "Start at the orange dot, follow the arrow & dots!")}
+        {level === "hard"
+          ? t("Tulis angkanya sendiri, lalu tekan Periksa!", "Write the number yourself, then press Check!")
+          : level === "medium"
+          ? t("Ikuti garis tipis dari titik oranye!", "Follow the thin line from the orange dot!")
+          : t("Mulai dari titik oranye, ikuti panah & titik-titik!", "Start at the orange dot, follow the arrow & dots!")}
       </p>
 
       <div className={styles.controls}>
         <button className={styles.ctrlBtn} onClick={() => goDigit(idx - 1)}>◀</button>
-        <button className={styles.clearBtn} onClick={clearInk}>🧽 {t("Ulangi", "Clear")}</button>
+        <button className={styles.clearBtn} onClick={reset}>🧽 {t("Ulangi", "Clear")}</button>
+        {level === "hard" && <button className={styles.checkBtn} onClick={onCheck}>✓ {t("Periksa", "Check")}</button>}
         <button className={styles.ctrlBtn} onClick={() => goDigit(idx + 1)}>▶</button>
       </div>
 

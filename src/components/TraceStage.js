@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import styles from "./TraceStage.module.css";
 
-const DONE_RATIO = 0.88;   // must trace (in order) most of the path
+const DONE_RATIO = 0.88;    // easy/medium: ordered fraction of path to finish
 
 function distToSeg(px, py, ax, ay, bx, by) {
   const vx = bx - ax, vy = by - ay;
@@ -14,20 +14,22 @@ function distToSeg(px, py, ax, ay, bx, by) {
   return Math.hypot(px - cx, py - cy);
 }
 
-export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKey = 0, onComplete }) {
+const TraceStage = forwardRef(function TraceStage(
+  { glyph, strokes, accent = "#3b82d6", resetKey = 0, level = "easy", onComplete },
+  ref
+) {
   const canvasRef = useRef(null);
-  const inkRef = useRef([]);          // array of paths (each = [{x,y}] in CSS px)
+  const inkRef = useRef([]);          // paths of {x,y} CSS px
   const drawingRef = useRef(false);
-  const samplesRef = useRef([]);      // per stroke: [{nx,ny}]
-  const progRef = useRef([]);         // per stroke: how many samples covered (in order)
-  const activeRef = useRef(0);        // index of stroke currently being traced
+  const samplesRef = useRef([]);      // per stroke [{nx,ny}]
+  const progRef = useRef([]);
+  const activeRef = useRef(0);
   const totalRef = useRef(0);
   const doneRef = useRef(false);
   const geomRef = useRef({ pad: 0, bw: 1, bh: 1, hit: 24 });
-  const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+  const levelRef = useRef(level); levelRef.current = level;
+  const onCompleteRef = useRef(onComplete); onCompleteRef.current = onComplete;
 
-  // build per-stroke samples on glyph/reset change
   useEffect(() => {
     const per = strokes.map((stroke) => {
       const arr = [];
@@ -50,7 +52,36 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
     doneRef.current = false;
   }, [glyph, strokes, resetKey]);
 
-  // render loop (DPR-aware)
+  // hard-mode shape check (compares freehand drawing to the glyph)
+  const check = () => {
+    const per = samplesRef.current;
+    const { pad, bw, bh } = geomRef.current;
+    if (!per || !bw) return false;
+    const targets = [];
+    for (const s of per) for (const p of s) targets.push({ x: pad + p.nx * bw, y: pad + p.ny * bh });
+    const ink = [];
+    for (const path of inkRef.current) for (const p of path) ink.push(p);
+    if (ink.length < 8 || !targets.length) return false;
+    const R = Math.min(bw, bh) * 0.16;     // generous tolerance for free draw
+    const R2 = R * R;
+    // coverage: targets near some ink point
+    let cov = 0;
+    for (const tp of targets) {
+      for (const ip of ink) { if ((tp.x - ip.x) ** 2 + (tp.y - ip.y) ** 2 <= R2) { cov++; break; } }
+    }
+    // precision: ink near some target (penalises scribbling elsewhere)
+    let prec = 0;
+    for (const ip of ink) {
+      for (const tp of targets) { if ((tp.x - ip.x) ** 2 + (tp.y - ip.y) ** 2 <= R2) { prec++; break; } }
+    }
+    const coverage = cov / targets.length;
+    const precision = prec / ink.length;
+    const ok = coverage >= 0.6 && precision >= 0.5;
+    if (ok && !doneRef.current) { doneRef.current = true; onCompleteRef.current?.(); }
+    return ok;
+  };
+  useImperativeHandle(ref, () => ({ check }), []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
@@ -74,40 +105,47 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
       const mx = (nx) => pad + nx * bw;
       const my = (ny) => pad + ny * bh;
       const big = Math.min(cw, ch);
+      const lv = levelRef.current;
 
       ctx.clearRect(0, 0, cw, ch);
       ctx.fillStyle = "#fbfdff"; ctx.fillRect(0, 0, cw, ch);
 
-      // light guide body
-      ctx.save();
-      ctx.lineCap = "round"; ctx.lineJoin = "round";
-      ctx.strokeStyle = "#e6edf6"; ctx.lineWidth = big * 0.1;
-      for (const stroke of strokes) {
-        ctx.beginPath(); ctx.moveTo(mx(stroke[0][0]), my(stroke[0][1]));
-        for (let i = 1; i < stroke.length; i++) ctx.lineTo(mx(stroke[i][0]), my(stroke[i][1]));
-        ctx.stroke();
+      // EASY: thick light guide body
+      if (lv === "easy") {
+        ctx.save();
+        ctx.lineCap = "round"; ctx.lineJoin = "round";
+        ctx.strokeStyle = "#e6edf6"; ctx.lineWidth = big * 0.1;
+        for (const stroke of strokes) {
+          ctx.beginPath(); ctx.moveTo(mx(stroke[0][0]), my(stroke[0][1]));
+          for (let i = 1; i < stroke.length; i++) ctx.lineTo(mx(stroke[i][0]), my(stroke[i][1]));
+          ctx.stroke();
+        }
+        ctx.restore();
       }
-      ctx.restore();
 
-      // dotted centreline
-      ctx.save();
-      ctx.lineCap = "round"; ctx.setLineDash([1, 13]); ctx.lineWidth = big * 0.022;
-      ctx.strokeStyle = "#9fb3cd";
-      for (const stroke of strokes) {
-        ctx.beginPath(); ctx.moveTo(mx(stroke[0][0]), my(stroke[0][1]));
-        for (let i = 1; i < stroke.length; i++) ctx.lineTo(mx(stroke[i][0]), my(stroke[i][1]));
-        ctx.stroke();
+      // EASY + MEDIUM: dotted centreline (medium fainter/thinner)
+      if (lv === "easy" || lv === "medium") {
+        ctx.save();
+        ctx.lineCap = "round";
+        ctx.setLineDash([1, lv === "medium" ? 16 : 13]);
+        ctx.lineWidth = big * (lv === "medium" ? 0.016 : 0.022);
+        ctx.strokeStyle = lv === "medium" ? "#c2cedd" : "#9fb3cd";
+        for (const stroke of strokes) {
+          ctx.beginPath(); ctx.moveTo(mx(stroke[0][0]), my(stroke[0][1]));
+          for (let i = 1; i < stroke.length; i++) ctx.lineTo(mx(stroke[i][0]), my(stroke[i][1]));
+          ctx.stroke();
+        }
+        ctx.restore();
       }
-      ctx.restore();
 
-      // covered-so-far (green), per stroke up to its progress
-      const per = samplesRef.current, prog = progRef.current;
-      if (per && prog) {
-        ctx.fillStyle = "rgba(34,197,94,0.95)";
-        for (let si = 0; si < per.length; si++) {
-          for (let i = 0; i < prog[si]; i++) {
-            ctx.beginPath(); ctx.arc(mx(per[si][i].nx), my(per[si][i].ny), big * 0.013, 0, Math.PI * 2); ctx.fill();
-          }
+      // EASY: green progress feedback
+      if (lv === "easy") {
+        const per = samplesRef.current, prog = progRef.current;
+        if (per && prog) {
+          ctx.fillStyle = "rgba(34,197,94,0.95)";
+          for (let si = 0; si < per.length; si++)
+            for (let i = 0; i < prog[si]; i++)
+              { ctx.beginPath(); ctx.arc(mx(per[si][i].nx), my(per[si][i].ny), big * 0.013, 0, Math.PI * 2); ctx.fill(); }
         }
       }
 
@@ -123,29 +161,31 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
       }
       ctx.restore();
 
-      // start dots (numbered) + direction arrows; pulse the active stroke's start
-      const activeSt = activeRef.current;
-      strokes.forEach((stroke, idx) => {
-        const s = stroke[0];
-        const done = progRef.current[idx] >= (samplesRef.current[idx]?.length || 0);
-        const r = big * 0.032;
-        ctx.fillStyle = done ? "#9ca3af" : (idx === activeSt ? "#f59e0b" : "#22c55e");
-        ctx.beginPath(); ctx.arc(mx(s[0]), my(s[1]), r, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = "#fff"; ctx.font = `bold ${r * 1.3}px sans-serif`;
-        ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.fillText(String(idx + 1), mx(s[0]), my(s[1]) + 0.5);
-        const a = stroke[stroke.length - 2], b = stroke[stroke.length - 1];
-        if (a && b) {
-          const ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
-          const tx = mx(b[0]), ty = my(b[1]); const sz = big * 0.04;
-          ctx.fillStyle = done ? "#9ca3af" : "#16a34a";
-          ctx.beginPath();
-          ctx.moveTo(tx, ty);
-          ctx.lineTo(tx - sz * Math.cos(ang - 0.5), ty - sz * Math.sin(ang - 0.5));
-          ctx.lineTo(tx - sz * Math.cos(ang + 0.5), ty - sz * Math.sin(ang + 0.5));
-          ctx.closePath(); ctx.fill();
-        }
-      });
+      // EASY + MEDIUM: numbered start dots + arrows
+      if (lv === "easy" || lv === "medium") {
+        const activeSt = activeRef.current;
+        strokes.forEach((stroke, idx) => {
+          const s = stroke[0];
+          const done = progRef.current[idx] >= (samplesRef.current[idx]?.length || 0);
+          const r = big * 0.032;
+          ctx.fillStyle = done ? "#9ca3af" : (idx === activeSt ? "#f59e0b" : "#22c55e");
+          ctx.beginPath(); ctx.arc(mx(s[0]), my(s[1]), r, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = "#fff"; ctx.font = `bold ${r * 1.3}px sans-serif`;
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.fillText(String(idx + 1), mx(s[0]), my(s[1]) + 0.5);
+          const a = stroke[stroke.length - 2], b = stroke[stroke.length - 1];
+          if (a && b) {
+            const ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
+            const tx = mx(b[0]), ty = my(b[1]); const sz = big * 0.04;
+            ctx.fillStyle = done ? "#9ca3af" : "#16a34a";
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(tx - sz * Math.cos(ang - 0.5), ty - sz * Math.sin(ang - 0.5));
+            ctx.lineTo(tx - sz * Math.cos(ang + 0.5), ty - sz * Math.sin(ang + 0.5));
+            ctx.closePath(); ctx.fill();
+          }
+        });
+      }
     };
     draw();
     return () => cancelAnimationFrame(raf);
@@ -156,13 +196,12 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   };
 
-  // advance the ordered frontier along the active stroke for movement a->b
   const advance = (a, b) => {
+    if (levelRef.current === "hard") return; // hard = free draw, checked on demand
     const per = samplesRef.current, prog = progRef.current;
     if (!per || !per.length) return;
     const { pad, bw, bh, hit } = geomRef.current;
-    let active = activeRef.current;
-    let moved = true;
+    let active = activeRef.current, moved = true;
     while (moved) {
       moved = false;
       if (active >= per.length) break;
@@ -176,10 +215,7 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
     activeRef.current = active;
     if (!doneRef.current) {
       let c = 0; for (const p of prog) c += p;
-      if (totalRef.current && c / totalRef.current >= DONE_RATIO) {
-        doneRef.current = true;
-        onCompleteRef.current?.();
-      }
+      if (totalRef.current && c / totalRef.current >= DONE_RATIO) { doneRef.current = true; onCompleteRef.current?.(); }
     }
   };
 
@@ -215,4 +251,6 @@ export default function TraceStage({ glyph, strokes, accent = "#3b82d6", resetKe
       <canvas ref={canvasRef} className={styles.canvas} onPointerDown={down} />
     </div>
   );
-}
+});
+
+export default TraceStage;
