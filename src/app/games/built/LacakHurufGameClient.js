@@ -38,7 +38,9 @@ export default function LacakHurufGameClient() {
   const [resetKey, setResetKey] = useState(0);
   const [celebrate, setCelebrate] = useState(false);
   const [fail, setFail] = useState(false);
+  const [reveal, setReveal] = useState(false);
   const advTimer = useRef(null);
+  const failTimer = useRef(null);
   const stageRef = useRef(null);
 
   const U = LETTERS[idx];
@@ -47,16 +49,16 @@ export default function LacakHurufGameClient() {
   const strokes = caseMode === "upper" ? STROKES_UPPER[U] : STROKES_LOWER[Lc];
   const word = (LETTER_WORDS[U] && LETTER_WORDS[U][language]) || LETTER_WORDS[U].id;
 
-  const reset = () => { setResetKey((k) => k + 1); setCelebrate(false); setFail(false); };
-  const openLetter = useCallback((i) => { clearTimeout(advTimer.current); setIdx(i); setCaseMode("upper"); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setScreen("trace"); }, []);
-  const goLetter = useCallback((n) => { clearTimeout(advTimer.current); setIdx((n + 26) % 26); setCaseMode("upper"); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); }, []);
+  const reset = () => { clearTimeout(failTimer.current); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setReveal(false); };
+  const openLetter = useCallback((i) => { clearTimeout(advTimer.current); setIdx(i); setCaseMode("upper"); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setReveal(false); setScreen("trace"); }, []);
+  const goLetter = useCallback((n) => { clearTimeout(advTimer.current); clearTimeout(failTimer.current); setIdx((n + 26) % 26); setCaseMode("upper"); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setReveal(false); }, []);
   const switchCase = (m) => { if (m !== caseMode) { setCaseMode(m); reset(); } };
   const switchLevel = (m) => { if (m !== level) { setLevel(m); reset(); } };
 
   const onComplete = useCallback(() => {
     setHasChanges(true);
     setCelebrate(true);
-    setFail(false);
+    setFail(false); setReveal(false);
     speak(glyph, language);
     clearTimeout(advTimer.current);
     if (level !== "hard") {
@@ -68,14 +70,25 @@ export default function LacakHurufGameClient() {
 
   const onCheck = () => {
     const ok = stageRef.current?.check();
-    if (!ok) { setFail(true); setTimeout(() => setFail(false), 1400); }
+    if (!ok) {
+      setFail(true); setReveal(true);
+      clearTimeout(failTimer.current);
+      failTimer.current = setTimeout(() => { setFail(false); setReveal(false); }, 2400);
+    }
   };
 
   if (screen === "menu") {
     return (
       <div className={styles.menuWrap}>
         <h1 className={styles.menuTitle}>✏️ {t("Pilih Huruf", "Pick a Letter")}</h1>
-        <p className={styles.menuSub}>{t("Ketuk huruf untuk mulai menulis!", "Tap a letter to start writing!")}</p>
+        <p className={styles.menuSub}>{t("Pilih tingkat lalu ketuk huruf!", "Pick a level, then tap a letter!")}</p>
+        <div className={styles.levelTabs} style={{ justifyContent: "center", marginBottom: 14 }}>
+          {LEVELS.map((lv) => (
+            <button key={lv.key} className={`${styles.levelTab} ${level === lv.key ? styles.levelActive : ""}`} onClick={() => setLevel(lv.key)}>
+              {lv.icon} {t(lv.id, lv.en)}
+            </button>
+          ))}
+        </div>
         <div className={styles.letterGrid}>
           {LETTERS.map((c, i) => {
             const w = (LETTER_WORDS[c] && LETTER_WORDS[c][language]) || LETTER_WORDS[c].id;
@@ -119,9 +132,9 @@ export default function LacakHurufGameClient() {
       </div>
 
       <div className={styles.stageWrap}>
-        <TraceStage ref={stageRef} glyph={glyph} strokes={strokes} accent="#3b82d6" level={level} resetKey={`${U}-${caseMode}-${level}-${resetKey}`} onComplete={onComplete} />
+        <TraceStage ref={stageRef} glyph={glyph} strokes={strokes} accent="#3b82d6" level={level} reveal={reveal} resetKey={`${U}-${caseMode}-${level}-${resetKey}`} onComplete={onComplete} />
         {celebrate && <div className={styles.celebrate}>⭐ {t("Bagus!", "Great!")}</div>}
-        {fail && <div className={`${styles.celebrate} ${styles.failMsg}`}>🤔 {t("Coba lagi ya!", "Try again!")}</div>}
+        {fail && <div className={styles.failBanner}>🤔 {t("Begini huruf yang benar — coba lagi!", "Here's the correct letter — try again!")}</div>}
       </div>
 
       <p className={styles.hint}>

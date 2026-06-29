@@ -37,6 +37,8 @@ export default function LacakAngkaGameClient() {
   const [resetKey, setResetKey] = useState(0);
   const [celebrate, setCelebrate] = useState(false);
   const [fail, setFail] = useState(false);
+  const [reveal, setReveal] = useState(false);
+  const failTimer = useRef(null);
   const stageRef = useRef(null);
 
   const D = DIGITS[idx];
@@ -45,19 +47,33 @@ export default function LacakAngkaGameClient() {
   const word = language === "id" ? info.id : info.en;
   const count = parseInt(D, 10);
 
-  const reset = () => { setResetKey((k) => k + 1); setCelebrate(false); setFail(false); };
-  const openDigit = useCallback((i) => { setIdx(i); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setScreen("trace"); }, []);
-  const goDigit = useCallback((n) => { setIdx((n + 10) % 10); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); }, []);
+  const reset = () => { clearTimeout(failTimer.current); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setReveal(false); };
+  const openDigit = useCallback((i) => { setIdx(i); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setReveal(false); setScreen("trace"); }, []);
+  const goDigit = useCallback((n) => { clearTimeout(failTimer.current); setIdx((n + 10) % 10); setResetKey((k) => k + 1); setCelebrate(false); setFail(false); setReveal(false); }, []);
   const switchLevel = (m) => { if (m !== level) { setLevel(m); reset(); } };
 
-  const onComplete = useCallback(() => { setHasChanges(true); setCelebrate(true); setFail(false); speak(word, language); }, [word, language, setHasChanges]);
-  const onCheck = () => { const ok = stageRef.current?.check(); if (!ok) { setFail(true); setTimeout(() => setFail(false), 1400); } };
+  const onComplete = useCallback(() => { setHasChanges(true); setCelebrate(true); setFail(false); setReveal(false); speak(word, language); }, [word, language, setHasChanges]);
+  const onCheck = () => {
+    const ok = stageRef.current?.check();
+    if (!ok) {
+      setFail(true); setReveal(true);
+      clearTimeout(failTimer.current);
+      failTimer.current = setTimeout(() => { setFail(false); setReveal(false); }, 2400);
+    }
+  };
 
   if (screen === "menu") {
     return (
       <div className={styles.menuWrap}>
         <h1 className={styles.menuTitle}>🔢 {t("Pilih Angka", "Pick a Number")}</h1>
-        <p className={styles.menuSub}>{t("Ketuk angka untuk mulai menulis!", "Tap a number to start writing!")}</p>
+        <p className={styles.menuSub}>{t("Pilih tingkat lalu ketuk angka!", "Pick a level, then tap a number!")}</p>
+        <div className={styles.levelTabs} style={{ justifyContent: "center", marginBottom: 14 }}>
+          {LEVELS.map((lv) => (
+            <button key={lv.key} className={`${styles.levelTab} ${level === lv.key ? styles.levelActive : ""}`} onClick={() => setLevel(lv.key)}>
+              {lv.icon} {t(lv.id, lv.en)}
+            </button>
+          ))}
+        </div>
         <div className={styles.letterGrid}>
           {DIGITS.map((c, i) => {
             const inf = NUMBER_WORDS[c];
@@ -96,9 +112,9 @@ export default function LacakAngkaGameClient() {
       </div>
 
       <div className={styles.stageWrap}>
-        <TraceStage ref={stageRef} glyph={D} strokes={strokes} accent="#16a34a" level={level} resetKey={`${D}-${level}-${resetKey}`} onComplete={onComplete} />
+        <TraceStage ref={stageRef} glyph={D} strokes={strokes} accent="#16a34a" level={level} reveal={reveal} resetKey={`${D}-${level}-${resetKey}`} onComplete={onComplete} />
         {celebrate && <div className={styles.celebrate}>⭐ {t("Bagus!", "Great!")}</div>}
-        {fail && <div className={`${styles.celebrate} ${styles.failMsg}`}>🤔 {t("Coba lagi ya!", "Try again!")}</div>}
+        {fail && <div className={styles.failBanner}>🤔 {t("Begini angka yang benar — coba lagi!", "Here's the correct number — try again!")}</div>}
       </div>
 
       <p className={styles.hint}>

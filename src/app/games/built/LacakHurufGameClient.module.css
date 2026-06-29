@@ -96,6 +96,13 @@
 }
 .checkBtn:active { transform: translateY(2px); box-shadow: 0 1px 0 #117038; }
 .failMsg { color: #d97706 !important; }
+.failBanner {
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,.94); border: 2px solid #fcd34d; border-radius: 12px;
+  padding: 6px 14px; font-weight: 800; font-size: .82rem; color: #b45309;
+  white-space: nowrap; z-index: 5; box-shadow: 0 3px 10px rgba(0,0,0,.12);
+  pointer-events: none; animation: pop .25s ease;
+}
 
 .stageWrap { position: relative; width: 100%; max-width: 320px; }
 .celebrate {

@@ -3,8 +3,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import styles from "./TraceStage.module.css";
 
-const DONE_RATIO = 0.88;    // easy/medium: ordered fraction of path to finish
-
 function distToSeg(px, py, ax, ay, bx, by) {
   const vx = bx - ax, vy = by - ay;
   const len2 = vx * vx + vy * vy || 1;
@@ -15,7 +13,7 @@ function distToSeg(px, py, ax, ay, bx, by) {
 }
 
 const TraceStage = forwardRef(function TraceStage(
-  { glyph, strokes, accent = "#3b82d6", resetKey = 0, level = "easy", onComplete },
+  { glyph, strokes, accent = "#3b82d6", resetKey = 0, level = "easy", reveal = false, onComplete },
   ref
 ) {
   const canvasRef = useRef(null);
@@ -28,6 +26,7 @@ const TraceStage = forwardRef(function TraceStage(
   const doneRef = useRef(false);
   const geomRef = useRef({ pad: 0, bw: 1, bh: 1, hit: 24 });
   const levelRef = useRef(level); levelRef.current = level;
+  const revealRef = useRef(reveal); revealRef.current = reveal;
   const onCompleteRef = useRef(onComplete); onCompleteRef.current = onComplete;
 
   useEffect(() => {
@@ -76,7 +75,7 @@ const TraceStage = forwardRef(function TraceStage(
     }
     const coverage = cov / targets.length;
     const precision = prec / ink.length;
-    const ok = coverage >= 0.6 && precision >= 0.5;
+    const ok = coverage >= 0.65 && precision >= 0.55;
     if (ok && !doneRef.current) { doneRef.current = true; onCompleteRef.current?.(); }
     return ok;
   };
@@ -106,12 +105,15 @@ const TraceStage = forwardRef(function TraceStage(
       const my = (ny) => pad + ny * bh;
       const big = Math.min(cw, ch);
       const lv = levelRef.current;
+      const showBody = lv === "easy" || revealRef.current;
+      const showDots = lv === "easy" || lv === "medium" || revealRef.current;
+      const showGuides = lv === "easy" || lv === "medium" || revealRef.current;
 
       ctx.clearRect(0, 0, cw, ch);
       ctx.fillStyle = "#fbfdff"; ctx.fillRect(0, 0, cw, ch);
 
-      // EASY: thick light guide body
-      if (lv === "easy") {
+      // thick light guide body
+      if (showBody) {
         ctx.save();
         ctx.lineCap = "round"; ctx.lineJoin = "round";
         ctx.strokeStyle = "#e6edf6"; ctx.lineWidth = big * 0.1;
@@ -123,13 +125,14 @@ const TraceStage = forwardRef(function TraceStage(
         ctx.restore();
       }
 
-      // EASY + MEDIUM: dotted centreline (medium fainter/thinner)
-      if (lv === "easy" || lv === "medium") {
+      // dotted centreline
+      if (showDots) {
+        const faint = lv === "medium" && !revealRef.current;
         ctx.save();
         ctx.lineCap = "round";
-        ctx.setLineDash([1, lv === "medium" ? 16 : 13]);
-        ctx.lineWidth = big * (lv === "medium" ? 0.016 : 0.022);
-        ctx.strokeStyle = lv === "medium" ? "#c2cedd" : "#9fb3cd";
+        ctx.setLineDash([1, faint ? 16 : 13]);
+        ctx.lineWidth = big * (faint ? 0.016 : 0.022);
+        ctx.strokeStyle = faint ? "#c2cedd" : "#9fb3cd";
         for (const stroke of strokes) {
           ctx.beginPath(); ctx.moveTo(mx(stroke[0][0]), my(stroke[0][1]));
           for (let i = 1; i < stroke.length; i++) ctx.lineTo(mx(stroke[i][0]), my(stroke[i][1]));
@@ -138,8 +141,8 @@ const TraceStage = forwardRef(function TraceStage(
         ctx.restore();
       }
 
-      // EASY: green progress feedback
-      if (lv === "easy") {
+      // green progress feedback (only while actually tracing easy/medium)
+      if ((lv === "easy" || lv === "medium") && !revealRef.current) {
         const per = samplesRef.current, prog = progRef.current;
         if (per && prog) {
           ctx.fillStyle = "rgba(34,197,94,0.95)";
@@ -161,8 +164,8 @@ const TraceStage = forwardRef(function TraceStage(
       }
       ctx.restore();
 
-      // EASY + MEDIUM: numbered start dots + arrows
-      if (lv === "easy" || lv === "medium") {
+      // numbered start dots + arrows (easy/medium, or when revealing answer)
+      if (showGuides) {
         const activeSt = activeRef.current;
         strokes.forEach((stroke, idx) => {
           const s = stroke[0];
@@ -201,21 +204,34 @@ const TraceStage = forwardRef(function TraceStage(
     const per = samplesRef.current, prog = progRef.current;
     if (!per || !per.length) return;
     const { pad, bw, bh, hit } = geomRef.current;
-    let active = activeRef.current, moved = true;
-    while (moved) {
-      moved = false;
-      if (active >= per.length) break;
-      const sArr = per[active];
-      if (prog[active] >= sArr.length) { active++; moved = true; continue; }
-      const s = sArr[prog[active]];
-      const sx = pad + s.nx * bw, sy = pad + s.ny * bh;
-      const d = b ? distToSeg(sx, sy, a.x, a.y, b.x, b.y) : Math.hypot(sx - a.x, sy - a.y);
-      if (d <= hit) { prog[active]++; moved = true; }
+    let active = activeRef.current;
+    const px = (s) => ({ x: pad + s.nx * bw, y: pad + s.ny * bh });
+    if (!b) {
+      // tap (pointer down): advance at most ONE sample so a tap can't fill a stroke
+      while (active < per.length && prog[active] >= per[active].length) active++;
+      if (active < per.length) {
+        const s = px(per[active][prog[active]]);
+        if (Math.hypot(s.x - a.x, s.y - a.y) <= hit) prog[active]++;
+      }
+    } else {
+      // drag: consume frontier samples the segment passes near, in order
+      let moved = true;
+      while (moved) {
+        moved = false;
+        if (active >= per.length) break;
+        if (prog[active] >= per[active].length) { active++; moved = true; continue; }
+        const s = px(per[active][prog[active]]);
+        if (distToSeg(s.x, s.y, a.x, a.y, b.x, b.y) <= hit) { prog[active]++; moved = true; }
+      }
     }
     activeRef.current = active;
+    // complete only when EVERY stroke has been traced to (near) its end, in order
     if (!doneRef.current) {
-      let c = 0; for (const p of prog) c += p;
-      if (totalRef.current && c / totalRef.current >= DONE_RATIO) { doneRef.current = true; onCompleteRef.current?.(); }
+      let complete = per.length > 0;
+      for (let i = 0; i < per.length; i++) {
+        if (prog[i] < per[i].length - 1) { complete = false; break; }
+      }
+      if (complete) { doneRef.current = true; onCompleteRef.current?.(); }
     }
   };
 
