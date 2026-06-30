@@ -488,17 +488,19 @@ export default function LudoGameClient() {
         <button className={styles.menuPill} onClick={() => setScreen("intro")}>🔄 {t("Baru", "New")}</button>
       </div>
 
-      <div className={styles.boardWrap}>
-        <canvas ref={canvasRef} className={styles.canvas} onPointerDown={onCanvasPointer} />
-      </div>
+      <div className={styles.playArea}>
+        <div className={styles.boardWrap}>
+          <canvas ref={canvasRef} className={styles.canvas} onPointerDown={onCanvasPointer} />
+        </div>
 
-      <div className={styles.controls}>
-        <Dice value={diceRef.current} rolling={rollingRef.current} onRoll={roll} disabled={!myTurn || phaseRef.current !== "roll"} />
-        <div className={styles.rollHint}>
-          {phaseRef.current === "rolling" ? t("Mengocok…", "Rolling…")
-            : phaseRef.current === "move" && myTurn ? t("Ketuk bidak yang menyala →", "Tap a glowing token →")
-            : myTurn ? t("Ketuk dadu untuk lempar!", "Tap the dice to roll!")
-            : t("Menunggu…", "Waiting…")}
+        <div className={styles.controls}>
+          <Dice value={diceRef.current} rolling={rollingRef.current} onRoll={roll} disabled={!myTurn || phaseRef.current !== "roll"} />
+          <div className={styles.rollHint}>
+            {phaseRef.current === "rolling" ? t("Mengocok…", "Rolling…")
+              : phaseRef.current === "move" && myTurn ? t("Ketuk bidak yang menyala", "Tap a glowing token")
+              : myTurn ? t("Ketuk dadu untuk lempar!", "Tap the dice to roll!")
+              : t("Menunggu…", "Waiting…")}
+          </div>
         </div>
       </div>
     </div>

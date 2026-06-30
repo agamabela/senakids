@@ -117,10 +117,18 @@
 .menuPill:hover { background: #f2f6fc; }
 
 .boardWrap {
-  width: 100%; max-width: 600px; border-radius: 18px; overflow: hidden;
+  width: min(600px, 60vmin); border-radius: 18px; overflow: hidden;
   box-shadow: 0 6px 22px rgba(0, 0, 0, .2); background: #fff; padding: 6px;
 }
 .canvas { display: block; width: 100%; height: auto; border-radius: 12px; }
 
-.controls { display: flex; align-items: center; gap: 16px; width: 100%; max-width: 600px; justify-content: center; }
-.rollHint { font-weight: 800; color: #6b4f1d; font-size: .95rem; }
+.playArea {
+  display: flex; align-items: center; justify-content: center;
+  gap: 18px; width: 100%;
+}
+
+.controls {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  flex-shrink: 0; width: auto; max-width: 150px;
+}
+.rollHint { font-weight: 800; color: #6b4f1d; font-size: .95rem; text-align: center; }

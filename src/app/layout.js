@@ -2,6 +2,7 @@ import { Fredoka, Nunito } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { SessionProvider } from "@/components/SessionProvider";
+import AmbientSound from "@/components/AmbientSound";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }) {
               <main className="main-content">
                 {children}
               </main>
+              <AmbientSound />
             </LanguageProvider>
           </div>
         </SessionProvider>

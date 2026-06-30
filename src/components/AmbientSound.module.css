@@ -1,0 +1,35 @@
+.toggle {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 60;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: none;
+  background: #ffffff;
+  color: #8a8a8a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.2s, color 0.2s;
+}
+
+.toggle:hover { transform: scale(1.08); }
+
+.toggle.on {
+  background: linear-gradient(135deg, #8BA888, #6f9a6a);
+  color: #ffffff;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18); }
+  50% { box-shadow: 0 4px 22px rgba(139, 168, 136, 0.7); }
+}
+
+@media (max-width: 760px) {
+  .toggle { width: 44px; height: 44px; left: 12px; bottom: 12px; }
+}

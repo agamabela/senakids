@@ -5,7 +5,7 @@ import styles from "./DPad.module.css";
 /**
  * Floating D-pad anchored to the bottom-right corner.
  * Props:
- *  onUp / onDown / onLeft / onRight — click handlers
+ *  onUp / onDown / onLeft / onRight — handlers (fire once per press)
  *  onRotateLeft / onRotateRight     — optional, shown instead of left/right when provided (for 3D maze)
  *  upLabel / downLabel              — optional override for the up/down icons (e.g. "▲"/"▼")
  *  side  — "right" (default) | "left"
@@ -30,6 +30,14 @@ export default function DPad({
   const lLbl  = onRotateLeft  ? "↺" : leftLabel;
   const rLbl  = onRotateRight ? "↻" : rightLabel;
 
+  // Single pointer handler so each press triggers exactly once on both
+  // mouse and touch (avoids the touchstart + synthesized-click double fire
+  // that made games move two tiles per tap).
+  const press = (fn) => (e) => {
+    e.preventDefault();
+    fn?.();
+  };
+
   return (
     <div
       className={`${styles.dpad} ${side === "left" ? styles.left : styles.right}`}
@@ -38,9 +46,9 @@ export default function DPad({
       {/* Row: up */}
       <div className={styles.row}>
         <button
+          type="button"
           className={`${styles.btn} ${styles.btnUp}`}
-          onClick={onUp}
-          onTouchStart={(e) => { e.preventDefault(); onUp?.(); }}
+          onPointerDown={press(onUp)}
           aria-label="Atas / Maju"
         >
           {upLabel}
@@ -50,9 +58,9 @@ export default function DPad({
       {/* Row: left · centre · right */}
       <div className={styles.row}>
         <button
+          type="button"
           className={`${styles.btn} ${styles.btnLeft}`}
-          onClick={left}
-          onTouchStart={(e) => { e.preventDefault(); left?.(); }}
+          onPointerDown={press(left)}
           aria-label="Kiri"
         >
           {lLbl}
@@ -60,9 +68,9 @@ export default function DPad({
         {/* centre — action button (e.g. bomb) when onCenter is provided */}
         {onCenter ? (
           <button
+            type="button"
             className={`${styles.btn} ${styles.centerBtn}`}
-            onClick={onCenter}
-            onTouchStart={(e) => { e.preventDefault(); onCenter(); }}
+            onPointerDown={press(onCenter)}
             aria-label="Aksi"
           >
             {centerLabel}
@@ -71,9 +79,9 @@ export default function DPad({
           <div className={styles.centre} aria-hidden="true" />
         )}
         <button
+          type="button"
           className={`${styles.btn} ${styles.btnRight}`}
-          onClick={right}
-          onTouchStart={(e) => { e.preventDefault(); right?.(); }}
+          onPointerDown={press(right)}
           aria-label="Kanan"
         >
           {rLbl}
@@ -83,9 +91,9 @@ export default function DPad({
       {/* Row: down */}
       <div className={styles.row}>
         <button
+          type="button"
           className={`${styles.btn} ${styles.btnDown}`}
-          onClick={onDown}
-          onTouchStart={(e) => { e.preventDefault(); onDown?.(); }}
+          onPointerDown={press(onDown)}
           aria-label="Bawah / Mundur"
         >
           {downLabel}

@@ -34,7 +34,7 @@
 .pName { flex: 1; text-align: left; font-weight: 700; font-size: .9rem; color: var(--color-text); }
 .typeBtn { border: 1.5px solid var(--color-border); background: #fff; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: .82rem; cursor: pointer; color: var(--color-text); }
 .typeBtn:hover { background: var(--color-muted); }
-.rollHint { font-weight: 800; color: #5b21b6; font-size: .95rem; }
+.rollHint { font-weight: 800; color: #5b21b6; font-size: .95rem; text-align: center; }
 
 .btnPrimary, .btnGhost {
   padding: 13px 24px; border: none; border-radius: 12px;
@@ -90,8 +90,7 @@
 .menuPill:hover { background: #f2f6fc; }
 
 .boardWrap {
-  width: 100%;
-  max-width: 460px;
+  width: min(460px, 60vmin);
   aspect-ratio: 1 / 1;
   border-radius: 16px;
   overflow: hidden;
@@ -105,13 +104,22 @@
   touch-action: manipulation;
 }
 
-.controls {
+.playArea {
   display: flex;
   align-items: center;
-  gap: 14px;
-  width: 100%;
-  max-width: 460px;
   justify-content: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  width: auto;
+  max-width: 150px;
 }
 .die {
   width: 56px; height: 56px;

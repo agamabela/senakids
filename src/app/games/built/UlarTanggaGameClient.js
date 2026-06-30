@@ -657,16 +657,18 @@ export default function UlarTanggaGameClient() {
         <button className={styles.menuPill} onClick={() => setScreen("setup")}>🔄 {t("Baru", "New")}</button>
       </div>
 
-      <div className={styles.boardWrap}>
-        <canvas ref={canvasRef} className={styles.canvas} />
-      </div>
+      <div className={styles.playArea}>
+        <div className={styles.boardWrap}>
+          <canvas ref={canvasRef} className={styles.canvas} />
+        </div>
 
-      <div className={styles.controls}>
-        <Dice value={diceRef.current} rolling={rollingRef.current} onRoll={roll} disabled={!canRoll} />
-        <div className={styles.rollHint}>
-          {phaseRef.current === "rolling" ? t("Mengocok…", "Rolling…")
-            : canRoll ? t("Ketuk dadu untuk lempar!", "Tap the dice to roll!")
-            : t("Menunggu…", "Waiting…")}
+        <div className={styles.controls}>
+          <Dice value={diceRef.current} rolling={rollingRef.current} onRoll={roll} disabled={!canRoll} />
+          <div className={styles.rollHint}>
+            {phaseRef.current === "rolling" ? t("Mengocok…", "Rolling…")
+              : canRoll ? t("Ketuk dadu untuk lempar!", "Tap the dice to roll!")
+              : t("Menunggu…", "Waiting…")}
+          </div>
         </div>
       </div>
     </div>
