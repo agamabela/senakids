@@ -117,18 +117,25 @@
 .menuPill:hover { background: #f2f6fc; }
 
 .boardWrap {
-  width: min(600px, 60vmin); border-radius: 18px; overflow: hidden;
+  width: min(640px, calc(100dvh - 260px), calc(100vw - 150px)); flex-shrink: 0; border-radius: 18px; overflow: hidden;
   box-shadow: 0 6px 22px rgba(0, 0, 0, .2); background: #fff; padding: 6px;
 }
 .canvas { display: block; width: 100%; height: auto; border-radius: 12px; }
 
 .playArea {
   display: flex; flex-wrap: nowrap; align-items: center; justify-content: center;
-  gap: 18px; width: 100%;
+  gap: 14px; width: 100%;
 }
 
 .controls {
   display: flex; flex-direction: column; align-items: center; gap: 12px;
-  flex-shrink: 0; width: auto; max-width: 150px;
+  flex-shrink: 0; width: auto; max-width: 110px;
 }
 .rollHint { font-weight: 800; color: #6b4f1d; font-size: .95rem; text-align: center; }
+
+@media (max-width: 760px) {
+  .boardWrap { width: min(calc(100dvh - 200px), calc(100vw - 120px)); }
+  .controls { max-width: 76px; gap: 8px; }
+  .controls button { width: 52px !important; height: 52px !important; }
+  .rollHint { font-size: .78rem; }
+}

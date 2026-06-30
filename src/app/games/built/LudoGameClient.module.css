@@ -90,7 +90,8 @@
 .menuPill:hover { background: #f2f6fc; }
 
 .boardWrap {
-  width: min(460px, 60vmin);
+  width: min(600px, calc(100dvh - 260px), calc(100vw - 150px));
+  flex-shrink: 0;
   aspect-ratio: 1 / 1;
   border-radius: 16px;
   overflow: hidden;
@@ -109,7 +110,7 @@
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 14px;
   width: 100%;
 }
 
@@ -120,7 +121,13 @@
   gap: 12px;
   flex-shrink: 0;
   width: auto;
-  max-width: 150px;
+  max-width: 110px;
+}
+
+@media (max-width: 760px) {
+  .boardWrap { width: min(calc(100dvh - 200px), calc(100vw - 120px)); }
+  .controls { max-width: 76px; gap: 8px; }
+  .controls button { width: 52px !important; height: 52px !important; }
 }
 .die {
   width: 56px; height: 56px;
