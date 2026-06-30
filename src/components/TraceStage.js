@@ -107,7 +107,7 @@ const TraceStage = forwardRef(function TraceStage(
       const lv = levelRef.current;
       const showBody = lv === "easy" || revealRef.current;
       const showDots = lv === "easy" || lv === "medium" || revealRef.current;
-      const showGuides = lv === "easy" || lv === "medium" || revealRef.current;
+      const showGuides = true; // always show numbered start dots + arrows so kids know where to begin
 
       ctx.clearRect(0, 0, cw, ch);
       ctx.fillStyle = "#fbfdff"; ctx.fillRect(0, 0, cw, ch);
@@ -164,18 +164,28 @@ const TraceStage = forwardRef(function TraceStage(
       }
       ctx.restore();
 
-      // numbered start dots + arrows (easy/medium, or when revealing answer)
+      // numbered start dots + arrows — shown on every level so kids always
+      // know where to start each stroke and in which direction
       if (showGuides) {
+        const now = Date.now();
         const activeSt = activeRef.current;
         strokes.forEach((stroke, idx) => {
           const s = stroke[0];
           const done = progRef.current[idx] >= (samplesRef.current[idx]?.length || 0);
-          const r = big * 0.032;
-          ctx.fillStyle = done ? "#9ca3af" : (idx === activeSt ? "#f59e0b" : "#22c55e");
-          ctx.beginPath(); ctx.arc(mx(s[0]), my(s[1]), r, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = "#fff"; ctx.font = `bold ${r * 1.3}px sans-serif`;
-          ctx.textAlign = "center"; ctx.textBaseline = "middle";
-          ctx.fillText(String(idx + 1), mx(s[0]), my(s[1]) + 0.5);
+          const isActive = idx === activeSt && !done;
+          const baseR = big * 0.036;
+
+          // pulsing ring to highlight the stroke you should start now
+          if (isActive) {
+            const ring = baseR * (1.7 + Math.sin(now * 0.006) * 0.28);
+            ctx.beginPath();
+            ctx.arc(mx(s[0]), my(s[1]), ring, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(245,158,11,0.55)";
+            ctx.lineWidth = Math.max(2, big * 0.012);
+            ctx.stroke();
+          }
+
+          // direction arrow at the end of the stroke
           const a = stroke[stroke.length - 2], b = stroke[stroke.length - 1];
           if (a && b) {
             const ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
@@ -187,6 +197,18 @@ const TraceStage = forwardRef(function TraceStage(
             ctx.lineTo(tx - sz * Math.cos(ang + 0.5), ty - sz * Math.sin(ang + 0.5));
             ctx.closePath(); ctx.fill();
           }
+
+          // the numbered start dot (drawn on top so it's never hidden)
+          const r = isActive ? baseR * (1.04 + Math.sin(now * 0.006) * 0.1) : baseR;
+          ctx.fillStyle = done ? "#9ca3af" : (isActive ? "#f59e0b" : "#22c55e");
+          ctx.beginPath(); ctx.arc(mx(s[0]), my(s[1]), r, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = "rgba(255,255,255,0.95)";
+          ctx.lineWidth = Math.max(1.5, big * 0.006);
+          ctx.stroke();
+          ctx.fillStyle = "#fff";
+          ctx.font = `bold ${baseR * 1.35}px sans-serif`;
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.fillText(String(idx + 1), mx(s[0]), my(s[1]) + 0.5);
         });
       }
     };

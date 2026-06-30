@@ -139,7 +139,7 @@ export default function LacakHurufGameClient() {
 
       <p className={styles.hint}>
         {level === "hard"
-          ? t("Tulis hurufnya sendiri, lalu tekan Periksa!", "Write the letter yourself, then press Check!")
+          ? t("Mulai dari titik 1, tulis hurufnya, lalu tekan Periksa!", "Start at dot 1, write the letter, then press Check!")
           : level === "medium"
           ? t("Ikuti garis tipis dari titik oranye!", "Follow the thin line from the orange dot!")
           : t("Mulai dari titik oranye, ikuti panah & titik-titik!", "Start at the orange dot, follow the arrow & dots!")}

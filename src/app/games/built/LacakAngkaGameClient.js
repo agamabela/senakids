@@ -119,7 +119,7 @@ export default function LacakAngkaGameClient() {
 
       <p className={styles.hint}>
         {level === "hard"
-          ? t("Tulis angkanya sendiri, lalu tekan Periksa!", "Write the number yourself, then press Check!")
+          ? t("Mulai dari titik 1, tulis angkanya, lalu tekan Periksa!", "Start at dot 1, write the number, then press Check!")
           : level === "medium"
           ? t("Ikuti garis tipis dari titik oranye!", "Follow the thin line from the orange dot!")
           : t("Mulai dari titik oranye, ikuti panah & titik-titik!", "Start at the orange dot, follow the arrow & dots!")}
