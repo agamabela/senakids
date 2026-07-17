@@ -1,29 +1,19 @@
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "@/lib/auth";
 
-const SECRET =
-  process.env.NEXTAUTH_SECRET ||
-  process.env.AUTH_SECRET ||
-  "senakids-fallback-secret-change-me-in-env-vars-2024";
-
-export async function middleware(req) {
+export default auth((req) => {
   const { pathname } = req.nextUrl;
 
-  // Protect admin routes
   if (pathname.startsWith("/admin")) {
-    const token = await getToken({ req, secret: SECRET });
-
-    if (!token) {
-      return NextResponse.redirect(new URL("/login?callbackUrl=/admin", req.url));
-    }
-
-    if (token.role !== "admin") {
-      return NextResponse.redirect(new URL("/games", req.url));
+    if (!req.auth?.user || req.auth.user.role !== "admin") {
+      const signInUrl = new URL("/login", req.url);
+      signInUrl.searchParams.set("callbackUrl", req.nextUrl.href);
+      return NextResponse.redirect(signInUrl);
     }
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: ["/admin/:path*"],

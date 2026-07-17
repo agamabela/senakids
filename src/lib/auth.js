@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
+import { ensureDefaultAdminUser } from "@/lib/admin-auth.mjs";
 import bcrypt from "bcryptjs";
 
 export const authOptions = {
@@ -16,35 +17,50 @@ export const authOptions = {
           throw new Error("Email dan password harus diisi");
         }
 
-        let user;
+        const normalizedEmail = credentials.email.trim().toLowerCase();
+        const configuredAdminEmail = (process.env.ADMIN_EMAIL || "admin@senakids.com").trim().toLowerCase();
+
         try {
-          user = await prisma.user.findUnique({
-            where: { email: credentials.email }
+          if (normalizedEmail === configuredAdminEmail) {
+            await ensureDefaultAdminUser({
+              prisma,
+              bcrypt,
+              email: configuredAdminEmail,
+              password: credentials.password,
+            });
+          }
+
+          const user = await prisma.user.findUnique({
+            where: { email: normalizedEmail }
           });
+
+          if (!user || !user.password) {
+            throw new Error("Email atau password salah");
+          }
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
+          if (!isPasswordValid) {
+            throw new Error("Email atau password salah");
+          }
+
+          return {
+            id: user.id.toString(),
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
         } catch (err) {
+          if (err instanceof Error && err.message === "Email atau password salah") {
+            throw err;
+          }
+
           console.error("DB error during login:", err);
           throw new Error("Tidak dapat terhubung ke database. Coba lagi.");
         }
-
-        if (!user || !user.password) {
-          throw new Error("Email atau password salah");
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          throw new Error("Email atau password salah");
-        }
-
-        return {
-          id: user.id.toString(),
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
       }
     })
   ],
