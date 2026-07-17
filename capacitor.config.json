@@ -3,7 +3,7 @@
   "appName": "Sena Kids",
   "webDir": "out",
   "server": {
-    "url": "https://senakids.vercel.app",
+    "url": "https://senakids-ten.vercel.app",
     "cleartext": false,
     "androidScheme": "https"
   },

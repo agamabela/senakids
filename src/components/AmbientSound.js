@@ -4,161 +4,105 @@ import { useEffect, useRef, useState } from "react";
 import { Music, VolumeX } from "lucide-react";
 import styles from "./AmbientSound.module.css";
 
+// "Happy Music for Playtime ... 1 Hour Happy Upbeat Morning Music for Kids"
+const VIDEO_ID = "Ks1FSy95sOA";
+const VOLUME = 35;
 const KEY = "senakids-ambience";
 
+// Load the YouTube IFrame API once (shared promise).
+let apiPromise = null;
+function loadYouTubeAPI() {
+  if (apiPromise) return apiPromise;
+  apiPromise = new Promise((resolve) => {
+    if (typeof window === "undefined") return;
+    if (window.YT && window.YT.Player) return resolve(window.YT);
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { if (typeof prev === "function") prev(); resolve(window.YT); };
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+  });
+  return apiPromise;
+}
+
 /**
- * Gentle kids + nature background ambience, fully synthesized with the Web Audio
- * API (no audio files, no licensing concerns). Layers:
- *  - a soft warm chord pad that slowly swells
- *  - light filtered "wind"
- *  - occasional bird chirps
- *  - sparse, playful music-box notes (pentatonic)
- * Audio can only start after a user gesture, so it's controlled by a toggle.
+ * Looping kids background music for the whole app, played through a hidden
+ * YouTube IFrame player. Browsers block audio autoplay, so it's controlled by
+ * a floating toggle; the choice is remembered between visits.
  */
 export default function AmbientSound() {
   const [on, setOn] = useState(false);
-  const ref = useRef({});
+  const [ready, setReady] = useState(false);
+  const playerRef = useRef(null);
+  const hostRef = useRef(null);
+  const onRef = useRef(false);
+  onRef.current = on;
 
-  // load saved preference
+  // create the hidden player once
   useEffect(() => {
-    try { if (localStorage.getItem(KEY) === "on") setOn(true); } catch {}
+    let cancelled = false;
+    loadYouTubeAPI().then((YT) => {
+      if (cancelled || !YT || !hostRef.current || playerRef.current) return;
+      playerRef.current = new YT.Player(hostRef.current, {
+        height: "1",
+        width: "1",
+        videoId: VIDEO_ID,
+        playerVars: {
+          loop: 1,
+          playlist: VIDEO_ID, // required for single-video loop
+          controls: 0,
+          disablekb: 1,
+          playsinline: 1,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: (e) => {
+            try { e.target.setVolume(VOLUME); } catch {}
+            setReady(true);
+            // restore saved preference (will start on first gesture if blocked)
+            try { if (localStorage.getItem(KEY) === "on") setOn(true); } catch {}
+          },
+        },
+      });
+    });
+    return () => { cancelled = true; };
   }, []);
 
+  // play / pause when toggled (or once the player becomes ready)
   useEffect(() => {
+    const p = playerRef.current;
+    if (!p || !ready) return undefined;
     try { localStorage.setItem(KEY, on ? "on" : "off"); } catch {}
-    if (!on) { teardown(); return undefined; }
-
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return undefined;
-    const ctx = new AC();
-    const master = ctx.createGain();
-    master.gain.value = 0;
-    master.connect(ctx.destination);
-    master.gain.linearRampToValueAtTime(0.13, ctx.currentTime + 2.5);
-
-    // ── warm chord pad ──
-    const padGain = ctx.createGain();
-    padGain.gain.value = 0.16;
-    padGain.connect(master);
-    const chord = [196.0, 261.63, 329.63]; // G3 · C4 · E4
-    const padOsc = chord.map((f) => {
-      const o = ctx.createOscillator();
-      o.type = "triangle";
-      o.frequency.value = f;
-      const g = ctx.createGain();
-      g.gain.value = 0.33;
-      o.connect(g); g.connect(padGain);
-      o.start();
-      return o;
-    });
-    const swell = ctx.createOscillator();
-    swell.type = "sine";
-    swell.frequency.value = 0.06;
-    const swellGain = ctx.createGain();
-    swellGain.gain.value = 0.07;
-    swell.connect(swellGain); swellGain.connect(padGain.gain);
-    swell.start();
-
-    // ── soft wind (filtered noise) ──
-    const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-    const data = noiseBuf.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    const noise = ctx.createBufferSource();
-    noise.buffer = noiseBuf; noise.loop = true;
-    const lp = ctx.createBiquadFilter();
-    lp.type = "lowpass"; lp.frequency.value = 480;
-    const windGain = ctx.createGain();
-    windGain.gain.value = 0.04;
-    noise.connect(lp); lp.connect(windGain); windGain.connect(master);
-    noise.start();
-    const windLfo = ctx.createOscillator();
-    windLfo.frequency.value = 0.08;
-    const windLfoGain = ctx.createGain();
-    windLfoGain.gain.value = 0.025;
-    windLfo.connect(windLfoGain); windLfoGain.connect(windGain.gain);
-    windLfo.start();
-
-    // ── bird chirps ──
-    const chirp = () => {
-      const t0 = ctx.currentTime;
-      const n = 1 + Math.floor(Math.random() * 3);
-      for (let i = 0; i < n; i++) {
-        const start = t0 + i * 0.13;
-        const o = ctx.createOscillator();
-        o.type = "sine";
-        const f = 1900 + Math.random() * 1300;
-        o.frequency.setValueAtTime(f, start);
-        o.frequency.exponentialRampToValueAtTime(f * 0.62, start + 0.12);
-        const g = ctx.createGain();
-        g.gain.setValueAtTime(0, start);
-        g.gain.linearRampToValueAtTime(0.05, start + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.001, start + 0.16);
-        o.connect(g); g.connect(master);
-        o.start(start); o.stop(start + 0.22);
-      }
-    };
-
-    // ── playful music-box note (pentatonic) ──
-    const penta = [523.25, 587.33, 659.25, 783.99, 880.0]; // C5 D5 E5 G5 A5
-    const note = () => {
-      const t0 = ctx.currentTime;
-      const f = penta[Math.floor(Math.random() * penta.length)];
-      const o = ctx.createOscillator();
-      o.type = "triangle"; o.frequency.value = f;
-      const o2 = ctx.createOscillator();
-      o2.type = "sine"; o2.frequency.value = f * 2;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0, t0);
-      g.gain.linearRampToValueAtTime(0.05, t0 + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.001, t0 + 1.4);
-      const g2 = ctx.createGain(); g2.gain.value = 0.3; g2.connect(g);
-      o.connect(g); o2.connect(g2); g.connect(master);
-      o.start(t0); o.stop(t0 + 1.5);
-      o2.start(t0); o2.stop(t0 + 1.5);
-    };
-
-    const timers = [];
-    const loopChirp = () => { chirp(); timers.push(setTimeout(loopChirp, 3500 + Math.random() * 5500)); };
-    const loopNote = () => { note(); timers.push(setTimeout(loopNote, 5000 + Math.random() * 8000)); };
-    timers.push(setTimeout(loopChirp, 2500));
-    timers.push(setTimeout(loopNote, 4500));
-
-    ref.current = { ctx, master, oscs: [...padOsc, swell, windLfo], noise, timers };
-
-    // resume if the context started suspended (e.g. restored "on" before a gesture)
-    if (ctx.state === "suspended") {
-      const resume = () => { ctx.resume(); window.removeEventListener("pointerdown", resume); window.removeEventListener("keydown", resume); };
-      window.addEventListener("pointerdown", resume);
-      window.addEventListener("keydown", resume);
+    if (on) {
+      try { p.setVolume(VOLUME); p.unMute && p.unMute(); p.playVideo(); } catch {}
+      // if the browser blocked playback (no gesture yet), retry on first interaction
+      const kick = () => {
+        if (!onRef.current) return;
+        try { p.unMute && p.unMute(); p.setVolume(VOLUME); p.playVideo(); } catch {}
+        window.removeEventListener("pointerdown", kick);
+        window.removeEventListener("keydown", kick);
+      };
+      window.addEventListener("pointerdown", kick);
+      window.addEventListener("keydown", kick);
+      return () => { window.removeEventListener("pointerdown", kick); window.removeEventListener("keydown", kick); };
     }
-
-    function teardown() {}
-    return () => {
-      const s = ref.current;
-      if (!s.ctx) return;
-      s.timers.forEach(clearTimeout);
-      try {
-        s.master.gain.cancelScheduledValues(s.ctx.currentTime);
-        s.master.gain.linearRampToValueAtTime(0, s.ctx.currentTime + 0.5);
-      } catch {}
-      setTimeout(() => {
-        try { s.oscs.forEach((o) => o.stop()); } catch {}
-        try { s.noise.stop(); } catch {}
-        try { s.ctx.close(); } catch {}
-      }, 600);
-      ref.current = {};
-    };
-  }, [on]);
+    try { p.pauseVideo(); } catch {}
+    return undefined;
+  }, [on, ready]);
 
   return (
-    <button
-      type="button"
-      className={`${styles.toggle} ${on ? styles.on : ""}`}
-      onClick={() => setOn((v) => !v)}
-      aria-label={on ? "Matikan musik" : "Nyalakan musik"}
-      title={on ? "Matikan musik latar" : "Nyalakan musik latar"}
-    >
-      {on ? <Music size={20} /> : <VolumeX size={20} />}
-    </button>
+    <>
+      <div ref={hostRef} className={styles.player} aria-hidden />
+      <button
+        type="button"
+        className={`${styles.toggle} ${on ? styles.on : ""}`}
+        onClick={() => setOn((v) => !v)}
+        aria-label={on ? "Matikan musik" : "Nyalakan musik"}
+        title={on ? "Matikan musik latar" : "Nyalakan musik latar"}
+      >
+        {on ? <Music size={20} /> : <VolumeX size={20} />}
+      </button>
+    </>
   );
 }
