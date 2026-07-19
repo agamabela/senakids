@@ -15,7 +15,7 @@ const navLinks = [
   { key: "nav.tv", href: "/tv", icon: Tv },
   { key: "nav.books", href: "/books", icon: Book },
   { key: "nav.games", href: "/games", icon: Gamepad2 },
-  { key: "nav.learning", href: "/learning_journeys", icon: Route },
+  { key: "nav.learning", href: "/owly", icon: Route },
 ];
 
 export default function Navbar() {

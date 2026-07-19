@@ -13,7 +13,7 @@ const menuItems = [
   { nameKey: "menuModal.stories", href: "/buku-cerita", icon: BookOpen, color: "var(--color-teal)" },
   { nameKey: "menuModal.games", href: "/games", icon: Gamepad2, color: "var(--color-pink)" },
   { nameKey: "menuModal.create", href: "/create", icon: Palette, color: "var(--color-yellow)" },
-  { nameKey: "menuModal.curriculum", href: "/learning_journeys", icon: Route, color: "var(--color-purple)" },
+  { nameKey: "menuModal.curriculum", href: "/owly", icon: Route, color: "var(--color-purple)" },
 ];
 
 export default function MenuModal({ isOpen, onClose }) {
