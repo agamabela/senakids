@@ -33,15 +33,32 @@ function makeRound(cfg) {
 
 export default function LetuskanBalonGameClient() {
   const { language } = useLanguage();
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(null);
   const [round, setRound] = useState(1);
-  const [{ target, balloons }, setState] = useState(() => makeRound(LEVELS[0]));
+  const [{ target, balloons }, setState] = useState({ target: 0, balloons: [] });
   const [popped, setPopped] = useState(0);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
-  const currentLevel = LEVELS[level];
+  const currentLevel = level === null ? null : LEVELS[level];
+
+  const chooseLevel = (idx) => {
+    setLevel(idx);
+    setRound(1);
+    setState(makeRound(LEVELS[idx]));
+    setPopped(0);
+    setScore(0);
+    setDone(false);
+  };
+
+  const backToSelect = () => {
+    setLevel(null);
+    setState({ target: 0, balloons: [] });
+    setPopped(0);
+    setScore(0);
+    setDone(false);
+  };
 
   const reset = useCallback(() => {
     setRound(1);
@@ -95,6 +112,39 @@ export default function LetuskanBalonGameClient() {
     }
   };
 
+  if (level === null) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1>🎈 {language === "id" ? "Letuskan Balon" : "Pop the Balloons"}</h1>
+          <p>
+            {language === "id"
+              ? "Letuskan balon sesuai jumlah yang diminta!"
+              : "Pop exactly the number of balloons asked!"}
+          </p>
+        </div>
+        <div className={styles.levelSelect}>
+          <div className={styles.levelSelectTitle}>
+            {language === "id" ? "Pilih Level" : "Choose a Level"}
+          </div>
+          <div className={styles.levelGrid}>
+            {LEVELS.map((lv, i) => (
+              <button
+                key={i}
+                className={`${styles.levelCard} ${styles[`tier${i + 1}`]}`}
+                onClick={() => chooseLevel(i)}
+              >
+                <div className={styles.lvlNum}>{language === "id" ? "Level" : "Level"} {i + 1}</div>
+                <div className={styles.lvlName}>{lv.name[language]}</div>
+                <div className={styles.lvlDetail}>{lv.minTarget}-{lv.maxTarget} 🎈 · {lv.rounds} {language === "id" ? "ronde" : "rounds"}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const remaining = target - popped;
   const canLevelUp = done && level < LEVELS.length - 1;
 
@@ -117,6 +167,9 @@ export default function LetuskanBalonGameClient() {
         <span>🎯 {language === "id" ? "Ronde" : "Round"}: {Math.min(round, currentLevel.rounds)}/{currentLevel.rounds}</span>
         <button className={styles.resetBtn} onClick={reset}>
           🔄 {language === "id" ? "Ulang" : "Restart"}
+        </button>
+        <button className={styles.resetBtn} onClick={backToSelect}>
+          🏆 {language === "id" ? "Pilih Level" : "Levels"}
         </button>
       </div>
 

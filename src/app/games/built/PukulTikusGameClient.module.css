@@ -52,6 +52,64 @@
   filter: brightness(1.05);
 }
 
+.levelSelect {
+  text-align: center;
+  margin: 24px 0;
+}
+
+.levelSelectTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 16px;
+}
+
+.levelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.levelCard {
+  padding: 18px 14px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  transition: transform 0.12s ease, filter 0.12s ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.levelCard:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.05);
+}
+
+.levelCard .lvlNum {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.levelCard .lvlName {
+  font-size: 1.15rem;
+  margin: 4px 0;
+}
+
+.levelCard .lvlDetail {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.tier1 { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.tier2 { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.tier3 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.tier4 { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
 .stats {
   display: flex;
   justify-content: center;

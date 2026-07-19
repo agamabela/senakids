@@ -16,7 +16,7 @@ const LEVELS = [
 
 export default function PukulTikusGameClient() {
   const { language } = useLanguage();
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(null);
   const [activeHole, setActiveHole] = useState(-1);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(LEVELS[0].duration);
@@ -28,7 +28,7 @@ export default function PukulTikusGameClient() {
   const moleTimer = useRef(null);
   const countdown = useRef(null);
 
-  const currentLevel = LEVELS[level];
+  const currentLevel = level === null ? null : LEVELS[level];
 
   const clearTimers = useCallback(() => {
     if (moleTimer.current) clearInterval(moleTimer.current);
@@ -37,10 +37,11 @@ export default function PukulTikusGameClient() {
 
   useEffect(() => clearTimers, [clearTimers]);
 
-  const startGame = () => {
+  const startGame = (lvlIdx = level) => {
+    const cfg = LEVELS[lvlIdx];
     clearTimers();
     setScore(0);
-    setTimeLeft(currentLevel.duration);
+    setTimeLeft(cfg.duration);
     setIsPlaying(true);
     setFinished(false);
     setActiveHole(-1);
@@ -48,7 +49,7 @@ export default function PukulTikusGameClient() {
 
     moleTimer.current = setInterval(() => {
       setActiveHole(Math.floor(Math.random() * HOLE_COUNT));
-    }, currentLevel.moleInterval);
+    }, cfg.moleInterval);
 
     countdown.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -64,6 +65,20 @@ export default function PukulTikusGameClient() {
     }, 1000);
   };
 
+  const chooseLevel = (idx) => {
+    setLevel(idx);
+    startGame(idx);
+  };
+
+  const backToSelect = () => {
+    clearTimers();
+    setLevel(null);
+    setIsPlaying(false);
+    setFinished(false);
+    setActiveHole(-1);
+    setScore(0);
+  };
+
   const whack = (index) => {
     if (!isPlaying || index !== activeHole) return;
     setScore((s) => s + 1);
@@ -74,15 +89,39 @@ export default function PukulTikusGameClient() {
 
   const nextLevel = () => {
     if (level < LEVELS.length - 1) {
-      clearTimers();
       setLevel(level + 1);
-      setScore(0);
-      setTimeLeft(LEVELS[level + 1].duration);
-      setIsPlaying(false);
-      setFinished(false);
-      setActiveHole(-1);
+      startGame(level + 1);
     }
   };
+
+  if (level === null) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1>🔨 {language === "id" ? "Pukul Tikus" : "Whack-a-Mole"}</h1>
+          <p>{language === "id" ? "Pukul tikus secepat mungkin!" : "Bonk the moles as fast as you can!"}</p>
+        </div>
+        <div className={styles.levelSelect}>
+          <div className={styles.levelSelectTitle}>
+            {language === "id" ? "Pilih Level" : "Choose a Level"}
+          </div>
+          <div className={styles.levelGrid}>
+            {LEVELS.map((lv, i) => (
+              <button
+                key={i}
+                className={`${styles.levelCard} ${styles[`tier${i + 1}`]}`}
+                onClick={() => chooseLevel(i)}
+              >
+                <div className={styles.lvlNum}>{language === "id" ? "Level" : "Level"} {i + 1}</div>
+                <div className={styles.lvlName}>{lv.name[language]}</div>
+                <div className={styles.lvlDetail}>🎯 {lv.target} · {lv.duration}s</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const reachedTarget = score >= currentLevel.target;
   const canLevelUp = finished && reachedTarget && level < LEVELS.length - 1;
@@ -101,8 +140,11 @@ export default function PukulTikusGameClient() {
         <span>⭐ {language === "id" ? "Skor" : "Score"}: {score}</span>
         <span>🎯 {language === "id" ? "Target" : "Target"}: {currentLevel.target}</span>
         <span>⏱️ {language === "id" ? "Waktu" : "Time"}: {timeLeft}s</span>
-        <button className={styles.resetBtn} onClick={startGame}>
+        <button className={styles.resetBtn} onClick={() => startGame()}>
           {isPlaying ? "🔄 " + (language === "id" ? "Ulang" : "Restart") : "▶️ " + (language === "id" ? "Mulai" : "Start")}
+        </button>
+        <button className={styles.resetBtn} onClick={backToSelect}>
+          🏆 {language === "id" ? "Pilih Level" : "Levels"}
         </button>
       </div>
 

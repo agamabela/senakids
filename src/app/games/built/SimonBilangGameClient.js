@@ -21,7 +21,7 @@ const LEVELS = [
 
 export default function SimonBilangGameClient() {
   const { language } = useLanguage();
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(null);
   const [sequence, setSequence] = useState([]);
   const [userStep, setUserStep] = useState(0);
   const [active, setActive] = useState(-1);
@@ -31,7 +31,7 @@ export default function SimonBilangGameClient() {
   const [started, setStarted] = useState(false);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
-  const currentLevel = LEVELS[level];
+  const currentLevel = level === null ? LEVELS[0] : LEVELS[level];
 
   const audioCtx = useRef(null);
   const timers = useRef([]);
@@ -73,53 +73,64 @@ export default function SimonBilangGameClient() {
     timers.current.push(t);
   }, []);
 
-  const playSequence = useCallback((seq) => {
+  const playSequence = useCallback((seq, cfg) => {
     setIsShowing(true);
     clearTimers();
-    const step = currentLevel.flash + currentLevel.gap;
+    const step = cfg.flash + cfg.gap;
     seq.forEach((id, i) => {
       const t = setTimeout(() => {
-        flashPad(id, currentLevel.flash);
+        flashPad(id, cfg.flash);
         if (i === seq.length - 1) {
-          const end = setTimeout(() => setIsShowing(false), currentLevel.flash + 150);
+          const end = setTimeout(() => setIsShowing(false), cfg.flash + 150);
           timers.current.push(end);
         }
       }, (i + 1) * step);
       timers.current.push(t);
     });
-  }, [clearTimers, currentLevel, flashPad]);
+  }, [clearTimers, flashPad]);
 
   const randomStep = () => Math.floor(Math.random() * PADS.length);
 
-  const nextRound = useCallback((current) => {
+  const nextRound = useCallback((current, cfg) => {
     const next = [...current, randomStep()];
     setSequence(next);
     setUserStep(0);
-    playSequence(next);
+    playSequence(next, cfg);
   }, [playSequence]);
 
-  const startGame = () => {
+  const startGame = (lvlIdx = level) => {
+    const cfg = LEVELS[lvlIdx];
     setScore(0);
     setGameOver(false);
     setStarted(true);
     setHasChanges(true);
-    const seed = Array.from({ length: currentLevel.start }, randomStep);
+    const seed = Array.from({ length: cfg.start }, randomStep);
     setSequence(seed);
     setUserStep(0);
-    playSequence(seed);
+    playSequence(seed, cfg);
+  };
+
+  const chooseLevel = (idx) => {
+    setLevel(idx);
+    startGame(idx);
+  };
+
+  const backToSelect = () => {
+    clearTimers();
+    setLevel(null);
+    setScore(0);
+    setGameOver(false);
+    setStarted(false);
+    setSequence([]);
+    setUserStep(0);
+    setActive(-1);
+    setIsShowing(false);
   };
 
   const nextLevel = () => {
     if (level < LEVELS.length - 1) {
-      clearTimers();
       setLevel(level + 1);
-      setScore(0);
-      setGameOver(false);
-      setStarted(false);
-      setSequence([]);
-      setUserStep(0);
-      setActive(-1);
-      setIsShowing(false);
+      startGame(level + 1);
     }
   };
 
@@ -135,12 +146,41 @@ export default function SimonBilangGameClient() {
 
     if (userStep + 1 === sequence.length) {
       setScore((s) => s + 1);
-      const t = setTimeout(() => nextRound(sequence), 800);
+      const t = setTimeout(() => nextRound(sequence, currentLevel), 800);
       timers.current.push(t);
     } else {
       setUserStep((s) => s + 1);
     }
   };
+
+  if (level === null) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1>🎨 {language === "id" ? "Simon Bilang" : "Simon Says"}</h1>
+          <p>{language === "id" ? "Ingat dan ulangi urutan warna!" : "Remember and repeat the color sequence!"}</p>
+        </div>
+        <div className={styles.levelSelect}>
+          <div className={styles.levelSelectTitle}>
+            {language === "id" ? "Pilih Level" : "Choose a Level"}
+          </div>
+          <div className={styles.levelGrid}>
+            {LEVELS.map((lv, i) => (
+              <button
+                key={i}
+                className={`${styles.levelCard} ${styles[`tier${i + 1}`]}`}
+                onClick={() => chooseLevel(i)}
+              >
+                <div className={styles.lvlNum}>{language === "id" ? "Level" : "Level"} {i + 1}</div>
+                <div className={styles.lvlName}>{lv.name[language]}</div>
+                <div className={styles.lvlDetail}>🎯 {lv.target}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const canLevelUp = score >= currentLevel.target && level < LEVELS.length - 1;
 
@@ -157,8 +197,11 @@ export default function SimonBilangGameClient() {
       <div className={styles.stats}>
         <span>⭐ {language === "id" ? "Skor" : "Score"}: {score}</span>
         <span>🎯 {language === "id" ? "Target" : "Target"}: {currentLevel.target}</span>
-        <button className={styles.resetBtn} onClick={startGame}>
+        <button className={styles.resetBtn} onClick={() => startGame()}>
           {started ? "🔄 " + (language === "id" ? "Ulang" : "Restart") : "▶️ " + (language === "id" ? "Mulai" : "Start")}
+        </button>
+        <button className={styles.resetBtn} onClick={backToSelect}>
+          🏆 {language === "id" ? "Pilih Level" : "Levels"}
         </button>
       </div>
 
