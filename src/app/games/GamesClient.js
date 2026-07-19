@@ -33,6 +33,9 @@ const builtGames = [
   { title: { id: "Lacak Huruf", en: "Trace Letters" }, description: { id: "Tulis huruf A-Z dengan menelusuri titik!", en: "Write letters A-Z by tracing the dots!" }, emoji: "✏️", href: "/games/built/lacak-huruf", color: "blue" },
   { title: { id: "Lacak Angka", en: "Trace Numbers" }, description: { id: "Tulis angka 0-9 dengan menelusuri titik!", en: "Write numbers 0-9 by tracing the dots!" }, emoji: "🔢", href: "/games/built/lacak-angka", color: "green" },
   { title: { id: "Puzzle Gambar", en: "Jigsaw Puzzle" }, description: { id: "Susun keping jadi gambar utuh!", en: "Fit the pieces into a picture!" }, emoji: "🧩", href: "/games/built/puzzle-gambar", color: "orange" },
+  { title: { id: "Pukul Tikus", en: "Whack-a-Mole" }, description: { id: "Pukul tikus secepat mungkin!", en: "Bonk the moles fast!" }, emoji: "🔨", href: "/games/built/pukul-tikus", color: "pink" },
+  { title: { id: "Simon Bilang", en: "Simon Says" }, description: { id: "Ingat & ulangi urutan warna!", en: "Remember & repeat the colors!" }, emoji: "🎨", href: "/games/built/simon-bilang", color: "purple" },
+  { title: { id: "Letuskan Balon", en: "Pop the Balloons" }, description: { id: "Letuskan balon & belajar berhitung!", en: "Pop balloons & learn counting!" }, emoji: "🎈", href: "/games/built/letuskan-balon", color: "teal" },
 ];
 
 // Helper function to extract color from zone if needed, or just default to blue

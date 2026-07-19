@@ -25,6 +25,9 @@ import UlarTanggaGameClient from "../UlarTanggaGameClient";
 import LacakHurufGameClient from "../LacakHurufGameClient";
 import LacakAngkaGameClient from "../LacakAngkaGameClient";
 import JigsawGameClient from "../JigsawGameClient";
+import PukulTikusGameClient from "../PukulTikusGameClient";
+import SimonBilangGameClient from "../SimonBilangGameClient";
+import LetuskanBalonGameClient from "../LetuskanBalonGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -55,6 +58,9 @@ const builtGameDetails = {
   "lacak-huruf": { title: "Lacak Huruf", description: "Belajar menulis huruf A-Z dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
   "lacak-angka": { title: "Lacak Angka", description: "Belajar menulis angka 0-9 dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
   "puzzle-gambar": { title: "Puzzle Gambar", description: "Susun keping puzzle jigsaw menjadi gambar utuh!", note: "This built-in game is implemented directly in Sena Kids." },
+  "pukul-tikus": { title: "Pukul Tikus", description: "Pukul tikus secepat mungkin sebelum waktu habis!", note: "This built-in game is implemented directly in Sena Kids." },
+  "simon-bilang": { title: "Simon Bilang", description: "Ingat dan ulangi urutan warna yang makin panjang!", note: "This built-in game is implemented directly in Sena Kids." },
+  "letuskan-balon": { title: "Letuskan Balon", description: "Letuskan balon sesuai jumlah untuk belajar berhitung!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -84,6 +90,9 @@ const gameClients = {
   "lacak-huruf": LacakHurufGameClient,
   "lacak-angka": LacakAngkaGameClient,
   "puzzle-gambar": JigsawGameClient,
+  "pukul-tikus": PukulTikusGameClient,
+  "simon-bilang": SimonBilangGameClient,
+  "letuskan-balon": LetuskanBalonGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {

@@ -37,7 +37,14 @@ export default function MencocokkanGambarGameClient() {
   };
 
   const handleCardClick = (uniqueId) => {
-    if (flippedCards.length === 2 || matchedPairs.includes(uniqueId)) return;
+    const card = cards.find((c) => c.uniqueId === uniqueId);
+    if (
+      flippedCards.length === 2 ||
+      flippedCards.includes(uniqueId) ||
+      (card && matchedPairs.includes(card.id))
+    ) {
+      return;
+    }
     setHasChanges(true);
 
     const newFlipped = [...flippedCards, uniqueId];
