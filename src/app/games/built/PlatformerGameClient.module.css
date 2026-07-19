@@ -1,0 +1,212 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ── Intro / Win cards ── */
+.card {
+  text-align: center;
+  background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 100%);
+  border: 3px solid var(--color-border);
+  border-radius: 24px;
+  padding: 28px 20px;
+}
+
+.bigEmoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.title {
+  margin: 10px 0 6px;
+  font-size: 1.8rem;
+  color: var(--color-text);
+}
+
+.desc {
+  margin: 0 0 20px;
+  color: var(--color-muted-foreground);
+}
+
+.levelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.levelCard {
+  padding: 18px 14px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  transition: transform 0.12s ease, filter 0.12s ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.levelCard:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.05);
+}
+
+.lvlNum {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.lvlName {
+  font-size: 1.1rem;
+  margin: 4px 0;
+}
+
+.lvlDetail {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.tier1 { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.tier2 { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.tier3 { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+
+.hint {
+  margin: 20px 0 0;
+  color: var(--color-muted-foreground);
+  font-size: 0.9rem;
+}
+
+.winButtons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.primaryBtn {
+  padding: 12px 22px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.primaryBtn:hover {
+  filter: brightness(1.05);
+}
+
+.ghostBtn {
+  padding: 8px 16px;
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.ghostBtn:hover {
+  background: var(--color-border);
+}
+
+/* ── HUD ── */
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.hudItem {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+/* ── Stage / canvas ── */
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 3px solid var(--color-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  touch-action: none;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+
+.celebrate {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.92);
+  color: #166534;
+  font-weight: 800;
+  font-size: 1.3rem;
+  padding: 10px 22px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Touch controls ── */
+.touchLeft,
+.touchRight {
+  position: absolute;
+  bottom: 14px;
+  display: flex;
+  gap: 12px;
+}
+
+.touchLeft { left: 14px; }
+.touchRight { right: 14px; }
+
+.padBtn {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.75);
+  color: #1e293b;
+  font-size: 1.6rem;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.padBtn:active {
+  background: rgba(255, 255, 255, 0.95);
+  transform: scale(0.94);
+}
+
+.jumpBtn {
+  width: 76px;
+  height: 76px;
+  background: rgba(34, 197, 94, 0.85);
+  color: white;
+  font-size: 1.9rem;
+}
+
+@media (min-width: 820px) {
+  /* On desktop the keyboard is primary; keep touch buttons but smaller */
+  .padBtn { width: 54px; height: 54px; font-size: 1.4rem; }
+  .jumpBtn { width: 64px; height: 64px; }
+}

@@ -28,6 +28,7 @@ import JigsawGameClient from "../JigsawGameClient";
 import PukulTikusGameClient from "../PukulTikusGameClient";
 import SimonBilangGameClient from "../SimonBilangGameClient";
 import LetuskanBalonGameClient from "../LetuskanBalonGameClient";
+import PlatformerGameClient from "../PlatformerGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -61,6 +62,7 @@ const builtGameDetails = {
   "pukul-tikus": { title: "Pukul Tikus", description: "Pukul tikus secepat mungkin sebelum waktu habis!", note: "This built-in game is implemented directly in Sena Kids." },
   "simon-bilang": { title: "Simon Bilang", description: "Ingat dan ulangi urutan warna yang makin panjang!", note: "This built-in game is implemented directly in Sena Kids." },
   "letuskan-balon": { title: "Letuskan Balon", description: "Letuskan balon sesuai jumlah untuk belajar berhitung!", note: "This built-in game is implemented directly in Sena Kids." },
+  "petualangan-lompat": { title: "Petualangan Lompat", description: "Lari, lompat, kumpulkan bintang, dan capai bendera!", note: "This built-in game is implemented directly in Sena Kids." },
 };
 
 const gameClients = {
@@ -93,6 +95,7 @@ const gameClients = {
   "pukul-tikus": PukulTikusGameClient,
   "simon-bilang": SimonBilangGameClient,
   "letuskan-balon": LetuskanBalonGameClient,
+  "petualangan-lompat": PlatformerGameClient,
 };
 
 export default async function BuiltGamePage({ params }) {
