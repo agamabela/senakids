@@ -20,6 +20,38 @@
   color: var(--color-muted-foreground);
 }
 
+.levelBadge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 16px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.levelUpBtn {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.levelUpBtn:hover {
+  filter: brightness(1.05);
+}
+
 .stats {
   display: flex;
   justify-content: center;

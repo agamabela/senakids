@@ -6,11 +6,20 @@ import { useActivityStore } from "@/components/BackButton";
 import styles from "./LetuskanBalonGameClient.module.css";
 
 const COLORS = ["#ef4444", "#3b82f6", "#22c55e", "#eab308", "#a855f7", "#ec4899", "#f97316"];
-const MAX_ROUNDS = 5;
 
-function makeRound() {
-  const target = Math.floor(Math.random() * 6) + 3; // 3..8 balloons to pop
-  const total = target + Math.floor(Math.random() * 4) + 2; // extra decoy balloons
+const LEVELS = [
+  { name: { id: "Mudah", en: "Easy" }, minTarget: 2, maxTarget: 4, decoyMin: 1, decoyMax: 2, rounds: 4 },
+  { name: { id: "Menengah", en: "Medium" }, minTarget: 3, maxTarget: 6, decoyMin: 2, decoyMax: 4, rounds: 5 },
+  { name: { id: "Sulit", en: "Hard" }, minTarget: 5, maxTarget: 8, decoyMin: 3, decoyMax: 6, rounds: 6 },
+  { name: { id: "Ekstrem", en: "Extreme" }, minTarget: 7, maxTarget: 11, decoyMin: 4, decoyMax: 8, rounds: 6 },
+];
+
+function makeRound(cfg) {
+  const span = cfg.maxTarget - cfg.minTarget + 1;
+  const target = Math.floor(Math.random() * span) + cfg.minTarget;
+  const decoySpan = cfg.decoyMax - cfg.decoyMin + 1;
+  const decoys = Math.floor(Math.random() * decoySpan) + cfg.decoyMin;
+  const total = target + decoys;
   const balloons = Array.from({ length: total }).map((_, i) => ({
     id: i,
     color: COLORS[Math.floor(Math.random() * COLORS.length)],
@@ -24,29 +33,46 @@ function makeRound() {
 
 export default function LetuskanBalonGameClient() {
   const { language } = useLanguage();
+  const [level, setLevel] = useState(0);
   const [round, setRound] = useState(1);
-  const [{ target, balloons }, setState] = useState(makeRound);
+  const [{ target, balloons }, setState] = useState(() => makeRound(LEVELS[0]));
   const [popped, setPopped] = useState(0);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
   const setHasChanges = useActivityStore((state) => state.setHasChanges);
 
+  const currentLevel = LEVELS[level];
+
   const reset = useCallback(() => {
     setRound(1);
-    setState(makeRound());
+    setState(makeRound(currentLevel));
     setPopped(0);
     setScore(0);
     setDone(false);
-  }, []);
+  }, [currentLevel]);
 
   const advance = () => {
-    if (round >= MAX_ROUNDS) {
-      setDone(true);
-      return;
+    setRound((r) => {
+      if (r >= currentLevel.rounds) {
+        setDone(true);
+        return r;
+      }
+      setState(makeRound(currentLevel));
+      setPopped(0);
+      return r + 1;
+    });
+  };
+
+  const nextLevel = () => {
+    if (level < LEVELS.length - 1) {
+      const nl = LEVELS[level + 1];
+      setLevel(level + 1);
+      setRound(1);
+      setState(makeRound(nl));
+      setPopped(0);
+      setScore(0);
+      setDone(false);
     }
-    setRound((r) => r + 1);
-    setState(makeRound());
-    setPopped(0);
   };
 
   const popBalloon = (id) => {
@@ -70,6 +96,7 @@ export default function LetuskanBalonGameClient() {
   };
 
   const remaining = target - popped;
+  const canLevelUp = done && level < LEVELS.length - 1;
 
   return (
     <div className={styles.container}>
@@ -80,11 +107,14 @@ export default function LetuskanBalonGameClient() {
             ? "Letuskan balon sesuai jumlah yang diminta!"
             : "Pop exactly the number of balloons asked!"}
         </p>
+        <div className={styles.levelBadge}>
+          {language === "id" ? "Level" : "Level"} {level + 1} · {currentLevel.name[language]}
+        </div>
       </div>
 
       <div className={styles.stats}>
         <span>⭐ {language === "id" ? "Skor" : "Score"}: {score}</span>
-        <span>🎯 {language === "id" ? "Ronde" : "Round"}: {Math.min(round, MAX_ROUNDS)}/{MAX_ROUNDS}</span>
+        <span>🎯 {language === "id" ? "Ronde" : "Round"}: {Math.min(round, currentLevel.rounds)}/{currentLevel.rounds}</span>
         <button className={styles.resetBtn} onClick={reset}>
           🔄 {language === "id" ? "Ulang" : "Restart"}
         </button>
@@ -92,7 +122,7 @@ export default function LetuskanBalonGameClient() {
 
       {done ? (
         <div className={styles.winMessage}>
-          🎉 {language === "id" ? `Hebat! Skormu ${score}/${MAX_ROUNDS}!` : `Great job! You scored ${score}/${MAX_ROUNDS}!`} 🎉
+          🎉 {language === "id" ? `Hebat! Skormu ${score}/${currentLevel.rounds}!` : `Great job! You scored ${score}/${currentLevel.rounds}!`} 🎉
         </div>
       ) : (
         <div className={styles.task}>
@@ -104,6 +134,14 @@ export default function LetuskanBalonGameClient() {
               {" "}({language === "id" ? "sisa" : "left"}: {remaining})
             </span>
           )}
+        </div>
+      )}
+
+      {canLevelUp && (
+        <div className={styles.controls}>
+          <button className={styles.levelUpBtn} onClick={nextLevel}>
+            📈 {language === "id" ? "Naik Level" : "Level Up"}
+          </button>
         </div>
       )}
 
