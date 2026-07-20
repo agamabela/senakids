@@ -1,272 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, X, ArrowLeft, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
-// English descriptions keyed by book id (titles use originalTitle in English)
-const DESC_EN = {
-  "the-lantern-girl": "Nora searches for light in the dark",
-  "special-seeds": "Patience bears beautiful fruit",
-  "strong-like-mom": "What real strength means",
-  "please-grow": "Caring for plants patiently",
-  "grandpas-fish-pond": "Caring for living things",
-  "vroom-vroom": "A fun vehicle adventure",
-  "finding-momma": "A little duckling who got lost",
-  "magic-hands": "Love in Grandma's hands",
-  "cant-get-in-my-way": "A story of courage and determination",
-  "girl-against-chickens": "A funny adventure on the farm",
-  "oma-and-the-grasshoppers": "A grandmother's wisdom",
-  "a-day-at-the-workshop": "Learning about jobs",
-};
-
+// Snapshot from the public Let's Read Asia API (language id 6260074016145408).
+// Destinations use masterBookId because the current reader resolves books by ID.
 const books = [
-  {
-    id: "the-lantern-girl",
-    title: "Gadis Lentera",
-    originalTitle: "The Lantern Girl",
-    author: "Rasya Swarnasta",
-    description: "Kisah Nora mencari cahaya di kegelapan",
-    cover: "https://lh3.googleusercontent.com/HI63_B-B1iII6oL3ubZ-79TjisVyHzHCWX2i09lbBsSrCBpUyl0J5wlo1X27mZoEqgV1hwws76x4W2O0vo1ATfr5dJORK26M6XKDqA=s512",
-    url: "https://www.letsreadasia.org/book/the-lantern-girl?bookLang=4846240843956224",
-    color: "#2d1b4e",
-  },
-  {
-    id: "special-seeds",
-    title: "Benih Istimewa",
-    originalTitle: "Special Seeds",
-    author: "Let's Read Asia",
-    description: "Kesabaran membuahkan hasil yang indah",
-    cover: "https://lh3.googleusercontent.com/d2j83Xjfl0jtYQbm0zk5jOhvm4W3WsDwhKdldcEuLON8yec0jbKWtEtaNVrVCqGPsVbQI5sYVlB_uoI9TF790L-zWIl-GDB9y5IYQA=s512",
-    url: "https://www.letsreadasia.org/book/special-seeds?bookLang=4846240843956224",
-    color: "#1a4d2e",
-  },
-  {
-    id: "strong-like-mom",
-    title: "Kuat Seperti Ibu",
-    originalTitle: "Strong Like Mom",
-    author: "Let's Read Asia",
-    description: "Arti kekuatan yang sesungguhnya",
-    cover: "https://lh3.googleusercontent.com/Hf4_Wn-ZwyzHQ7_2xf0EjBboCi_DA4jdtEI0gigxwH_Xsb01hBw55nWpLgVRAb2sRfvI13fHaPFmBBlF-cKL3AU58Gx29WHRFwV1IA=s512",
-    url: "https://www.letsreadasia.org/book/strong-like-mom?bookLang=4846240843956224",
-    color: "#4a1942",
-  },
-  {
-    id: "please-grow",
-    title: "Ayo Tumbuh!",
-    originalTitle: "Please Grow",
-    author: "Let's Read Asia",
-    description: "Merawat tanaman dengan sabar",
-    cover: "https://lh3.googleusercontent.com/QJO60yrveQ96fKjIsznYu3z7MSmEBA-NUd5sgNTQsESfVC2W5C3ltPh_Q66mvREKX4I4Uadp9Q0UHBZDXmxX2BPc_0DxlHPcUYIG=s512",
-    url: "https://www.letsreadasia.org/book/please-grow?bookLang=4846240843956224",
-    color: "#5c4a1e",
-  },
-  {
-    id: "grandpas-fish-pond",
-    title: "Kolam Ikan Kakek",
-    originalTitle: "Grandpa's Fish Pond",
-    author: "Let's Read Asia",
-    description: "Kasih sayang pada makhluk hidup",
-    cover: "https://lh3.googleusercontent.com/Cb2WZWP0CFcxYnJ6fRHs6qk1Nn8Y_jG2cgjxiQEUpSK8XIW_C3RDdB2IK9KZJ-X0RRdmeyLIF0-wtmneIMspl1Ezq-SiZNdDQ6Albg=s512",
-    url: "https://www.letsreadasia.org/book/grandpas-fish-pond?bookLang=4846240843956224",
-    color: "#1a3d5c",
-  },
-  {
-    id: "vroom-vroom",
-    title: "Vroom! Vroom!",
-    originalTitle: "Vroom! Vroom!",
-    author: "Let's Read Asia",
-    description: "Petualangan kendaraan yang seru",
-    cover: "https://lh3.googleusercontent.com/bAdLD9j1sn95tJBqnYGGXoyfcDk52dws6gOCPJncmEJRGeODr1ageY8fsVLnX4nlP1zvZ8sHkC8_7pNxMhrvQZpv8uxSTHxJxVt3rg=s512",
-    url: "https://www.letsreadasia.org/book/vroom-vroom?bookLang=4846240843956224",
-    color: "#5c1a2e",
-  },
-  {
-    id: "finding-momma",
-    title: "Mencari Ibu",
-    originalTitle: "Finding Momma",
-    author: "Let's Read Asia",
-    description: "Anak bebek yang tersesat",
-    cover: "https://lh3.googleusercontent.com/dy1n_jSxArehNamUBH71q48xTtqzwHJYODe7NwWwCTlyiWHJzjFHnpJIXSmfD6uhOFcO8V97ekgWBAGtN8WvKnuu-C9eOxgC1oVGpQY=s512",
-    url: "https://www.letsreadasia.org/book/finding-momma?bookLang=4846240843956224",
-    color: "#2e5c1a",
-  },
-  {
-    id: "magic-hands",
-    title: "Tangan Ajaib",
-    originalTitle: "Magic Hands",
-    author: "Let's Read Asia",
-    description: "Cinta di tangan Nenek",
-    cover: "https://lh3.googleusercontent.com/k20sR0dLDGmXEukXboSOL3U98Rt4VhPyrli5rNA4M-qs6sg0abtKT9_X4tqZhwCurhM6Ak1sIugWcbkQ3tYWDfx7pIDxNwCFMXA4Y8M=s512",
-    url: "https://www.letsreadasia.org/book/magic-hands?bookLang=4846240843956224",
-    color: "#5c3a1a",
-  },
-  {
-    id: "cant-get-in-my-way",
-    title: "Tak Ada yang Menghalangiku",
-    originalTitle: "Can't Get in My Way",
-    author: "Let's Read Asia",
-    description: "Cerita tentang keberanian dan tekad",
-    cover: "https://lh3.googleusercontent.com/2Glig-YXcE8GLTBTXP1DNnICG7ItFaiYiSbDKLQ371p3skv8Py1wKtouFMyv-s6s3k3wK98TZkE9q1oNkUbQBfuFhEaokVVqAcwL=s512",
-    url: "https://www.letsreadasia.org/book/cant-get-in-my-way?bookLang=4846240843956224",
-    color: "#1a5c4a",
-  },
-  {
-    id: "girl-against-chickens",
-    title: "Gadis Melawan Ayam",
-    originalTitle: "Girl Against Chickens",
-    author: "Let's Read Asia",
-    description: "Petualangan lucu di peternakan",
-    cover: "https://lh3.googleusercontent.com/ybZubrzrXXGzoKr412HhmpD7ONOPSTmSTmFkBOd7RW7m1ta7z9EkEmudYxkwS6qGGXNuUIdO6S5UIjGwVg69OL0iZA21w8YoGMsp=s512",
-    url: "https://www.letsreadasia.org/book/girl-against-chickens?bookLang=4846240843956224",
-    color: "#4a5c1a",
-  },
-  {
-    id: "oma-and-the-grasshoppers",
-    title: "Nenek dan Belalang",
-    originalTitle: "Oma and the Grasshoppers",
-    author: "Let's Read Asia",
-    description: "Kebijaksanaan seorang nenek",
-    cover: "https://lh3.googleusercontent.com/yVbPtP5axRZ06MR2b5l0wy6prBKmigRmdfSmT8fE1rUflXZMAqc7AepFnu47klox3kLpF_k4Uc-OCjLgZfXzHAGISmf724Ok1_1K=s512",
-    url: "https://www.letsreadasia.org/book/oma-and-the-grasshoppers?bookLang=4846240843956224",
-    color: "#3a1a5c",
-  },
-  {
-    id: "a-day-at-the-workshop",
-    title: "Sehari di Bengkel",
-    originalTitle: "A Day at the Workshop",
-    author: "Let's Read Asia",
-    description: "Belajar tentang pekerjaan",
-    cover: "https://lh3.googleusercontent.com/XppKIfI4P5yyWkY_DkbXpXZ6-4eY6_93haPqj7WoBtvN35djDPnjQAx0sgqWkjjmWA1bcfI3Ipq1HDWX_ArpqqFrEAImMH9NPcn-=s512",
-    url: "https://www.letsreadasia.org/book/a-day-at-the-workshop?bookLang=4846240843956224",
-    color: "#5c4a2e",
-  },
+  { id: "b2dfb64f-5b97-4697-86f3-f1f583e08553", title: "Jangan Sampai Ibu Tahu", description: "Rowa ingin memelihara binatang, tetapi Ibu selalu melarang.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/ec7bc4ff-67a2-4cd8-8c55-edce3039011a.png", url: "https://www.letsreadasia.org/read/b2dfb64f-5b97-4697-86f3-f1f583e08553?bookLang=6260074016145408", color: "#2d1b4e" },
+  { id: "f6f494dc-18f3-4352-a128-7857ef65fbcb", title: "Tangan-Tangan Ajaib", description: "Tangan Kakek bisa membuat kejutan dan menyulap hal biasa menjadi luar biasa.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/5948a5e4-c050-4fa2-9b8c-2a7c1f09c903.png", url: "https://www.letsreadasia.org/read/f6f494dc-18f3-4352-a128-7857ef65fbcb?bookLang=6260074016145408", color: "#1a4d2e" },
+  { id: "95199e3a-5387-495f-82bd-2f1d52b6eeda", title: "Kapan Kapal Datang", description: "Ela menunggu kapal perintis yang membawa sepatu barunya.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/6637613c-e7c8-4f83-bdef-cec376961d3b.png", url: "https://www.letsreadasia.org/read/95199e3a-5387-495f-82bd-2f1d52b6eeda?bookLang=6260074016145408", color: "#1a3d5c" },
+  { id: "6388940d-11a3-470b-8ae6-85080ebb60dd", title: "Setelah Kami Pindah", description: "Ikuti petualangan tinggal di rumah baru yang sering berguncang.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/b58422bf-a795-460e-969e-71f7afbdf815.png", url: "https://www.letsreadasia.org/read/6388940d-11a3-470b-8ae6-85080ebb60dd?bookLang=6260074016145408", color: "#5c4a1e" },
+  { id: "c1c6efc0-84ff-46ae-b05c-d483b73fc844", title: "Yang Penting Selesai", description: "Aku harus menata banyak kue sebelum melihat anak sapi di rumah Nenek.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/398ef646-a846-4d81-9257-609250c6f5d2.png", url: "https://www.letsreadasia.org/read/c1c6efc0-84ff-46ae-b05c-d483b73fc844?bookLang=6260074016145408", color: "#4a1942" },
+  { id: "216a0037-d8b1-489e-94ef-0e1d9d30bc31", title: "Kue Jadah Tujuh Warna", description: "Ajeng penasaran seperti apa rasa kue jadah tujuh warna.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/ab0ba2df-806c-448e-bb8c-1fc1b62a6dd6.png", url: "https://www.letsreadasia.org/read/216a0037-d8b1-489e-94ef-0e1d9d30bc31?bookLang=6260074016145408", color: "#5c1a2e" },
+  { id: "82d7d3f1-2ab2-4933-b99a-d2d3e7258321", title: "Takut", description: "Tiki ingin bermain di taman bermain di tengah hutan.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/53132d2a-4932-41c0-97ad-75a81e3ec488.png", url: "https://www.letsreadasia.org/read/82d7d3f1-2ab2-4933-b99a-d2d3e7258321?bookLang=6260074016145408", color: "#2e5c1a" },
+  { id: "12f23f06-d786-4901-bbf8-51a0ceeab3b4", title: "Tolong Mintakan Durian", description: "Tapir ingin meminta durian kepada Paman Harimau, tetapi takut.", cover: "https://storage.googleapis.com/lets-read-asia/assets/images/ed45b036-aa46-4151-928a-d6a53fbb8b43.png", url: "https://www.letsreadasia.org/read/12f23f06-d786-4901-bbf8-51a0ceeab3b4?bookLang=6260074016145408", color: "#1a5c4a" },
 ];
 
 export default function BukuCeritaPage() {
   const { language } = useLanguage();
   const tx = (id, en) => (language === "id" ? id : en);
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const bookTitle = (b) => (language === "en" && b.originalTitle ? b.originalTitle : b.title);
-  const bookDesc = (b) => (language === "en" ? (DESC_EN[b.id] || b.description) : b.description);
-
-  const openBook = (book) => {
-    setSelectedBook(book);
-    setIsLoading(true);
-  };
-
-  const closeBook = () => {
-    setSelectedBook(null);
-    setIsLoading(true);
-  };
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
-        <Link href="/home" className={styles.backBtn}>
-          <ArrowLeft size={20} />
-        </Link>
+        <Link href="/home" className={styles.backBtn}><ArrowLeft size={20} /></Link>
         <div>
-          <h1 className={styles.title}>📖 {tx("Buku Cerita", "Story Books")}</h1>
+          <h1 className={styles.title}>{tx("Buku Cerita", "Story Books")}</h1>
           <p className={styles.subtitle}>{tx("Baca buku cerita anak gratis dalam Bahasa Indonesia", "Read free children's story books")}</p>
         </div>
       </div>
-
-      {/* Book Grid */}
       <div className={styles.bookGrid}>
         {books.map((book, index) => (
-          <motion.div
-            key={book.id}
-            className={styles.bookCard}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.04 }}
-            whileHover={{ scale: 1.03, y: -4 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => openBook(book)}
-          >
-            <div className={styles.bookCover} style={{ backgroundColor: book.color }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={book.cover} alt={book.title} className={styles.coverImg} />
-            </div>
-            <div className={styles.bookInfo}>
-              <h3 className={styles.bookTitle}>{bookTitle(book)}</h3>
-              <p className={styles.bookAuthor}>{book.author}</p>
-              <p className={styles.bookDesc}>{bookDesc(book)}</p>
-            </div>
-          </motion.div>
+          <motion.a key={book.id} href={book.url} target="_blank" rel="noopener noreferrer" className={styles.bookCard} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }} whileHover={{ scale: 1.03, y: -4 }} whileTap={{ scale: 0.97 }}>
+            <div className={styles.bookCover} style={{ backgroundColor: book.color }}><img src={book.cover} alt={book.title} className={styles.coverImg} /></div>
+            <div className={styles.bookInfo}><h3 className={styles.bookTitle}>{book.title}</h3><p className={styles.bookAuthor}>Let&apos;s Read Asia</p><p className={styles.bookDesc}>{book.description}</p><span className={styles.externalLink}><ExternalLink size={14} />{tx("Baca di Let's Read", "Read on Let's Read")}</span></div>
+          </motion.a>
         ))}
       </div>
-
-      {/* Attribution */}
-      <div className={styles.attribution}>
-        <p>{tx("Buku disediakan oleh", "Books provided by")} <a href="https://www.letsreadasia.org" target="_blank" rel="noopener noreferrer">Let&apos;s Read</a> — The Asia Foundation. {tx("Gratis untuk dibaca!", "Free to read!")}</p>
-      </div>
-
-      {/* Reader Modal */}
-      <AnimatePresence>
-        {selectedBook && (
-          <motion.div
-            className={styles.readerOverlay}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className={styles.readerModal}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            >
-              {/* Reader Header */}
-              <div className={styles.readerHeader}>
-                <div className={styles.readerHeaderLeft}>
-                  <button className={styles.closeBtn} onClick={closeBook}>
-                    <X size={20} />
-                  </button>
-                  <div className={styles.readerBookInfo}>
-                    <h2 className={styles.readerTitle}>{bookTitle(selectedBook)}</h2>
-                    <span className={styles.readerAuthor}>{selectedBook.author}</span>
-                  </div>
-                </div>
-                <a
-                  href={selectedBook.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.externalLink}
-                >
-                  <ExternalLink size={16} />
-                  {tx("Buka di Let's Read", "Open in Let's Read")}
-                </a>
-              </div>
-
-              {/* Iframe Reader */}
-              <div className={styles.iframeWrapper}>
-                {isLoading && (
-                  <div className={styles.loadingOverlay}>
-                    <div className={styles.spinner} />
-                    <p>{tx("Memuat buku...", "Loading book...")}</p>
-                  </div>
-                )}
-                <iframe
-                  src={selectedBook.url}
-                  className={styles.iframe}
-                  onLoad={() => setIsLoading(false)}
-                  title={selectedBook.title}
-                  allow="fullscreen"
-                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className={styles.attribution}><p>{tx("Buku disediakan oleh", "Books provided by")} <a href="https://www.letsreadasia.org" target="_blank" rel="noopener noreferrer">Let&apos;s Read</a> — The Asia Foundation. {tx("Gratis untuk dibaca!", "Free to read!")}</p></div>
     </div>
   );
 }

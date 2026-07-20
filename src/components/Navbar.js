@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, Home, Tv, Book, Gamepad2, Route, RefreshCcw, UserRound, LogOut, LogIn, Shield } from "lucide-react";
+import { Menu, Home, Tv, Book, Gamepad2, RefreshCcw, UserRound, LogOut, LogIn, Shield } from "lucide-react";
 import MenuModal from "./MenuModal";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -15,7 +15,6 @@ const navLinks = [
   { key: "nav.tv", href: "/tv", icon: Tv },
   { key: "nav.books", href: "/books", icon: Book },
   { key: "nav.games", href: "/games", icon: Gamepad2 },
-  { key: "nav.learning", href: "/owly", icon: Route },
 ];
 
 export default function Navbar() {
