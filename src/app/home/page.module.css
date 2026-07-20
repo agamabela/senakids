@@ -67,6 +67,14 @@
   opacity: 0.9;
 }
 
+.bannerButton:focus-visible,
+.seeAllBtn:focus-visible,
+.letsReadCard:focus-visible,
+.ctaButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
 /* Sections */
 .section {
   display: flex;
@@ -185,7 +193,6 @@
 }
 
 .letsReadCard:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   border-color: var(--color-primary);
 }
 
@@ -221,7 +228,7 @@
 }
 
 .letsReadInfo {
-  padding: 12px;
+  padding: 12px 4px 14px;
 }
 
 .letsReadTitle {
@@ -255,7 +262,7 @@
   align-items: center;
   gap: 12px;
   padding: 40px 24px;
-  background: linear-gradient(135deg, var(--color-primary-light), var(--color-card));
+  background: var(--color-primary-light);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-2xl);
   text-align: center;
@@ -305,11 +312,11 @@
   }
   
   .cardGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 
   .letsReadGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 }

@@ -47,8 +47,8 @@
 .screenWrapper {
   width: 100%;
   aspect-ratio: 16/9;
-  background-color: #1A1A1A; /* Dark screen */
-  border-radius: var(--radius-2xl);
+  background-color: var(--color-text);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-card);
   position: relative;
@@ -246,12 +246,18 @@
   align-items: center;
   justify-content: center;
   color: #fff;
-  opacity: 0;
-  background: rgba(0,0,0,0.28);
+  opacity: 0.72;
+  background: rgba(0,0,0,0.22);
   transition: opacity 0.15s;
 }
-.vidCard:hover .vidPlay { opacity: 1; }
-.vidCard:hover .vidThumb { transform: translateY(-3px); box-shadow: var(--shadow-card); }
+.vidCard:hover .vidPlay,
+.vidCard:focus-visible .vidPlay { opacity: 1; }
+.vidCard:hover .vidThumb { box-shadow: var(--shadow-card); }
+.vidCard:focus-visible,
+.navBtn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
 
 .vidCardActive .vidThumb {
   border-color: var(--color-primary);

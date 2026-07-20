@@ -79,7 +79,7 @@ function Shelf({ name, items, activeKey, onSelect }) {
         </h3>
         <div className={styles.shelfNav}>
           <button aria-label="scroll left" className={styles.navBtn} onClick={() => scrollBy(-1)}><ChevronLeft size={20} /></button>
-          <button aria-label="scroll right" className={styles.navBtn} onClick={() => scrollBy(1)}><ChevronRight size={20} /></button>
+          <button aria-label={`Scroll ${name} right`} className={styles.navBtn} onClick={() => scrollBy(1)}><ChevronRight size={20} /></button>
         </div>
       </div>
       <div className={styles.row} ref={rowRef}>

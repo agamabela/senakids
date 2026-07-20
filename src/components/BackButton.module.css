@@ -1,35 +1,4 @@
-.backButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(145deg, #8BA888 0%, #6B8E6B 100%);
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow:
-    0 4px 15px rgba(107, 142, 107, 0.4),
-    inset 0 2px 0 rgba(255,255,255,0.2);
-  font-family: var(--font-nunito), system-ui, sans-serif;
-}
-
-.backButton:hover {
-  transform: scale(1.08) translateX(-3px);
-  box-shadow:
-    0 8px 25px rgba(107, 142, 107, 0.5),
-    inset 0 2px 0 rgba(255,255,255,0.2);
-}
-
-.backButton:active {
-  transform: scale(0.95);
-}
-
-.icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.backButton { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 16px; font-size: .95rem; font-weight: 800; color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer; transition: background-color var(--transition-normal), border-color var(--transition-normal); font-family: var(--font-nunito), system-ui, sans-serif; }
+.backButton:hover { background: var(--color-surface-muted); border-color: var(--color-border-strong); }
+.icon { display: flex; align-items: center; justify-content: center; color: var(--color-action); }
+.icon svg path { stroke: currentColor; }

@@ -41,7 +41,7 @@
 
 .back {
   transform: rotateY(180deg);
-  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(243,244,246,0.92));
+  background: var(--color-surface-muted);
 }
 
 .emoji {

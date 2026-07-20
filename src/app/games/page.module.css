@@ -55,7 +55,7 @@
 
 .heroSubtitle {
   font-size: 1.125rem;
-  color: rgba(255,255,255,0.8);
+  color: var(--color-muted-foreground);
   margin-bottom: 32px;
 }
 
@@ -76,7 +76,12 @@
 }
 
 .playNowBtn:hover {
-  transform: scale(1.05);
+  background-color: var(--color-orange);
+}
+
+.playNowBtn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
 }
 
 /* Game Zones */

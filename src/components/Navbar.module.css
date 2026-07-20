@@ -173,8 +173,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
-  width: 36px;
+  min-height: 44px;
+  min-width: 44px;
   flex-shrink: 0;
   border-radius: var(--radius-xl);
   border: 2px solid var(--color-border);

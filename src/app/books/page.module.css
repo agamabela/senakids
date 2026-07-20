@@ -128,6 +128,13 @@
 
 .filterBtn:hover { background-color: var(--color-muted); }
 
+.filterBtn:focus-visible,
+.filterBtnActive:focus-visible,
+.readBtn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
 .filterBtnActive {
   background-color: var(--color-primary);
   border: 1.5px solid var(--color-primary);
@@ -188,7 +195,7 @@
 .shelfTrack::-webkit-scrollbar { display: none; }
 
 .bookWrapper {
-  min-width: 220px;
+  min-width: 200px;
   transition: transform 0.3s;
   perspective: 1200px;
 }

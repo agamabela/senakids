@@ -45,18 +45,27 @@
   --color-background: #FAF6F0; /* Warm off-white/beige */
   --color-card: #FFFFFF;
   --color-border: #E5DED5; /* Soft tan */
+  --color-border-strong: #CDBFAF;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F2EBE1;
   --color-muted: #F2EBE1; /* Slightly darker beige for accents */
   --color-muted-foreground: #8C7A6B; /* Medium brown */
   --color-accent: #F2EBE1;
   --color-accent-foreground: #4A3F35;
 
   /* Text */
-  --color-text: #4A3F35; /* Deep espresso brown */
+  --color-text: #4A3F35; /* Primary text color: deep espresso brown */
+  --color-text-light: #8C7A6B;
   --color-text-white: #FFFFFF;
+  --color-focus: #5D7F5B;
+  --color-action: #6B8E6B;
+  --transition-fast: 150ms ease;
+  --transition-normal: 220ms ease;
 
   /* Fonts */
-  --font-heading: var(--font-heading);
-  --font-body: var(--font-body);
+  --font-nunito: var(--font-body);
+  --font-family-heading: var(--font-heading), 'Fredoka', sans-serif;
+  --font-family-body: var(--font-body), 'Nunito', sans-serif;
 
   /* Spacing */
   --space-xs: 4px;
@@ -285,7 +294,7 @@ img {
 
 /* Accessible focus styles */
 :focus-visible {
-  outline: 3px solid var(--color-purple);
+  outline: 3px solid var(--color-focus);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }

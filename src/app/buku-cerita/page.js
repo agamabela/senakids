@@ -61,7 +61,7 @@ export default function BukuCeritaPage() {
       </div>
       <div className={styles.bookGrid}>
         {books.map((book, index) => (
-          <motion.button key={book.id} type="button" onClick={() => openReader(book)} className={styles.bookCard} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }} whileHover={{ scale: 1.03, y: -4 }} whileTap={{ scale: 0.97 }}>
+          <motion.button key={book.id} type="button" onClick={() => openReader(book)} className={styles.bookCard} aria-label={`${tx("Baca buku", "Read book")}: ${book.title}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }} whileHover={{ scale: 1.03, y: -4 }} whileTap={{ scale: 0.97 }}>
             <div className={styles.bookCover} style={{ backgroundColor: book.color }}><img src={book.cover} alt={book.title} className={styles.coverImg} /></div>
             <div className={styles.bookInfo}><h3 className={styles.bookTitle}>{book.title}</h3><p className={styles.bookAuthor}>Let&apos;s Read Asia</p><p className={styles.bookDesc}>{book.description}</p><span className={styles.externalLink}>{tx("Baca sekarang", "Read now")}</span></div>
           </motion.button>

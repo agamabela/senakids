@@ -2,14 +2,13 @@
 
 import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 import styles from "./login.module.css";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -102,6 +101,7 @@ function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
                 placeholder="••••••••"
+                autoComplete="current-password"
                 required
                 disabled={isLoading}
               />
@@ -147,7 +147,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className={styles.container}><div className={styles.card}><div className={styles.header}><div className={styles.logo}>🌿</div><h1 className={styles.title}>Memuat...</h1></div></div></div>}>
+    <Suspense fallback={<div className={styles.container}><div className={styles.card}><div className={styles.header}><img className={styles.logo} src="/sena-logo.svg" alt="" width="64" height="64" /><h1 className={styles.title}>Memuat...</h1></div></div></div>}>
       <LoginForm />
     </Suspense>
   );

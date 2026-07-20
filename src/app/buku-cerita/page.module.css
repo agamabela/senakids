@@ -56,7 +56,7 @@
 .bookCard {
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-card);
   border: 1.5px solid var(--color-border);
@@ -71,7 +71,15 @@
 }
 
 .bookCard:hover {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-card);
+}
+
+.bookCard:focus-visible,
+.backBtn:focus-visible,
+.readerExternal:focus-visible,
+.closeBtn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
 }
 
 .bookCover {

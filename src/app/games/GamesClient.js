@@ -59,7 +59,6 @@ export default function GamesClient({ zones }) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
       >
-        <div className={styles.arcadeGlow} />
         <div className={styles.heroContent}>
           <div className={styles.trophyIcon}>
             <Trophy size={32} />
@@ -102,7 +101,7 @@ export default function GamesClient({ zones }) {
       </section>
 
       {zones.length === 0 && <p style={{textAlign: 'center', marginTop: '40px', color: 'var(--color-muted-foreground)'}}>{t("games.emptyMessage")}</p>}
-      {zones.map((zone, i) => (
+      {zones.map((zone) => (
         <section key={zone.title} className={styles.zoneSection}>
           <motion.div 
             className={styles.zoneHeader}
