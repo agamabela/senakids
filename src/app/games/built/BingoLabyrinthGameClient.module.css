@@ -1,0 +1,308 @@
+.gameWrapper {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--color-foreground);
+  font-family: var(--font-fredoka), var(--font-nunito), system-ui, sans-serif;
+}
+
+.header p {
+  margin: 5px 0 0;
+  color: var(--color-muted-foreground);
+  font-size: 0.9rem;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+.levelNav {
+  display: flex;
+  gap: 8px;
+}
+
+.levelNav button {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--color-orange);
+  background: var(--color-card);
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-orange);
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+.levelNav button:hover {
+  background: var(--color-orange);
+  color: white;
+}
+
+.levelNav button.activeLevel {
+  background: var(--color-orange);
+  color: white;
+}
+
+.gameArea {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.canvas {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  touch-action: none;
+  max-width: 100%;
+  height: auto;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.resetButton, .goButton, .nextButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+.resetButton {
+  background: var(--color-muted);
+  color: var(--color-muted-foreground);
+}
+
+.resetButton:hover {
+  background: var(--color-muted-hover);
+}
+
+.goButton {
+  background: var(--color-orange);
+  color: white;
+}
+
+.goButton:hover:not(:disabled) {
+  background: #B86A54;
+  transform: scale(1.05);
+}
+
+.goButton:disabled {
+  background: var(--color-muted);
+  color: var(--color-muted-foreground);
+  cursor: not-allowed;
+}
+
+.winMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.winMessage span {
+  font-size: 1.5rem;
+  color: var(--color-success);
+  font-weight: bold;
+  animation: bounce 0.5s ease infinite alternate;
+  font-family: var(--font-fredoka), var(--font-nunito), system-ui, sans-serif;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.nextButton {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  color: white;
+  font-size: 1.1rem;
+  padding: 15px 30px;
+}
+
+.nextButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.hint {
+  text-align: center;
+  color: var(--color-muted-foreground);
+  font-size: 0.9rem;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+/* Intro Screen Styles */
+.introCard {
+  background: var(--color-card);
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.introCard h1 {
+  color: var(--color-orange);
+  font-size: 1.8rem;
+  margin: 20px 0 10px;
+  font-family: var(--font-fredoka), var(--font-nunito), system-ui, sans-serif;
+}
+
+.introCard > p {
+  color: var(--color-muted-foreground);
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+.instructions {
+  text-align: left;
+  margin: 30px 0;
+  background: var(--color-muted);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  color: var(--color-muted-foreground);
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+.step:last-child {
+  margin-bottom: 0;
+}
+
+.stepNum {
+  width: 30px;
+  height: 30px;
+  background: var(--color-orange);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.startButton {
+  background: linear-gradient(135deg, var(--color-orange), #B86A54);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: var(--font-fredoka), var(--font-nunito), system-ui, sans-serif;
+}
+
+.startButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(200, 122, 101, 0.4);
+}
+
+/* Bingo Art CSS */
+.bingoArt {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.bingoHead {
+  position: absolute;
+  width: 50px;
+  height: 45px;
+  background: #8BA888;
+  border-radius: 50%;
+  top: 10px;
+  left: 25px;
+}
+
+.bingoBody {
+  position: absolute;
+  width: 50px;
+  height: 40px;
+  background: #8BA888;
+  border-radius: 50%;
+  bottom: 10px;
+  left: 25px;
+}
+
+.bingoEar1, .bingoEar2 {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 25px solid #8BA888;
+}
+
+.bingoEar1 {
+  top: 0;
+  left: 18px;
+  transform: rotate(-20deg);
+}
+
+.bingoEar2 {
+  top: 0;
+  right: 18px;
+  transform: rotate(20deg);
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header h1 {
+    font-size: 1.3rem;
+  }
+
+  .canvas {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+  }
+
+  .introCard {
+    padding: 30px 20px;
+  }
+
+  .introCard h1 {
+    font-size: 1.5rem;
+  }
+
+  .startButton {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+  }
+}
