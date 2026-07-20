@@ -13,11 +13,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Play, ArrowRight, Volume2, Mic, X, Crown } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import TraceStage from "@/components/TraceStage";
 import { STROKES_UPPER } from "@/lib/traceData";
 import Owly from "./Owly";
 import { speak, sfx } from "./owlyAudio";
+import { owlyImg } from "./owlyImage";
 import { XP, CROWNS } from "./lessonData";
 import { useOwlyProgress } from "./useOwlyProgress";
 import styles from "./LessonPlayer.module.css";
@@ -25,10 +27,15 @@ import styles from "./LessonPlayer.module.css";
 // Pick the right value from a bilingual { id, en } object (or pass through).
 const pick = (v, lang) => (v && typeof v === "object" && !Array.isArray(v) ? (v[lang] ?? v.id) : v);
 
+// A generated illustration for a subject (no emoji anywhere).
+function Pic({ subject, className, size = "square" }) {
+  return <img src={owlyImg(subject, size)} alt="" className={className} draggable={false} />;
+}
+
 // Owly encouragement lines (from the GDD dialogue library).
 const CORRECT_LINES = {
-  id: ["Ya! Kamu benar!", "Hebat sekali!", "Pintar sekali!", "Kamu membara! 🔥"],
-  en: ["Yes! You got it!", "Great job!", "So smart!", "You're on fire! 🔥"],
+  id: ["Ya! Kamu benar!", "Hebat sekali!", "Pintar sekali!", "Kamu luar biasa!"],
+  en: ["Yes! You got it!", "Great job!", "So smart!", "You're amazing!"],
 };
 const WRONG_LINES = {
   id: ["Hampir! Coba lagi ya.", "Ups! Yang itu tricky.", "Kesalahan bikin kita tumbuh!"],
@@ -65,15 +72,19 @@ export default function LessonPlayer({ lesson, onExit }) {
       const ex = lesson.exercises[step];
       if (correct) {
         sfx.correct();
+        const line = rand(CORRECT_LINES[language]);
         setOwlyState("happy");
-        setOwlyMsg(rand(CORRECT_LINES[language]));
+        setOwlyMsg(line);
+        speak(line, language);
         earnedXpRef.current += XP[ex.type] || 10;
         earnedGemsRef.current += 1;
         if (firstTry) firstTryRef.current += 1;
       } else {
         sfx.wrong();
+        const line = rand(WRONG_LINES[language]);
         setOwlyState("cheer");
-        setOwlyMsg(rand(WRONG_LINES[language]));
+        setOwlyMsg(line);
+        speak(line, language);
         loseHeart();
       }
     },
@@ -96,6 +107,13 @@ export default function LessonPlayer({ lesson, onExit }) {
     }
   }, [step, total, finishLesson, lesson.id]);
 
+  // Read each exercise prompt aloud in a native voice when it appears.
+  useEffect(() => {
+    if (step < 0 || step >= total || done) return;
+    const prompt = pick(lesson.exercises[step].prompt, language);
+    if (prompt) speak(prompt, language);
+  }, [step, total, done, lesson.exercises, language]);
+
   // ── Intro screen ──────────────────────────────────────────────────────────
   if (step === -1) {
     return (
@@ -106,10 +124,10 @@ export default function LessonPlayer({ lesson, onExit }) {
           animate={{ opacity: 1, y: 0 }}
         >
           <Owly state="happy" message={pick(lesson.intro, language)} size={120} />
-          <div className={styles.introEmoji}>{lesson.emoji}</div>
+          <Pic subject={lesson.img} className={styles.introPic} size="square" />
           <h1 className={styles.introTitle}>{pick(lesson.title, language)}</h1>
           <button className={styles.bigStart} onClick={() => { speak(pick(lesson.intro, language), language); startLesson(); }}>
-            ▶️ {t("MULAI", "START")}
+            <Play size={22} fill="currentColor" /> {t("MULAI", "START")}
           </button>
         </motion.div>
       </div>
@@ -129,17 +147,17 @@ export default function LessonPlayer({ lesson, onExit }) {
           transition={{ type: "spring", stiffness: 200, damping: 18 }}
         >
           <Owly state="celebrate" size={120} />
-          <h1 className={styles.completeTitle}>🎉 {t("PELAJARAN SELESAI!", "LESSON COMPLETE!")}</h1>
+          <h1 className={styles.completeTitle}>{t("PELAJARAN SELESAI!", "LESSON COMPLETE!")}</h1>
           <div className={styles.crownBig} style={{ color: crown.color }}>
-            {crown.icon} {t("Mahkota", "Crown")} {pick(crown.label, language)}
+            <Crown size={28} fill="currentColor" /> {t("Mahkota", "Crown")} {pick(crown.label, language)}
           </div>
           <div className={styles.rewards}>
-            <span>⭐ +{earnedXpRef.current} XP</span>
-            <span>💎 +{earnedGemsRef.current}</span>
+            <span>+{earnedXpRef.current} XP</span>
+            <span>+{earnedGemsRef.current} {t("Permata", "Gems")}</span>
           </div>
           <div className={styles.completeBtns}>
             <button className={styles.bigStart} onClick={onExit}>
-              ➡️ {t("Lanjutkan", "Continue")}
+              {t("Lanjutkan", "Continue")} <ArrowRight size={22} />
             </button>
           </div>
         </motion.div>
@@ -155,7 +173,7 @@ export default function LessonPlayer({ lesson, onExit }) {
     <div className={styles.stage}>
       {/* progress bar */}
       <div className={styles.topBar}>
-        <button className={styles.quitBtn} onClick={onExit} aria-label="close">✕</button>
+        <button className={styles.quitBtn} onClick={onExit} aria-label="close"><X size={20} /></button>
         <div className={styles.progressTrack}>
           <motion.div
             className={styles.progressFill}
@@ -205,7 +223,7 @@ function NextButton({ t, onNext }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      {t("Lanjut", "Next")} ➡️
+      {t("Lanjut", "Next")} <ArrowRight size={18} />
     </motion.button>
   );
 }
@@ -242,7 +260,7 @@ function TapExercise({ ex, language, t, onResult, onNext }) {
             whileTap={{ scale: 0.94 }}
             disabled={solved}
           >
-            <span className={styles.optEmoji}>{opt.emoji}</span>
+            <Pic subject={opt.img} className={styles.optPic} />
             <span className={styles.optLabel}>{pick(opt.label, language)}</span>
           </motion.button>
         ))}
@@ -277,7 +295,7 @@ function TraceExercise({ ex, language, t, onResult, onNext }) {
       </div>
       {solved
         ? <NextButton t={t} onNext={onNext} />
-        : <p className={styles.hintSmall}>✏️ {t("Ikuti garis titik-titik", "Follow the dotted line")}</p>}
+        : <p className={styles.hintSmall}>{t("Ikuti garis titik-titik", "Follow the dotted line")}</p>}
     </div>
   );
 }
@@ -311,12 +329,12 @@ function DragExercise({ ex, language, t, onResult, onNext }) {
             whileTap={{ scale: 1.2 }}
             disabled={inBasket.includes(i)}
           >
-            {ex.emoji}
+            <Pic subject={ex.img} className={styles.dragPic} />
           </motion.button>
         ))}
       </div>
       <div className={styles.basket}>
-        <span className={styles.basketEmoji}>{ex.basket}</span>
+        <Pic subject={ex.basket} className={styles.basketPic} />
         <span className={styles.basketCount}>{inBasket.length}/{ex.count}</span>
       </div>
       {solved && <NextButton t={t} onNext={onNext} />}
@@ -344,8 +362,8 @@ function ListenExercise({ ex, language, t, onResult, onNext }) {
     <div className={styles.exercise}>
       <p className={styles.prompt}>{pick(ex.prompt, language)}</p>
       <div className={styles.listenCard}>
-        <button className={styles.speakerBtn} onClick={playWord} aria-label="play">🔊</button>
-        <div className={styles.listenEmoji}>{ex.emoji}</div>
+        <button className={styles.speakerBtn} onClick={playWord} aria-label="play"><Volume2 size={28} /></button>
+        <Pic subject={ex.img} className={styles.listenPic} />
         <div className={styles.listenWord}>{word}</div>
         {ex.phon && <div className={styles.listenPhon}>{ex.phon}</div>}
       </div>
@@ -353,7 +371,7 @@ function ListenExercise({ ex, language, t, onResult, onNext }) {
         ? <NextButton t={t} onNext={onNext} />
         : (
           <button className={`${styles.micBtn} ${phase === "listening" ? styles.micActive : ""}`} onClick={tapMic}>
-            {phase === "listening" ? `🎤 ${t("Mendengarkan...", "Listening...")}` : `🎤 ${t("Ketuk untuk bicara", "Tap to speak")}`}
+            <Mic size={20} /> {phase === "listening" ? t("Mendengarkan...", "Listening...") : t("Ketuk untuk bicara", "Tap to speak")}
           </button>
         )}
     </div>
@@ -384,7 +402,7 @@ function FillExercise({ ex, language, t, onResult, onNext }) {
   return (
     <div className={styles.exercise}>
       <p className={styles.prompt}>{pick(ex.prompt, language)}</p>
-      <div className={styles.fillEmoji}>{ex.emoji}</div>
+      <Pic subject={ex.img} className={styles.fillPic} />
       <div className={styles.fillWord}>{solved ? word.replace("_", answer) : word}</div>
       <div className={styles.letterRow}>
         {ex.options.map((letter) => (
@@ -411,8 +429,12 @@ function StoryExercise({ ex, language, t, onResult, onNext }) {
   const last = page >= ex.pages.length - 1;
   const cur = ex.pages[page];
 
-  const advance = () => {
+  // Narrate each story page as it appears.
+  useEffect(() => {
     speak(pick(cur.text, language), language);
+  }, [page, cur.text, language]);
+
+  const advance = () => {
     if (last) {
       setFinished(true);
       onResult(true, { firstTry: true });
@@ -425,7 +447,7 @@ function StoryExercise({ ex, language, t, onResult, onNext }) {
     <div className={styles.exercise}>
       <p className={styles.prompt}>{pick(ex.prompt, language)}</p>
       <motion.div key={page} className={styles.storyCard} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-        <div className={styles.storyEmoji}>{cur.emoji}</div>
+        <Pic subject={cur.img} className={styles.storyPic} size="landscape_4_3" />
         <p className={styles.storyText}>{pick(cur.text, language)}</p>
         <div className={styles.storyDots}>
           {ex.pages.map((_, i) => (
@@ -435,7 +457,7 @@ function StoryExercise({ ex, language, t, onResult, onNext }) {
       </motion.div>
       {finished
         ? <NextButton t={t} onNext={onNext} />
-        : <button className={styles.nextBtn} onClick={advance}>{last ? t("Selesai", "Finish") : t("Halaman berikut", "Next page")} ➡️</button>}
+        : <button className={styles.nextBtn} onClick={advance}>{last ? t("Selesai", "Finish") : t("Halaman berikut", "Next page")} <ArrowRight size={18} /></button>}
     </div>
   );
 }
@@ -465,10 +487,10 @@ function CatchExercise({ ex, language, t, onResult, onNext }) {
       spawnRef.current = setInterval(() => {
         if (solvedRef.current) return;
         const isTarget = Math.random() > 0.35;
-        const emoji = isTarget ? ex.emoji : ex.decoys[Math.floor(Math.random() * ex.decoys.length)];
+        const subject = isTarget ? ex.img : ex.decoys[Math.floor(Math.random() * ex.decoys.length)];
         setItems((cur) => [
           ...cur,
-          { id: idRef.current++, emoji, isTarget, left: 8 + Math.random() * 78, dur: 3 + Math.random() * 1.5 },
+          { id: idRef.current++, subject, isTarget, left: 8 + Math.random() * 78, dur: 3 + Math.random() * 1.5 },
         ]);
       }, 850);
     }, 300);
@@ -476,7 +498,7 @@ function CatchExercise({ ex, language, t, onResult, onNext }) {
       clearTimeout(timer);
       stop();
     };
-  }, [ex.emoji, ex.decoys, stop]);
+  }, [ex.img, ex.decoys, stop]);
 
   const tapItem = (item) => {
     setItems((cur) => cur.filter((it) => it.id !== item.id));
@@ -498,7 +520,7 @@ function CatchExercise({ ex, language, t, onResult, onNext }) {
   return (
     <div className={styles.exercise}>
       <p className={styles.prompt}>{pick(ex.prompt, language)}</p>
-      <div className={styles.catchStat}>⭐ {caught}/{ex.target}</div>
+      <div className={styles.catchStat}>{caught}/{ex.target}</div>
       <div className={styles.catchField}>
         {items.map((it) => (
           <button
@@ -508,7 +530,7 @@ function CatchExercise({ ex, language, t, onResult, onNext }) {
             onClick={() => tapItem(it)}
             onAnimationEnd={() => setItems((cur) => cur.filter((x) => x.id !== it.id))}
           >
-            {it.emoji}
+            <Pic subject={it.subject} className={styles.fallPic} />
           </button>
         ))}
       </div>

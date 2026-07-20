@@ -3,38 +3,14 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // OWLY — Audio helpers
 // ---------------------------------------------------------------------------
-// Two independent layers, both with graceful fallbacks:
-//   1. speak()  — spoken instructions via the browser SpeechSynthesis API
+// Two layers:
+//   1. speak()  — real native voice via the Google Cloud TTS endpoint
+//                 (/api/tts, id-ID-Neural2-C for Indonesian). No browser
+//                 SpeechSynthesis — we want a natural native narrator.
 //   2. sfx      — short generated tones via Web Audio (ding / boing / fanfare)
-// No asset files are required, so this works fully offline.
 // ═══════════════════════════════════════════════════════════════════════════
 
-// ── Speech (instructions / Owly's voice) ──────────────────────────────────
-export function speak(text, lang = "id") {
-  try {
-    if (typeof window === "undefined" || !window.speechSynthesis || !text) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang === "id" ? "id-ID" : "en-US";
-    u.rate = 0.85; // a touch slower for young children
-    u.pitch = 1.15;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  } catch {
-    // speech not available — instructions are always on screen too
-  }
-}
-
-export function stopSpeaking() {
-  try {
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-  } catch {
-    /* ignore */
-  }
-}
-
-// ── Sound effects (generated tones) ────────────────────────────────────────
+// ── Shared AudioContext (also used to play the returned MP3) ────────────────
 let ctx = null;
 function ensureCtx() {
   if (typeof window === "undefined") return null;
@@ -46,6 +22,58 @@ function ensureCtx() {
   return ctx;
 }
 
+// ── Speech (native TTS narration) ──────────────────────────────────────────
+let currentSource = null;
+
+export async function speak(text, language = "id") {
+  try {
+    if (typeof window === "undefined" || !text) return;
+    stopSpeaking();
+
+    const res = await fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, language }),
+    });
+    if (!res.ok) return;
+
+    const data = await res.json();
+    if (!data.audio) return;
+
+    const c = ensureCtx();
+    if (!c) return;
+
+    // base64 -> ArrayBuffer -> decoded audio
+    const binary = atob(data.audio);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const buffer = await c.decodeAudioData(bytes.buffer);
+
+    const source = c.createBufferSource();
+    source.buffer = buffer;
+    source.connect(c.destination);
+    source.onended = () => {
+      if (currentSource === source) currentSource = null;
+    };
+    currentSource = source;
+    source.start(0);
+  } catch {
+    // network / decode issues — instructions are always on screen too
+  }
+}
+
+export function stopSpeaking() {
+  try {
+    if (currentSource) {
+      currentSource.stop();
+      currentSource = null;
+    }
+  } catch {
+    /* already stopped */
+  }
+}
+
+// ── Sound effects (generated tones) ────────────────────────────────────────
 function tone(freq, dur = 0.15, type = "sine", vol = 0.18, delay = 0) {
   try {
     const c = ensureCtx();

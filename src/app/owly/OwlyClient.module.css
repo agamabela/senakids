@@ -73,8 +73,11 @@
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
-.unitEmoji {
-  font-size: 2rem;
+.unitPic {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 10px;
 }
 
 .unitTitleWrap {
@@ -96,6 +99,10 @@
 }
 
 .comingSoon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   text-align: center;
   padding: 26px;
   margin-top: 14px;
@@ -145,15 +152,20 @@
   box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
 }
 
-.nodeEmoji {
-  font-size: 2.4rem;
+.nodePic {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.nodeLock {
+  color: var(--color-muted-foreground);
 }
 
 .nodeCrown {
   position: absolute;
   top: -12px;
   right: -6px;
-  font-size: 1.5rem;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
 }
 

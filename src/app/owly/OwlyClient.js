@@ -11,14 +11,16 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Flame, Heart, Gem, Star, Lock, Crown } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import Owly from "./Owly";
 import LessonPlayer from "./LessonPlayer";
-import { UNITS, LESSONS, lessonsByUnit, CROWNS } from "./lessonData";
+import { UNITS, lessonsByUnit, CROWNS } from "./lessonData";
+import { owlyImg } from "./owlyImage";
 import { useOwlyProgress, MAX_HEARTS } from "./useOwlyProgress";
 import styles from "./OwlyClient.module.css";
 
-const crownIcon = (key) => CROWNS.find((c) => c.key === key)?.icon || "";
+const crownColor = (key) => CROWNS.find((c) => c.key === key)?.color || "#f59e0b";
 
 export default function OwlyClient() {
   const { language } = useLanguage();
@@ -56,19 +58,19 @@ export default function OwlyClient() {
       {/* ── HUD ── */}
       <div className={styles.hud}>
         <div className={styles.hudItem} title={t("Streak", "Streak")}>
-          <span className={styles.hudIcon}>🔥</span>
+          <Flame className={styles.hudIcon} size={22} color="#f97316" fill="#fb923c" />
           <span className={styles.hudVal}>{hydrated ? streak : 0}</span>
         </div>
         <div className={styles.hudItem} title={t("Nyawa", "Hearts")}>
-          <span className={styles.hudIcon}>❤️</span>
+          <Heart className={styles.hudIcon} size={22} color="#ef4444" fill="#f87171" />
           <span className={styles.hudVal}>{hydrated ? hearts : MAX_HEARTS}/{MAX_HEARTS}</span>
         </div>
         <div className={styles.hudItem} title={t("Permata", "Gems")}>
-          <span className={styles.hudIcon}>💎</span>
+          <Gem className={styles.hudIcon} size={22} color="#0ea5e9" fill="#38bdf8" />
           <span className={styles.hudVal}>{hydrated ? gems : 0}</span>
         </div>
         <div className={styles.hudItem} title="XP">
-          <span className={styles.hudIcon}>⭐</span>
+          <Star className={styles.hudIcon} size={22} color="#f59e0b" fill="#fbbf24" />
           <span className={styles.hudVal}>{hydrated ? xp : 0}</span>
         </div>
       </div>
@@ -90,7 +92,7 @@ export default function OwlyClient() {
         return (
           <section key={unit.id} className={styles.unit}>
             <div className={styles.unitHeader} style={{ background: unit.color }}>
-              <span className={styles.unitEmoji}>{unit.emoji}</span>
+              <img src={owlyImg(unit.img, "square")} alt="" className={styles.unitPic} draggable={false} />
               <div className={styles.unitTitleWrap}>
                 <span className={styles.unitLabel}>{t("Unit", "Unit")} {unit.id}</span>
                 <span className={styles.unitTitle}>{L(unit.title)}</span>
@@ -99,7 +101,7 @@ export default function OwlyClient() {
 
             {unit.locked ? (
               <div className={styles.comingSoon}>
-                🔒 {t("Segera Hadir!", "Coming Soon!")}
+                <Lock size={18} /> {t("Segera Hadir!", "Coming Soon!")}
               </div>
             ) : (
               <div className={styles.lessonTrack}>
@@ -116,8 +118,10 @@ export default function OwlyClient() {
                       disabled={!unlocked}
                       style={{ marginLeft: `${Math.sin(i * 1.1) * 40 + 40}px` }}
                     >
-                      <span className={styles.nodeEmoji}>{unlocked ? lesson.emoji : "🔒"}</span>
-                      {crown && <span className={styles.nodeCrown}>{crownIcon(crown)}</span>}
+                      {unlocked
+                        ? <img src={owlyImg(lesson.img, "square")} alt="" className={styles.nodePic} draggable={false} />
+                        : <Lock className={styles.nodeLock} size={30} />}
+                      {crown && <Crown className={styles.nodeCrown} size={22} color={crownColor(crown)} fill={crownColor(crown)} />}
                       <span className={styles.nodeLabel}>{L(lesson.title)}</span>
                     </motion.button>
                   );

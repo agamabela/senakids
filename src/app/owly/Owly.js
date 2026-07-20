@@ -1,12 +1,13 @@
 "use client";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// OWLY — the mascot. A pure-CSS/emoji owl that reacts with different animation
-// states (idle / happy / cheer / celebrate / think). Kept asset-free so it
-// works anywhere; the personality comes from motion + the speech bubble.
+// OWLY — the mascot. A generated owl illustration that reacts with different
+// animation states (idle / happy / cheer / celebrate / think). The personality
+// comes from motion + the speech bubble. No emoji.
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { motion } from "framer-motion";
+import { owlyMascot } from "./owlyImage";
 import styles from "./Owly.module.css";
 
 const VARIANTS = {
@@ -17,16 +18,19 @@ const VARIANTS = {
   think: { rotate: [0, -6, 0], transition: { duration: 1.2, repeat: Infinity } },
 };
 
+const MASCOT_SRC = owlyMascot("square_hd");
+
 export default function Owly({ state = "idle", message, size = 96 }) {
   return (
     <div className={styles.wrap}>
-      <motion.div
+      <motion.img
+        src={MASCOT_SRC}
+        alt="Owly the owl"
         className={styles.owl}
-        style={{ fontSize: size }}
+        style={{ width: size, height: size }}
         animate={VARIANTS[state] || VARIANTS.idle}
-      >
-        🦉
-      </motion.div>
+        draggable={false}
+      />
       {message && (
         <motion.div
           key={message}
