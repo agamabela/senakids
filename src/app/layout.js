@@ -9,12 +9,14 @@ const fredoka = Fredoka({
   variable: "--font-heading",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const nunito = Nunito({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata = {
@@ -34,7 +36,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id" className={`${fredoka.variable} ${nunito.variable}`}>
-      <body>
+      <body className={`${fredoka.variable} ${nunito.variable}`}>
         <SessionProvider>
           <div className="app-wrapper">
             <LanguageProvider>

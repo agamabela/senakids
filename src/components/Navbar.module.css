@@ -24,7 +24,6 @@
 .leftSection {
   display: flex;
   flex: none;
-  width: 8.33%; /* roughly 1/12 */
   align-items: center;
   gap: 8px;
 }
@@ -163,7 +162,6 @@
 .rightSection {
   display: flex;
   flex: none;
-  width: 8.33%;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
