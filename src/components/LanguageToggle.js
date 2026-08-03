@@ -15,7 +15,7 @@ export default function LanguageToggle() {
           borderRadius: '999px',
           border: '1px solid var(--color-border)',
           padding: '6px 10px',
-          background: 'white',
+          background: 'var(--color-surface)',
           color: 'var(--color-text)',
         }}
       >

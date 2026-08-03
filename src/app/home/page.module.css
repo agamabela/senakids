@@ -53,14 +53,14 @@
 
 .bannerButton {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-primary-text, white);
   border: none;
   border-radius: var(--radius-xl);
   padding: 10px 24px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.2s;
+  transition: opacity var(--transition-instant);
 }
 
 .bannerButton:hover {
@@ -138,7 +138,8 @@
   flex-shrink: 0;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  border: 2px solid white;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card);
 }
 
 .channelEmoji {
@@ -187,13 +188,24 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all var(--transition-instant);
   box-shadow: var(--shadow-sm);
   height: 100%;
+  outline: none;
 }
 
 .letsReadCard:hover {
   border-color: var(--color-primary);
+  transform: scale(1.03);
+}
+
+.letsReadCard:active {
+  transform: scale(0.97);
+}
+
+.letsReadCard:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
 }
 
 .letsReadCover {
@@ -201,7 +213,7 @@
   width: 100%;
   aspect-ratio: 3/4;
   overflow: hidden;
-  background: #f0f0f0;
+  background: var(--color-muted);
 }
 
 .coverImage {
@@ -286,12 +298,12 @@
   gap: 8px;
   padding: 12px 28px;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-primary-text, white);
   border-radius: var(--radius-xl);
   font-weight: 700;
   font-size: 1rem;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all var(--transition-instant);
   margin-top: 8px;
 }
 

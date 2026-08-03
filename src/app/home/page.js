@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Heart, ChevronRight, Gamepad2, BookOpen } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -73,12 +72,7 @@ export default function Home() {
     <div className={styles.container}>
       
       {/* Top Support Banner */}
-      <motion.div 
-        className={styles.supportBanner}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className={styles.supportBanner}>
         <div className={styles.bannerLeft}>
           <div className={styles.heartIcon}>
             <Heart fill="currentColor" size={24} />
@@ -91,7 +85,7 @@ export default function Home() {
         <a href="https://saweria.co/senakids" target="_blank" rel="noopener noreferrer" className={styles.bannerButton}>
           {t("home.supportButton")}
         </a>
-      </motion.div>
+      </div>
 
       {/* Books Section */}
       <section className={styles.section}>
@@ -123,15 +117,7 @@ export default function Home() {
         <p className={styles.sectionSubtitle}>{tx("Cerita anak — baca langsung di sini!", "Children's stories — read right here!")}</p>
         <div className={styles.letsReadGrid}>
           {letsReadBooks.map((book, index) => (
-            <motion.div
-              key={book.title.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
+            <div key={book.title.id}>
               <Link href={book.href} className={styles.letsReadCard}>
                 <div className={styles.letsReadCover}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -146,7 +132,7 @@ export default function Home() {
                   <p className={styles.letsReadDesc}>{L(book.description)}</p>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -171,19 +157,14 @@ export default function Home() {
       </section>
 
       {/* CTA to Games */}
-      <motion.div
-        className={styles.ctaSection}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
+      <div className={styles.ctaSection}>
         <Gamepad2 size={40} />
         <h2>{tx("Lihat Semua Permainan", "See All Games")}</h2>
         <p>{tx("Ada banyak game seru yang menanti!", "Lots of fun games are waiting!")}</p>
         <Link href="/games" className={styles.ctaButton}>
           {tx("Jelajahi Permainan →", "Explore Games →")}
         </Link>
-      </motion.div>
+      </div>
 
       {/* Footer Banner */}
       <footer className={styles.footerBanner}>

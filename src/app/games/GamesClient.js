@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Trophy, Play } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -37,6 +36,7 @@ const builtGames = [
   { title: { id: "Simon Bilang", en: "Simon Says" }, description: { id: "Ingat & ulangi urutan warna!", en: "Remember & repeat the colors!" }, emoji: "🎨", href: "/games/built/simon-bilang", color: "purple" },
   { title: { id: "Letuskan Balon", en: "Pop the Balloons" }, description: { id: "Letuskan balon & belajar berhitung!", en: "Pop balloons & learn counting!" }, emoji: "🎈", href: "/games/built/letuskan-balon", color: "teal" },
   { title: { id: "Petualangan Lompat", en: "Hop Adventure" }, description: { id: "Lari, lompat & kumpulkan bintang!", en: "Run, jump & collect stars!" }, emoji: "🦊", href: "/games/built/petualangan-lompat", color: "green" },
+  { title: { id: "Super Mario Bros", en: "Super Mario Bros" }, description: { id: "Mainkan petualangan klasik retro secara langsung!", en: "Play the classic retro adventure directly!" }, emoji: "🍄", href: "/games/built/mario", color: "red" },
 ];
 
 // Helper function to extract color from zone if needed, or just default to blue
@@ -54,11 +54,7 @@ export default function GamesClient({ zones }) {
     <div className={styles.container}>
       
       {/* Game Arcade Hero */}
-      <motion.div 
-        className={styles.arcadeHero}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-      >
+      <div className={styles.arcadeHero}>
         <div className={styles.heroContent}>
           <div className={styles.trophyIcon}>
             <Trophy size={32} />
@@ -76,22 +72,17 @@ export default function GamesClient({ zones }) {
             <Play fill="currentColor" size={24} /> {t("games.playNow")}
           </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Game Zones from DB */}
       <section className={styles.zoneSection} id="built-games">
-        <motion.div 
-          className={styles.zoneHeader}
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-        >
+        <div className={styles.zoneHeader}>
           <div className={styles.zoneIndicator} style={{ backgroundColor: getZoneColor("Built-in") }} />
           <div>
             <h2 className={styles.zoneTitle}>{t("games.builtInTitle")}</h2>
             <p className={styles.zoneDesc}>{t("games.builtInDesc")}</p>
           </div>
-        </motion.div>
+        </div>
 
         <div className={styles.zoneGrid}>
           {builtGames.map((game, j) => (
@@ -103,18 +94,13 @@ export default function GamesClient({ zones }) {
       {zones.length === 0 && <p style={{textAlign: 'center', marginTop: '40px', color: 'var(--color-muted-foreground)'}}>{t("games.emptyMessage")}</p>}
       {zones.map((zone) => (
         <section key={zone.title} className={styles.zoneSection}>
-          <motion.div 
-            className={styles.zoneHeader}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
+          <div className={styles.zoneHeader}>
             <div className={styles.zoneIndicator} style={{ backgroundColor: getZoneColor(zone.title) }} />
             <div>
               <h2 className={styles.zoneTitle}>{zone.title}</h2>
               <p className={styles.zoneDesc}>{t("games.zoneDesc")}</p>
             </div>
-          </motion.div>
+          </div>
           
           <div className={styles.zoneGrid}>
             {zone.games.map((game, j) => (

@@ -29,6 +29,7 @@ import PukulTikusGameClient from "../PukulTikusGameClient";
 import SimonBilangGameClient from "../SimonBilangGameClient";
 import LetuskanBalonGameClient from "../LetuskanBalonGameClient";
 import PlatformerGameClient from "../PlatformerGameClient";
+import MarioGameClient from "../MarioGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -63,6 +64,7 @@ const builtGameDetails = {
   "simon-bilang": { title: "Simon Bilang", description: "Ingat dan ulangi urutan warna yang makin panjang!", note: "This built-in game is implemented directly in Sena Kids." },
   "letuskan-balon": { title: "Letuskan Balon", description: "Letuskan balon sesuai jumlah untuk belajar berhitung!", note: "This built-in game is implemented directly in Sena Kids." },
   "petualangan-lompat": { title: "Petualangan Lompat", description: "Lari, lompat, kumpulkan bintang, dan capai bendera!", note: "This built-in game is implemented directly in Sena Kids." },
+  mario: { title: "Super Mario Bros", description: "Mainkan petualangan klasik Super Mario Bros secara langsung di browser Anda!", note: "Classic retro HTML5 game." }
 };
 
 const gameClients = {
@@ -96,6 +98,7 @@ const gameClients = {
   "simon-bilang": SimonBilangGameClient,
   "letuskan-balon": LetuskanBalonGameClient,
   "petualangan-lompat": PlatformerGameClient,
+  mario: MarioGameClient
 };
 
 export default async function BuiltGamePage({ params }) {

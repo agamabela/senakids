@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, Home, Tv, Book, Gamepad2, RefreshCcw, UserRound, LogOut, LogIn, Shield } from "lucide-react";
+import { Menu, Home, Tv, Book, Gamepad2, RefreshCcw, UserRound, LogOut, LogIn, Shield, Sun, Moon } from "lucide-react";
 import MenuModal from "./MenuModal";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -24,6 +24,23 @@ export default function Navbar() {
   const { t, language } = useLanguage();
   const tx = (id, en) => (language === "id" ? id : en);
   const { data: session, status } = useSession();
+  
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    document.documentElement.setAttribute("data-theme", nextTheme);
+  };
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/games" });
@@ -77,6 +94,13 @@ export default function Navbar() {
         {/* Right Section: Actions */}
         <div className={styles.rightSection}>
           <LanguageToggle />
+          <button 
+            className={styles.actionButton} 
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            onClick={toggleTheme}
+          >
+            {theme === "dark" ? <Sun size={20} strokeWidth={2.5} /> : <Moon size={20} strokeWidth={2.5} />}
+          </button>
           <button className={styles.actionButton} aria-label={t("nav.refresh")}> 
             <RefreshCcw size={20} strokeWidth={2.5} />
           </button>
