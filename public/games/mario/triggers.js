@@ -5,10 +5,10 @@
 function resetTriggers() {
   // Make the controls object
   window.controls = new Controls({
-    left:   [37, 65,      "AXIS_LEFT", "DPAD_LEFT"],                     // a,     left
-    right:  [39, 68,      "AXIS_RIGHT", "DPAD_RIGHT"],                   // d,     right
-    up:     [38, 87, 32,  "FACE_1", "DPAD_UP", "LEFT_BOTTOM_SHOULDER"],  // w,     up
-    down:   [40, 83,      "AXIS_DOWN", "DPAD_DOWN"],                     // s,     down
+    left:   [37,          "AXIS_LEFT", "DPAD_LEFT"],                     // left
+    right:  [39,          "AXIS_RIGHT", "DPAD_RIGHT"],                   // right
+    up:     [38, 32,      "FACE_1", "DPAD_UP", "LEFT_BOTTOM_SHOULDER"],  // up, space
+    down:   [40,          "AXIS_DOWN", "DPAD_DOWN"],                     // down
     sprint: [16, 17,      "FACE_1"],                                     // shift, ctrl
     pause:  [80,          "START_FORWARD"],                              // p
     mute:   [77],                                                        // m

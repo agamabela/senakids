@@ -30,9 +30,9 @@ export default function MarioGameClient() {
       </div>
       <div className={styles.controlsInfo}>
         <h3>Kontrol Permainan:</h3>
-        <p><strong>Tombol Arah / Arrow Keys</strong>: Bergerak / Menunduk</p>
-        <p><strong>Tombol S (atau Space / Up Arrow)</strong>: Melompat</p>
-        <p><strong>Tombol A (atau Shift)</strong>: Berlari cepat / Menembak bola api</p>
+        <p><strong>Tombol Arah / Arrow Keys</strong>: Bergerak / Menunduk (Kiri/Kanan untuk bergerak, Bawah untuk merunduk)</p>
+        <p><strong>Tombol Space / Arrow Up</strong>: Melompat</p>
+        <p><strong>Tombol Shift / Ctrl</strong>: Berlari cepat / Menembak bola api</p>
         <p><strong>Tombol P</strong>: Jeda (Pause)</p>
         <p><strong>Tombol M</strong>: Matikan Suara (Mute)</p>
       </div>

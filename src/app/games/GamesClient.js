@@ -37,6 +37,7 @@ const builtGames = [
   { title: { id: "Letuskan Balon", en: "Pop the Balloons" }, description: { id: "Letuskan balon & belajar berhitung!", en: "Pop balloons & learn counting!" }, emoji: "🎈", href: "/games/built/letuskan-balon", color: "teal" },
   { title: { id: "Petualangan Lompat", en: "Hop Adventure" }, description: { id: "Lari, lompat & kumpulkan bintang!", en: "Run, jump & collect stars!" }, emoji: "🦊", href: "/games/built/petualangan-lompat", color: "green" },
   { title: { id: "Super Mario Bros", en: "Super Mario Bros" }, description: { id: "Mainkan petualangan klasik retro secara langsung!", en: "Play the classic retro adventure directly!" }, emoji: "🍄", href: "/games/built/mario", color: "red" },
+  { title: { id: "Harvest Moon 2.0", en: "Harvest Moon 2.0" }, description: { id: "Bercocok tanam dan kembangkan ladang impianmu!", en: "Farm crops and build your dream farm!" }, emoji: "🌾", href: "/games/built/harvest-moon", color: "green" },
 ];
 
 // Helper function to extract color from zone if needed, or just default to blue
