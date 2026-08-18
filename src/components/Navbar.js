@@ -101,7 +101,11 @@ export default function Navbar() {
           >
             {theme === "dark" ? <Sun size={20} strokeWidth={2.5} /> : <Moon size={20} strokeWidth={2.5} />}
           </button>
-          <button className={styles.actionButton} aria-label={t("nav.refresh")}> 
+          <button 
+            className={`${styles.actionButton} ${styles.refreshButton}`} 
+            aria-label={t("nav.refresh")}
+            onClick={() => window.location.reload()}
+          > 
             <RefreshCcw size={20} strokeWidth={2.5} />
           </button>
           

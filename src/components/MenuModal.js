@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { Home, Tv, Book, Gamepad2, X, Heart, BookOpen, Palette } from "lucide-react";
+import { Home, Tv, Book, Gamepad2, X, Heart, BookOpen, Palette, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./MenuModal.module.css";
 
@@ -52,7 +52,7 @@ export default function MenuModal({ isOpen, onClose }) {
               <Link href={item.href} key={item.nameKey} onClick={onClose} className={styles.menuItem}>
                 <Icon className={styles.icon} size={20} />
                 <span className={styles.itemName}>{t(item.nameKey)}</span>
-                <span className={styles.arrow} aria-hidden="true">→</span>
+                <ChevronRight className={styles.arrow} size={16} aria-hidden="true" />
               </Link>
             );
           })}

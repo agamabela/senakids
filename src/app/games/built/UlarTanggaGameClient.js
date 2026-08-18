@@ -363,7 +363,7 @@ export default function UlarTanggaGameClient() {
     if (rolledSix) {
       phaseRef.current = "roll";
       diceRef.current = null;
-      msgRef.current = t("Dapat 6 — lempar lagi!", "Got a 6 — roll again!");
+      msgRef.current = t("Dapat 6, lempar lagi!", "Got a 6, roll again!");
     } else {
       turnRef.current = (turnRef.current + 1) % npRef.current;
       phaseRef.current = "roll";
@@ -422,7 +422,7 @@ export default function UlarTanggaGameClient() {
       const N = cfgRef.current.N;
       if (rosterRef.current[pi] === "human") setHasChanges(true);
       if (posRef.current[pi] + dice > N) {
-        msgRef.current = t("Terlalu jauh, tetap di tempat.", "Too far — stay put.");
+        msgRef.current = t("Terlalu jauh, tetap di tempat.", "Too far, stay put.");
         phaseRef.current = "animating";
         rerender();
         setTimeout(() => finishTurn(dice === 6, false), 700);

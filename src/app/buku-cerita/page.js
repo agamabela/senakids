@@ -67,7 +67,7 @@ export default function BukuCeritaPage() {
           </motion.button>
         ))}
       </div>
-      <div className={styles.attribution}><p>{tx("Buku disediakan oleh", "Books provided by")} <a href="https://www.letsreadasia.org" target="_blank" rel="noopener noreferrer">Let&apos;s Read</a> — The Asia Foundation. {tx("Gratis untuk dibaca!", "Free to read!")}</p></div>
+      <div className={styles.attribution}><p>{tx("Buku disediakan oleh", "Books provided by")} <a href="https://www.letsreadasia.org" target="_blank" rel="noopener noreferrer">Let&apos;s Read</a> (The Asia Foundation). {tx("Gratis untuk dibaca!", "Free to read!")}</p></div>
       {selectedBook && (
         <div className={styles.readerOverlay} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setSelectedBook(null)}>
           <div className={styles.readerModal} role="dialog" aria-modal="true" aria-labelledby="reader-title">

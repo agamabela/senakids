@@ -114,7 +114,7 @@ export default function Home() {
             {tx("Lihat Semua", "See All")} <ChevronRight size={16} />
           </Link>
         </div>
-        <p className={styles.sectionSubtitle}>{tx("Cerita anak — baca langsung di sini!", "Children's stories — read right here!")}</p>
+        <p className={styles.sectionSubtitle}>{tx("Cerita anak bergambar, baca langsung di sini!", "Illustrated children's stories, read directly here!")}</p>
         <div className={styles.letsReadGrid}>
           {letsReadBooks.map((book, index) => (
             <div key={book.title.id}>
@@ -158,11 +158,12 @@ export default function Home() {
 
       {/* CTA to Games */}
       <div className={styles.ctaSection}>
-        <Gamepad2 size={40} />
+        <Gamepad2 size={36} color="var(--color-primary)" />
         <h2>{tx("Lihat Semua Permainan", "See All Games")}</h2>
-        <p>{tx("Ada banyak game seru yang menanti!", "Lots of fun games are waiting!")}</p>
+        <p>{tx("Ada banyak aktivitas dan game interaktif seru!", "Discover lots of fun interactive games and activities!")}</p>
         <Link href="/games" className={styles.ctaButton}>
-          {tx("Jelajahi Permainan →", "Explore Games →")}
+          <Gamepad2 size={18} />
+          {tx("Jelajahi Permainan", "Explore Games")}
         </Link>
       </div>
 

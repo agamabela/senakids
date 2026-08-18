@@ -339,13 +339,13 @@
     gap: var(--space-xs);
   }
 
-  .actionButton {
-    display: none; /* hide refresh on mobile */
+  .refreshButton {
+    display: none; /* hide optional refresh icon on small mobile screens */
   }
 
   .actionButton, .avatarButton {
-    height: 40px;
-    width: 40px;
+    height: 44px;
+    width: 44px;
   }
 
   .userDropdown {

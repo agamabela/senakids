@@ -41,10 +41,7 @@ export default function BooksClient({ shelves }) {
           </a>
         </div>
         <div className={styles.heroVisual}>
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-          >
+          <div>
             {/* Stacked books illustration */}
             <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tumpukan buku">
               <ellipse cx="100" cy="176" rx="68" ry="12" fill="#000" opacity="0.08" />
@@ -63,15 +60,13 @@ export default function BooksClient({ shelves }) {
               {/* open book on top */}
               <path d="M64 80 C78 70 96 70 100 76 C104 70 122 70 136 80 L136 82 C122 74 104 74 100 82 C96 74 78 74 64 82 Z" fill="#8BA888" />
               <path d="M100 76 L100 82" stroke="#5F7A5C" strokeWidth="2" />
-              {/* sparkle */}
-              <path d="M150 56 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#D9A05B" />
               <circle cx="54" cy="64" r="4" fill="#C5948E" />
             </svg>
-          </motion.div>
+          </div>
         </div>
       </motion.section>
 
-      {/* Category Filters — generated from real shelves */}
+      {/* Category Filters */}
       {filters.length > 1 && (
         <section className={styles.filterSection}>
           {filters.map((f) => (
@@ -80,7 +75,7 @@ export default function BooksClient({ shelves }) {
               className={activeShelf === f.key ? styles.filterBtnActive : styles.filterBtn}
               onClick={() => setActiveShelf(f.key)}
             >
-              {f.key === "__all__" && <Sparkles size={16} />} {f.label}
+              {f.key === "__all__" && <BookOpen size={16} />} {f.label}
             </button>
           ))}
         </section>

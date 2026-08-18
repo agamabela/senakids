@@ -57,7 +57,7 @@ const builtGameDetails = {
   "astronot-terbang": { title: "Astronot Terbang", description: "Terbang dan hindari rintangan, kumpulkan bintang!", note: "This built-in game is implemented directly in Sena Kids." },
   "ular-pintar": { title: "Ular Pintar", description: "Makan buah, tumbuh panjang, jangan menabrak!", note: "This built-in game is implemented directly in Sena Kids." },
   ludo: { title: "Ludo", description: "Balapan bidak mengelilingi papan, capai pusat lebih dulu!", note: "This built-in game is implemented directly in Sena Kids." },
-  "ular-tangga": { title: "Ular Tangga", description: "Naik tangga, hindari ular — klasik atau buat papanmu sendiri!", note: "This built-in game is implemented directly in Sena Kids." },
+  "ular-tangga": { title: "Ular Tangga", description: "Naik tangga, hindari ular: versi klasik atau buat papanmu sendiri!", note: "This built-in game is implemented directly in Sena Kids." },
   "lacak-huruf": { title: "Lacak Huruf", description: "Belajar menulis huruf A-Z dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
   "lacak-angka": { title: "Lacak Angka", description: "Belajar menulis angka 0-9 dengan menelusuri titik-titik!", note: "This built-in game is implemented directly in Sena Kids." },
   "puzzle-gambar": { title: "Puzzle Gambar", description: "Susun keping puzzle jigsaw menjadi gambar utuh!", note: "This built-in game is implemented directly in Sena Kids." },
