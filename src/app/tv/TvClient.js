@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Bot, Cat, ChevronLeft, ChevronRight, Clock, Dog, Film, Microscope, Music2, PlayCircle, Tv, UserRound } from "lucide-react";
+import { Tv, PlayCircle, ChevronLeft, ChevronRight, Clock, Sparkles, Film } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
@@ -42,19 +42,15 @@ const defaultPlaylists = [
 ];
 
 const SHOW_ORDER = ["Nussa", "Omar & Hana", "Riko The Series", "Diva The Series", "Kok Bisa", "Bluey", "Lagu Anak"];
-const SHOW_ICONS = {
-  "Nussa": UserRound,
-  "Omar & Hana": Music2,
-  "Riko The Series": Bot,
-  "Diva The Series": Cat,
-  "Kok Bisa": Microscope,
-  "Bluey": Dog,
-  "Lagu Anak": Music2,
+const SHOW_EMOJI = {
+  "Nussa": "🧒", 
+  "Omar & Hana": "🎶", 
+  "Riko The Series": "🤖", 
+  "Diva The Series": "🐱",
+  "Kok Bisa": "🔬",
+  "Bluey": "🐶", 
+  "Lagu Anak": "🎵",
 };
-
-function getShowIcon(name) {
-  return SHOW_ICONS[name] || Tv;
-}
 
 function getYouTubeId(url) {
   if (!url) return null;
@@ -109,7 +105,7 @@ function Shelf({ name, items, activeKey, onSelect }) {
     <section className={styles.shelf} id={`channel-${name.toLowerCase().replace(/\s+/g, '-')}`}>
       <div className={styles.shelfHead}>
         <h3 className={styles.shelfTitle}>
-          <span className={styles.shelfEmoji} aria-hidden="true"><ShelfIcon size={20} /></span>
+          <span className={styles.shelfEmoji}>{SHOW_EMOJI[name] || "📺"}</span>
           {name}
           <span className={styles.shelfCount}>{items.length} video</span>
         </h3>
@@ -165,10 +161,11 @@ export default function TvClient({ videos = [] }) {
 
   const channelsList = useMemo(() => {
     return [
-      { id: "all", label: tx("Semua Channel", "All Channels") },
+      { id: "all", label: tx("Semua Channel", "All Channels"), emoji: "✨" },
       ...groups.map(([name, items]) => ({
         id: name,
         label: name,
+        emoji: SHOW_EMOJI[name] || "📺",
         count: items.length,
       }))
     ];
@@ -223,14 +220,13 @@ export default function TvClient({ videos = [] }) {
           <div className={styles.channelList}>
             {channelsList.map((ch) => {
               const isSelected = selectedChannel === ch.id;
-              const ChannelIcon = getShowIcon(ch.id);
               return (
                 <button
                   key={ch.id}
                   onClick={() => setSelectedChannel(ch.id)}
                   className={`${styles.channelBtn} ${isSelected ? styles.channelBtnActive : ""}`}
                 >
-                  <span className={styles.channelEmoji} aria-hidden="true"><ChannelIcon size={18} /></span>
+                  <span className={styles.channelEmoji}>{ch.emoji}</span>
                   <span className={styles.channelLabel}>{ch.label}</span>
                   {ch.count && <span className={styles.channelBadge}>{ch.count}</span>}
                 </button>
@@ -307,4 +303,3 @@ export default function TvClient({ videos = [] }) {
     </div>
   );
 }
-  const ShelfIcon = getShowIcon(name);

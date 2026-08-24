@@ -5,7 +5,7 @@ import { Download, BookOpen } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./BookFlipCard.module.css";
 
-export default function BookFlipCard({ title, description, pdfUrl, color, delay = 0 }) {
+export default function BookFlipCard({ title, description, emoji, pdfUrl, color, delay = 0 }) {
   const { t } = useLanguage();
   const backgroundStyle = { backgroundColor: color || "var(--color-card)" };
 
@@ -19,7 +19,9 @@ export default function BookFlipCard({ title, description, pdfUrl, color, delay 
       <div className={styles.card}>
         <div className={styles.inner}>
           <div className={styles.face} style={backgroundStyle}>
-            <div className={styles.emoji}><BookOpen size={56} strokeWidth={1.7} /></div>
+            <div className={styles.emoji}>
+              {emoji || <BookOpen size={56} />}
+            </div>
             <h3 className={styles.title}>{title}</h3>
             <p className={styles.description}>{description}</p>
             <div className={styles.hint}>

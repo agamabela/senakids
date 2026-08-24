@@ -42,13 +42,7 @@
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--activity-accent, var(--color-primary)) 15%, var(--color-surface));
   color: var(--activity-accent, var(--color-primary));
-  overflow: hidden;
-}
-
-.markerImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  font-size: 1.45rem;
 }
 
 .content {

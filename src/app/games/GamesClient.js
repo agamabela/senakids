@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BookOpen, Brain, Brush, Compass, Dice5, Gamepad2, Hammer, Music2, Palette, Rocket, Route, Shapes, Trophy, Waves } from "lucide-react";
+import { Gamepad2, Brain, Globe, Sparkles, Trophy } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
@@ -79,48 +79,9 @@ const toyTheaterGames = [
   { title: { id: "Math Flash Cards", en: "Math Flash Cards" }, href: "/games/toytheater/game?gamename=math-flash-cards", image: "https://toytheater.com/wp-content/uploads/math_flash_cards.gif", color: "blue" },
 ];
 
-function getGameIcon(title) {
-  const icons = {
-    "Ular Tangga": Dice5,
-    "Super Mario Bros": Gamepad2,
-    "Harvest Moon 2.0": Waves,
-    "Petualangan Labirin": Compass,
-    "Labirin 3D": Compass,
-    "Si Bom Pintar": Gamepad2,
-    "Astronot Terbang": Rocket,
-    "Ular Pintar": Route,
-    "Ludo": Dice5,
-    "Petualangan Lompat": Gamepad2,
-    "Pukul Tikus": Hammer,
-    "Simon Bilang": Shapes,
-    "Letuskan Balon": Gamepad2,
-    "Drum": Music2,
-    "Piano": Music2,
-    "Puzzle Gambar": Shapes,
-    "Menggambar Bebas": Palette,
-    "Mewarnai": Brush,
-    "Matematika Dasar": Brain,
-    "Huruf ABC": BookOpen,
-    "Lacak Huruf": BookOpen,
-    "Lacak Angka": Brain,
-    "Membuat Jalur": Route,
-    "Learn English 1": BookOpen,
-    "Flashcard Simple": Shapes,
-    "Tebak Gambar": BookOpen,
-    "Mencocokkan Gambar": Shapes,
-    "Menyambung Pipa": Route,
-    "Menyusun Gambar": Shapes,
-    "Mengurutkan Balok": Shapes,
-    "Urutkan Bola Angka": Brain,
-    "Quiz Pintar": Brain,
-  };
-  return icons[title] || Gamepad2;
-}
-
 function CompactGameCard({ game, language }) {
   const title = typeof game.title === "object" ? (game.title[language] || game.title.id) : game.title;
   const isExternal = game.isExternal || false;
-  const Icon = getGameIcon(game.title?.id || title);
 
   const cardContent = (
     <div className={styles.gameCard}>
@@ -129,7 +90,7 @@ function CompactGameCard({ game, language }) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={game.image} alt={title} className={styles.gameThumbImg} loading="lazy" />
         ) : (
-          <span className={styles.gameThumbIcon} aria-hidden="true"><Icon size={31} strokeWidth={2} /></span>
+          <span className={styles.gameThumbEmoji}>{game.emoji || "🎮"}</span>
         )}
       </div>
       <div className={styles.gameCardBottom}>
