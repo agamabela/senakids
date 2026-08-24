@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ChevronRight, Gamepad2, BookOpen } from "lucide-react";
+import { Heart, ChevronRight, Gamepad2, BookOpen, Play, Sparkles } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
@@ -10,28 +10,28 @@ const bookActivities = [
   {
     title: { id: "Belajar Membaca", en: "Learn to Read" },
     description: { id: "Membaca rangkaian 3 huruf", en: "Read three-letter words" },
-    emoji: "📚",
+    iconName: "BookOpen",
     href: "/belajar-membaca",
     color: "yellow",
   },
   {
     title: { id: "Sejarah Sepeda", en: "History of Bicycles" },
     description: { id: "Ensiklopedia untuk Anak", en: "Encyclopedia for Kids" },
-    emoji: "🚲",
+    iconName: "Bike",
     href: "/sejarah-sepeda",
     color: "green",
   },
   {
     title: { id: "Petualangan Tetes Air", en: "The Water Drop's Adventure" },
     description: { id: "Kisah Siklus Air", en: "The Water Cycle Story" },
-    emoji: "💧",
+    iconName: "CloudRain",
     href: "/petualangan-tetes-air",
     color: "blue",
   },
   {
     title: { id: "Mengenal Hujan", en: "All About Rain" },
     description: { id: "Proses Terjadinya Hujan", en: "How Rain Happens" },
-    emoji: "🌧️",
+    iconName: "CloudRain",
     href: "/mengenal-hujan",
     color: "pink",
   },
@@ -56,11 +56,11 @@ const letsReadBooks = [
 ];
 
 const gameActivities = [
-  { title: { id: "Drum", en: "Drum" }, description: { id: "Ketuk untuk main!", en: "Tap to play!" }, emoji: "🥁", href: "/games/built/drum", color: "purple" },
-  { title: { id: "Membuat Jalur", en: "Build the Path" }, description: { id: "Bangun rute yang benar.", en: "Build the right route." }, emoji: "🧭", href: "/games/built/membuat-jalur", color: "blue" },
-  { title: { id: "Flashcard Simple", en: "Simple Flashcards" }, description: { id: "Ingat gambar dan kata.", en: "Remember pictures and words." }, emoji: "🃏", href: "/games/built/flashcard-simple", color: "orange" },
-  { title: { id: "Piano", en: "Piano" }, description: { id: "Main piano interaktif!", en: "Play the interactive piano!" }, emoji: "🎹", href: "/games/built/piano", color: "purple" },
-  { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, description: { id: "Kumpulkan permata!", en: "Collect the gems!" }, emoji: "🧑‍🚀", href: "/games/built/petualangan-labirin", color: "blue" },
+  { title: { id: "Drum", en: "Drum" }, description: { id: "Ketuk untuk main!", en: "Tap to play!" }, iconName: "Music2", href: "/games/built/drum", color: "purple" },
+  { title: { id: "Membuat Jalur", en: "Build the Path" }, description: { id: "Bangun rute yang benar.", en: "Build the right route." }, iconName: "Route", href: "/games/built/membuat-jalur", color: "blue" },
+  { title: { id: "Flashcard Simple", en: "Simple Flashcards" }, description: { id: "Ingat gambar dan kata.", en: "Remember pictures and words." }, iconName: "Shapes", href: "/games/built/flashcard-simple", color: "orange" },
+  { title: { id: "Piano", en: "Piano" }, description: { id: "Main piano interaktif!", en: "Play the interactive piano!" }, image: "/images/ui/hero-piano.jpg", href: "/games/built/piano", color: "purple" },
+  { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, description: { id: "Kumpulkan permata!", en: "Collect the gems!" }, iconName: "Compass", href: "/games/built/petualangan-labirin", color: "blue" },
 ];
 
 export default function Home() {
@@ -70,7 +70,36 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      
+      <section className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}>{tx("Ruang belajar yang terasa seperti bermain", "A learning space that feels like play")}</p>
+          <h1>
+            {tx("Tempat terbaik untuk", "The best place to")} <span className={styles.wordBlue}>{tx("belajar", "learn")}</span>{" "}
+            {tx("dan", "and")} <span className={styles.wordGreen}>{tx("bermain", "play")}</span>.
+          </h1>
+          <p className={styles.heroLead}>{tx("Cerita, permainan, dan aktivitas kreatif yang dibuat untuk rasa ingin tahu anak.", "Stories, games, and creative activities made for a child’s curiosity.")}</p>
+          <div className={styles.heroActions}>
+            <Link href="/games" className={styles.primaryAction}>
+              <Play size={17} fill="currentColor" aria-hidden="true" />
+              {tx("Mulai bermain", "Start playing")}
+            </Link>
+            <Link href="/books" className={styles.secondaryAction}>
+              <BookOpen size={18} aria-hidden="true" />
+              {tx("Pilih buku", "Choose a book")}
+            </Link>
+          </div>
+        </div>
+        <div className={styles.heroVisual}>
+          {/* CC0 image, source noted in ATTRIBUTIONS.md. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/ui/hero-piano.jpg" alt={tx("Tangan memainkan piano", "Hands playing the piano")} />
+          <div className={styles.heroLabel}>
+            <Sparkles size={17} aria-hidden="true" />
+            <span>{tx("Belajar lewat bermain", "Learn through play")}</span>
+          </div>
+        </div>
+      </section>
+
       {/* Top Support Banner */}
       <div className={styles.supportBanner}>
         <div className={styles.bannerLeft}>
@@ -88,7 +117,7 @@ export default function Home() {
       </div>
 
       {/* Books Section */}
-      <section className={styles.section}>
+      <section className={`${styles.section} ${styles.learningSection}`}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("home.booksSection")}</h2>
           <Link href="/books" className={styles.seeAllBtn}>{t("home.seeAll")} <ChevronRight size={16} /></Link>
@@ -158,12 +187,15 @@ export default function Home() {
 
       {/* CTA to Games */}
       <div className={styles.ctaSection}>
-        <Gamepad2 size={36} color="var(--color-primary)" />
-        <h2>{tx("Lihat Semua Permainan", "See All Games")}</h2>
-        <p>{tx("Ada banyak aktivitas dan game interaktif seru!", "Discover lots of fun interactive games and activities!")}</p>
+        <div className={styles.ctaArtwork}><Gamepad2 size={38} aria-hidden="true" /></div>
+        <div>
+          <p className={styles.ctaKicker}>{tx("Pilih petualangan berikutnya", "Pick the next adventure")}</p>
+          <h2>{tx("Ada banyak cara untuk bermain", "There are many ways to play")}</h2>
+          <p>{tx("Temukan permainan yang sesuai dengan suasana hati dan rasa ingin tahu hari ini.", "Find a game that matches today’s mood and curiosity.")}</p>
+        </div>
         <Link href="/games" className={styles.ctaButton}>
-          <Gamepad2 size={18} />
-          {tx("Jelajahi Permainan", "Explore Games")}
+          {tx("Lihat semua permainan", "See all games")}
+          <ChevronRight size={18} aria-hidden="true" />
         </Link>
       </div>
 

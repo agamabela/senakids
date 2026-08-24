@@ -55,7 +55,10 @@ function LoginForm() {
         transition={{ duration: 0.4 }}
       >
         <div className={styles.header}>
-          <div className={styles.logo}>🌿</div>
+          <div className={styles.logo}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/sena-logo.svg" alt="Sena Kids" width="48" height="48" />
+          </div>
           <h1 className={styles.title}>Masuk ke Sena Kids</h1>
           <p className={styles.subtitle}>Selamat datang kembali!</p>
         </div>
