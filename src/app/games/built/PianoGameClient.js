@@ -2,26 +2,27 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useActivityStore } from "@/components/BackButton";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./PianoGameClient.module.css";
 
 // Note layout for one octave (+ the next C). Semitone offset from C.
 // Keyboard keys: white = A S D F G H J K, black = W E T Y U
 const WHITE_KEYS = [
-  { key: "A", name: "C", solfege: "Do",  semitone: 0,  color: "#ff6b6b" },
-  { key: "S", name: "D", solfege: "Re",  semitone: 2,  color: "#ffa502" },
-  { key: "D", name: "E", solfege: "Mi",  semitone: 4,  color: "#ffd93d" },
-  { key: "F", name: "F", solfege: "Fa",  semitone: 5,  color: "#6bcb77" },
-  { key: "G", name: "G", solfege: "Sol", semitone: 7,  color: "#4d96ff" },
-  { key: "H", name: "A", solfege: "La",  semitone: 9,  color: "#9b59b6" },
-  { key: "J", name: "B", solfege: "Si",  semitone: 11, color: "#a855f7" },
-  { key: "K", name: "C", solfege: "Do",  semitone: 12, color: "#f472b6" },
+  { key: "A", name: "C", solfege: "Do", semitone: 0, color: "#ff6b6b" },
+  { key: "S", name: "D", solfege: "Re", semitone: 2, color: "#ffa502" },
+  { key: "D", name: "E", solfege: "Mi", semitone: 4, color: "#ffd93d" },
+  { key: "F", name: "F", solfege: "Fa", semitone: 5, color: "#6bcb77" },
+  { key: "G", name: "G", solfege: "Sol", semitone: 7, color: "#4d96ff" },
+  { key: "H", name: "A", solfege: "La", semitone: 9, color: "#9b59b6" },
+  { key: "J", name: "B", solfege: "Si", semitone: 11, color: "#a855f7" },
+  { key: "K", name: "C", solfege: "Do", semitone: 12, color: "#f472b6" },
 ];
 
 const BLACK_KEYS = [
-  { key: "W", name: "C#", semitone: 1,  afterWhite: 0 },
-  { key: "E", name: "D#", semitone: 3,  afterWhite: 1 },
-  { key: "T", name: "F#", semitone: 6,  afterWhite: 3 },
-  { key: "Y", name: "G#", semitone: 8,  afterWhite: 4 },
+  { key: "W", name: "C#", semitone: 1, afterWhite: 0 },
+  { key: "E", name: "D#", semitone: 3, afterWhite: 1 },
+  { key: "T", name: "F#", semitone: 6, afterWhite: 3 },
+  { key: "Y", name: "G#", semitone: 8, afterWhite: 4 },
   { key: "U", name: "A#", semitone: 10, afterWhite: 5 },
 ];
 
@@ -69,6 +70,9 @@ function playPianoSound(audioCtx, frequency) {
 }
 
 export default function PianoGameClient() {
+  const { lang } = useLanguage();
+  const tx = (id, en) => (lang === "en" ? en : id);
+
   const [audioCtx, setAudioCtx] = useState(null);
   const [activeKeys, setActiveKeys] = useState(new Set());
   const [started, setStarted] = useState(false);
@@ -116,8 +120,16 @@ export default function PianoGameClient() {
 
     const handleKeyDown = (event) => {
       const key = event.key.toUpperCase();
-      if (key === "Z") { event.preventDefault(); shiftOctave(-1); return; }
-      if (key === "X") { event.preventDefault(); shiftOctave(1); return; }
+      if (key === "Z") {
+        event.preventDefault();
+        shiftOctave(-1);
+        return;
+      }
+      if (key === "X") {
+        event.preventDefault();
+        shiftOctave(1);
+        return;
+      }
       const k = allKeys.find((pk) => pk.key === key);
       if (k) {
         event.preventDefault();
@@ -146,67 +158,97 @@ export default function PianoGameClient() {
 
   return (
     <div className={styles.pianoGameWrapper}>
-      <div className={styles.pianoHeader}>
-        <h1>🎹 Piano</h1>
-        <p>Tekan A S D F G H J K (putih) dan W E T Y U (hitam). Tombol Z / X untuk ganti oktaf!</p>
-      </div>
+      <header className={styles.pianoHeader}>
+        <h1>🎹 {tx("Piano Interaktif", "Interactive Piano")}</h1>
+        <p>
+          {tx(
+            "Tekan tuts di layar atau gunakan keyboard A S D F G H J K (putih) dan W E T Y U (hitam). Tombol Z / X untuk ubah oktaf!",
+            "Tap keys on screen or use keyboard keys A S D F G H J K (white) and W E T Y U (black). Use Z / X to shift octaves!"
+          )}
+        </p>
+      </header>
 
       {/* Control bar */}
-      <div className={styles.controlBar}>
+      <div className={styles.controlBar} role="toolbar" aria-label={tx("Kontrol Piano", "Piano Controls")}>
         <button
+          type="button"
           className={styles.octaveBtn}
           onClick={() => shiftOctave(-1)}
           disabled={octave <= MIN_OCTAVE}
-          aria-label="Turun oktaf"
+          aria-label={tx("Turunkan nada oktaf", "Lower octave")}
         >
-          ⬇️ Oktaf
+          ⬇️ {tx("Turun Oktaf", "Lower Octave")}
         </button>
-        <div className={styles.octaveDisplay}>
-          <span className={styles.octaveLabel}>Oktaf</span>
+        <div className={styles.octaveDisplay} aria-live="polite">
+          <span className={styles.octaveLabel}>{tx("Oktaf", "Octave")}</span>
           <span className={styles.octaveValue}>{octave}</span>
         </div>
         <button
+          type="button"
           className={styles.octaveBtn}
           onClick={() => shiftOctave(1)}
           disabled={octave >= MAX_OCTAVE}
-          aria-label="Naik oktaf"
+          aria-label={tx("Naikkan nada oktaf", "Raise octave")}
         >
-          ⬆️ Oktaf
+          ⬆️ {tx("Naik Oktaf", "Raise Octave")}
         </button>
         <button
+          type="button"
           className={styles.toggleBtn}
           onClick={() => setShowLabels((s) => !s)}
+          aria-pressed={showLabels}
         >
-          {showLabels ? "🔤 Sembunyikan Nama" : "🔤 Tampilkan Nama"}
+          {showLabels
+            ? tx("🔤 Sembunyikan Label", "🔤 Hide Labels")
+            : tx("🔤 Tampilkan Label", "🔤 Show Labels")}
         </button>
-        <div className={styles.nowPlaying}>
+        <div className={styles.nowPlaying} aria-live="polite" aria-atomic="true">
           {lastNote ? `🎵 ${lastNote}` : "🎵 —"}
         </div>
       </div>
 
       {/* Realistic keyboard */}
       <div className={styles.pianoContainer}>
-        <div className={styles.keyboard}>
+        <div className={styles.keyboard} role="region" aria-label={tx("Papan Tuts Piano", "Piano Keyboard")}>
           {WHITE_KEYS.map((wk, index) => (
             <div key={`${wk.key}-${index}`} className={styles.whiteKeyWrap}>
-              <div
+              <button
+                type="button"
                 className={`${styles.whiteKey} ${activeKeys.has(wk.key) ? styles.whiteKeyActive : ""}`}
+                onClick={() => playNote(wk.semitone, wk.solfege)}
                 onMouseDown={() => playNote(wk.semitone, wk.solfege)}
-                onTouchStart={(e) => { e.preventDefault(); playNote(wk.semitone, wk.solfege); }}
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  playNote(wk.semitone, wk.solfege);
+                }}
+                aria-label={`${tx("Nada", "Note")} ${wk.solfege} (${wk.name}${octave}) - ${tx("Tombol", "Key")} ${wk.key}`}
               >
                 {showLabels && <span className={styles.solfege}>{wk.solfege}</span>}
                 <span className={styles.keyLabel}>{wk.key}</span>
-              </div>
-              {/* black key sitting between this white key and the next */}
+              </button>
+              {/* Black key sitting between this white key and the next */}
               {BLACK_KEYS.filter((bk) => bk.afterWhite === index).map((bk) => (
-                <div
+                <button
                   key={bk.key}
+                  type="button"
                   className={`${styles.blackKey} ${activeKeys.has(bk.key) ? styles.blackKeyActive : ""}`}
-                  onMouseDown={(e) => { e.stopPropagation(); playNote(bk.semitone, bk.name); }}
-                  onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); playNote(bk.semitone, bk.name); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playNote(bk.semitone, bk.name);
+                  }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    playNote(bk.semitone, bk.name);
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    playNote(bk.semitone, bk.name);
+                  }}
+                  aria-label={`${tx("Nada Hitam", "Black Note")} ${bk.name}${octave} - ${tx("Tombol", "Key")} ${bk.key}`}
                 >
                   <span className={styles.blackKeyLabel}>{bk.key}</span>
-                </div>
+                </button>
               ))}
             </div>
           ))}
@@ -214,7 +256,7 @@ export default function PianoGameClient() {
       </div>
 
       {/* Colorful Do-Re-Mi pads for little kids */}
-      <div className={styles.doremiRow}>
+      <div className={styles.doremiRow} role="group" aria-label={tx("Papan Nada Warna-Warni", "Colorful Note Pads")}>
         {WHITE_KEYS.map((wk, i) => (
           <button
             key={`pad-${i}`}
@@ -222,6 +264,7 @@ export default function PianoGameClient() {
             className={styles.doremiPad}
             style={{ background: wk.color }}
             onClick={() => playNote(wk.semitone, wk.solfege)}
+            aria-label={`${tx("Mainkan nada", "Play note")} ${wk.solfege}`}
           >
             <span className={styles.doremiText}>{wk.solfege}</span>
           </button>
@@ -229,8 +272,11 @@ export default function PianoGameClient() {
       </div>
 
       {!started && (
-        <div className={styles.hintBox}>
-          Klik tuts atau tekan keyboard untuk mulai bermain! 🎶
+        <div className={styles.hintBox} role="status">
+          {tx(
+            "Klik tuts atau tekan keyboard untuk mulai bermain musik ceria! 🎶",
+            "Click keys or press keyboard keys to start playing playful music! 🎶"
+          )}
         </div>
       )}
     </div>

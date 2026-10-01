@@ -130,6 +130,12 @@
 
 .whiteKey:hover { background: linear-gradient(180deg, #fff 0%, #e8e8e8 100%); }
 
+.whiteKey:focus-visible {
+  outline: 3px solid #ffcc00;
+  outline-offset: -3px;
+  z-index: 10;
+}
+
 .whiteKey:active,
 .whiteKeyActive {
   background: linear-gradient(180deg, #e0e0e0 0%, #d0d0d0 100%);
@@ -169,6 +175,12 @@
 }
 
 .blackKey:hover { background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%); }
+
+.blackKey:focus-visible {
+  outline: 3px solid #ffcc00;
+  outline-offset: 2px;
+  z-index: 10;
+}
 
 .blackKey:active,
 .blackKeyActive {
@@ -211,6 +223,12 @@
 
 .doremiPad:hover { transform: translateY(-3px); }
 .doremiPad:active { transform: scale(0.92); }
+.doremiPad:focus-visible,
+.octaveBtn:focus-visible,
+.toggleBtn:focus-visible {
+  outline: 3px solid #ffcc00;
+  outline-offset: 3px;
+}
 
 .doremiText {
   font-size: 1.1rem;

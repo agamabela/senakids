@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-instant) ease;
+  transition: all var(--transition-instant);
   outline: none;
 }
 

@@ -31,6 +31,7 @@ import LetuskanBalonGameClient from "../LetuskanBalonGameClient";
 import PlatformerGameClient from "../PlatformerGameClient";
 import MarioGameClient from "../MarioGameClient";
 import HarvestMoonGameClient from "../HarvestMoonGameClient";
+import SlingshotGameClient from "../SlingshotGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -66,7 +67,8 @@ const builtGameDetails = {
   "letuskan-balon": { title: "Letuskan Balon", description: "Letuskan balon sesuai jumlah untuk belajar berhitung!", note: "This built-in game is implemented directly in Sena Kids." },
   "petualangan-lompat": { title: "Petualangan Lompat", description: "Lari, lompat, kumpulkan bintang, dan capai bendera!", note: "This built-in game is implemented directly in Sena Kids." },
   mario: { title: "Super Mario Bros", description: "Mainkan petualangan klasik Super Mario Bros secara langsung di browser Anda!", note: "Classic retro HTML5 game." },
-  "harvest-moon": { title: "Harvest Moon 2.0", description: "Bercocok tanam dan kembangkan ladang impianmu!", note: "Farming simulation game with gamepad support." }
+  "harvest-moon": { title: "Harvest Moon 2.0", description: "Bercocok tanam dan kembangkan ladang impianmu!", note: "Farming simulation game with gamepad support." },
+  "bird-launch": { title: "Bird Launch", description: "Tarik ketapel, atur sudut, dan hancurkan target!", note: "A browser canvas physics game." }
 };
 
 const gameClients = {
@@ -101,8 +103,43 @@ const gameClients = {
   "letuskan-balon": LetuskanBalonGameClient,
   "petualangan-lompat": PlatformerGameClient,
   mario: MarioGameClient,
-  "harvest-moon": HarvestMoonGameClient
+  "harvest-moon": HarvestMoonGameClient,
+  "bird-launch": SlingshotGameClient
 };
+
+export async function generateStaticParams() {
+  return Object.keys(builtGameDetails).map((slug) => ({
+    slug,
+  }));
+}
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const game = builtGameDetails[slug];
+
+  if (!game) {
+    return {
+      title: "Game Tidak Ditemukan",
+    };
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://senakids.web.id";
+  const canonicalUrl = `${baseUrl}/games/built/${slug}`;
+
+  return {
+    title: game.title,
+    description: game.description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${game.title} - Game Anak Interaktif`,
+      description: game.description,
+      url: canonicalUrl,
+      type: "website",
+    },
+  };
+}
 
 export default async function BuiltGamePage({ params }) {
   const { slug } = await params;
@@ -113,9 +150,25 @@ export default async function BuiltGamePage({ params }) {
   }
 
   const GameClient = gameClients[slug];
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://senakids.web.id";
+  const gameJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Game",
+    name: game.title,
+    description: game.description,
+    url: `${baseUrl}/games/built/${slug}`,
+    audience: {
+      "@type": "Audience",
+      audienceType: "Children",
+    },
+  };
 
   return (
     <div className={styles.container}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd) }}
+      />
       <div className={styles.backButtonWrapper}>
         <BackButton />
       </div>

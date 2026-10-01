@@ -1,33 +1,36 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { useLanguage } from '@/components/LanguageProvider';
 import styles from './DrawingCanvas.module.css';
 
 /* ──────────────────────────────────────────────
    Preset palette — 8 bright, kid-friendly colors
    ────────────────────────────────────────────── */
 const COLORS = [
-  { name: 'Red',    hex: '#EF4444' },
-  { name: 'Orange', hex: '#F97316' },
-  { name: 'Yellow', hex: '#F59E0B' },
-  { name: 'Green',  hex: '#10B981' },
-  { name: 'Blue',   hex: '#3B82F6' },
-  { name: 'Purple', hex: '#8B5CF6' },
-  { name: 'Pink',   hex: '#EC4899' },
-  { name: 'Black',  hex: '#1E1B4B' },
+  { key: 'red',    name: { id: 'Merah', en: 'Red' },       hex: '#EF4444' },
+  { key: 'orange', name: { id: 'Oranye', en: 'Orange' },   hex: '#F97316' },
+  { key: 'yellow', name: { id: 'Kuning', en: 'Yellow' },   hex: '#F59E0B' },
+  { key: 'green',  name: { id: 'Hijau', en: 'Green' },     hex: '#10B981' },
+  { key: 'blue',   name: { id: 'Biru', en: 'Blue' },       hex: '#3B82F6' },
+  { key: 'purple', name: { id: 'Ungu', en: 'Purple' },     hex: '#8B5CF6' },
+  { key: 'pink',   name: { id: 'Merah Muda', en: 'Pink' }, hex: '#EC4899' },
+  { key: 'black',  name: { id: 'Hitam', en: 'Black' },     hex: '#1E1B4B' },
 ];
 
 /* Three brush sizes — value is the lineWidth in px */
 const SIZES = [
-  { label: 'Small',  value: 4  },
-  { label: 'Medium', value: 8  },
-  { label: 'Large',  value: 16 },
+  { key: 'small',  label: { id: 'Kecil', en: 'Small' },   value: 4  },
+  { key: 'medium', label: { id: 'Sedang', en: 'Medium' }, value: 8  },
+  { key: 'large',  label: { id: 'Besar', en: 'Large' },   value: 16 },
 ];
 
 /* Background / eraser colour must match the canvas fill */
 const CANVAS_BG = '#FFFFFF';
 
 export default function DrawingCanvas() {
+  const { lang, t } = useLanguage();
+
   /* ── refs ── */
   const canvasRef   = useRef(null);
   const wrapRef     = useRef(null);
@@ -76,12 +79,10 @@ export default function DrawingCanvas() {
   /* ─────────────────────────────────
      Drawing helpers
      ───────────────────────────────── */
-  /** Get pointer position relative to canvas */
   const getPos = (e) => {
     const canvas = canvasRef.current;
     const rect   = canvas.getBoundingClientRect();
 
-    /* Support both mouse and touch events */
     const source = e.touches ? e.touches[0] : e;
     return {
       x: source.clientX - rect.left,
@@ -100,12 +101,12 @@ export default function DrawingCanvas() {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.strokeStyle = isEraser ? CANVAS_BG : activeColor;
-    ctx.lineWidth   = brushSize;
+    ctx.lineWidth   = isEraser ? brushSize * 2 : brushSize;
   };
 
   const draw = (e) => {
-    e.preventDefault();
     if (!isDrawing.current) return;
+    e.preventDefault();
     const ctx = ctxRef.current;
     if (!ctx) return;
 
@@ -114,24 +115,23 @@ export default function DrawingCanvas() {
     ctx.stroke();
   };
 
-  const stopDrawing = (e) => {
-    if (e) e.preventDefault();
+  const stopDrawing = () => {
     if (!isDrawing.current) return;
-    isDrawing.current = false;
     const ctx = ctxRef.current;
     if (ctx) ctx.closePath();
+    isDrawing.current = false;
   };
 
   /* ─────────────────────────────────
-     Tool actions
+     Toolbar actions
      ───────────────────────────────── */
   const handleColorPick = (hex) => {
-    setActiveColor(hex);
     setIsEraser(false);
+    setActiveColor(hex);
   };
 
-  const handleSizePick = (size) => {
-    setBrushSize(size);
+  const handleSizePick = (val) => {
+    setBrushSize(val);
   };
 
   const toggleEraser = () => {
@@ -143,9 +143,11 @@ export default function DrawingCanvas() {
     const ctx    = ctxRef.current;
     if (!canvas || !ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    ctx.fillStyle = CANVAS_BG;
-    ctx.fillRect(0, 0, rect.width, canvas.offsetHeight);
+    const confirmMsg = t("create.clearConfirm") || (lang === 'en' ? 'Clear the canvas?' : 'Hapus seluruh gambar?');
+    if (window.confirm(confirmMsg)) {
+      ctx.fillStyle = CANVAS_BG;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
   };
 
   /* ─────────────────────────────────
@@ -154,46 +156,54 @@ export default function DrawingCanvas() {
   return (
     <div className={styles.wrapper}>
       {/* Title */}
-      <h2 className={styles.heading}>🎨 Let&rsquo;s Draw!</h2>
+      <h2 className={styles.heading}>🎨 {t("create.canvasHeading") || (lang === 'en' ? "Let's Draw!" : "Ayo Menggambar!")}</h2>
 
       {/* ── Toolbar ── */}
-      <div className={styles.toolbar} role="toolbar" aria-label="Drawing tools">
+      <div className={styles.toolbar} role="toolbar" aria-label={lang === 'en' ? "Drawing tools" : "Alat menggambar"}>
         {/* Color picker */}
-        <div className={styles.colorGroup} role="radiogroup" aria-label="Brush color">
-          {COLORS.map((c) => (
-            <button
-              key={c.hex}
-              aria-label={c.name}
-              aria-pressed={activeColor === c.hex && !isEraser}
-              className={`${styles.colorBtn} ${
-                activeColor === c.hex && !isEraser ? styles.colorBtnSelected : ''
-              }`}
-              style={{ backgroundColor: c.hex }}
-              onClick={() => handleColorPick(c.hex)}
-            />
-          ))}
+        <div className={styles.colorGroup} role="radiogroup" aria-label={t("create.brushColor") || (lang === 'en' ? "Brush color" : "Warna kuas")}>
+          {COLORS.map((c) => {
+            const colorLabel = c.name[lang] || c.name.id;
+            return (
+              <button
+                key={c.hex}
+                aria-label={colorLabel}
+                title={colorLabel}
+                aria-pressed={activeColor === c.hex && !isEraser}
+                className={`${styles.colorBtn} ${
+                  activeColor === c.hex && !isEraser ? styles.colorBtnSelected : ''
+                }`}
+                style={{ backgroundColor: c.hex }}
+                onClick={() => handleColorPick(c.hex)}
+              />
+            );
+          })}
         </div>
 
         <span className={styles.divider} aria-hidden="true" />
 
         {/* Brush size */}
-        <div className={styles.sizeGroup} role="radiogroup" aria-label="Brush size">
-          {SIZES.map((s) => (
-            <button
-              key={s.value}
-              aria-label={`${s.label} brush`}
-              aria-pressed={brushSize === s.value}
-              className={`${styles.sizeBtn} ${
-                brushSize === s.value ? styles.sizeBtnSelected : ''
-              }`}
-              onClick={() => handleSizePick(s.value)}
-            >
-              <span
-                className={styles.sizeDot}
-                style={{ width: s.value, height: s.value }}
-              />
-            </button>
-          ))}
+        <div className={styles.sizeGroup} role="radiogroup" aria-label={t("create.brushSize") || (lang === 'en' ? "Brush size" : "Ukuran kuas")}>
+          {SIZES.map((s) => {
+            const sizeLabel = s.label[lang] || s.label.id;
+            return (
+              <button
+                key={s.value}
+                aria-label={`${sizeLabel} (${s.value}px)`}
+                title={sizeLabel}
+                aria-pressed={brushSize === s.value}
+                className={`${styles.sizeBtn} ${
+                  brushSize === s.value ? styles.sizeBtnSelected : ''
+                }`}
+                onClick={() => handleSizePick(s.value)}
+              >
+                <span
+                  className={styles.sizeDot}
+                  style={{ width: s.value, height: s.value }}
+                />
+              </button>
+            );
+          })}
         </div>
 
         <span className={styles.divider} aria-hidden="true" />
@@ -201,7 +211,8 @@ export default function DrawingCanvas() {
         {/* Eraser & Clear */}
         <div className={styles.actionGroup}>
           <button
-            aria-label="Eraser"
+            aria-label={t("create.eraser") || (lang === 'en' ? "Eraser" : "Penghapus")}
+            title={t("create.eraser") || (lang === 'en' ? "Eraser" : "Penghapus")}
             aria-pressed={isEraser}
             className={`${styles.eraserBtn} ${isEraser ? styles.eraserBtnSelected : ''}`}
             onClick={toggleEraser}
@@ -210,11 +221,12 @@ export default function DrawingCanvas() {
           </button>
 
           <button
-            aria-label="Clear canvas"
+            aria-label={t("create.clearCanvas") || (lang === 'en' ? "Clear canvas" : "Hapus gambar")}
+            title={t("create.clearCanvas") || (lang === 'en' ? "Clear canvas" : "Hapus gambar")}
             className={styles.clearBtn}
             onClick={clearCanvas}
           >
-            🗑️ Clear
+            🗑️ {lang === 'en' ? "Clear" : "Hapus"}
           </button>
         </div>
       </div>

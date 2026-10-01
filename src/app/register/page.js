@@ -4,17 +4,29 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, Eye, EyeOff, UserPlus } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, UserPlus, Shield, CheckCircle2, AlertCircle } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./register.module.css";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t, tx } = useLanguage();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+  // Parental verification state
+  const [parentConsent, setParentConsent] = useState(false);
+  const [mathAnswer, setMathAnswer] = useState("");
+  // Simple fixed arithmetic question for adult gate (8 + 7 = 15)
+  const num1 = 8;
+  const num2 = 7;
+  const expectedSum = 15;
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
@@ -31,14 +43,35 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
-    // Validation
-    if (formData.password !== formData.confirmPassword) {
-      setError("Password tidak cocok");
+    // Parental gate verification
+    if (!parentConsent) {
+      setError(t("parentalGate.consentRequired"));
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError("Password minimal 6 karakter");
+    if (parseInt(mathAnswer, 10) !== expectedSum) {
+      setError(t("parentalGate.mathError"));
+      return;
+    }
+
+    // Password validation
+    if (formData.password !== formData.confirmPassword) {
+      setError(t("auth.passwordMismatch"));
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError(t("auth.passwordMinLength"));
+      return;
+    }
+
+    const hasNumberOrSymbol = /[0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(formData.password);
+    const hasLetter = /[a-zA-Z]/.test(formData.password);
+    if (!hasNumberOrSymbol || !hasLetter) {
+      setError(tx(
+        "Kata sandi harus mengandung kombinasi huruf dan angka/simbol",
+        "Password must contain a mix of letters and numbers/symbols"
+      ));
       return;
     }
 
@@ -52,20 +85,21 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          parentalConfirmed: true,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Terjadi kesalahan");
+        setError(data.error || t("auth.genericError"));
         return;
       }
 
       // Registration successful, redirect to login
       router.push("/login?registered=true");
-    } catch (error) {
-      setError("Terjadi kesalahan. Silakan coba lagi.");
+    } catch (err) {
+      setError(t("auth.genericError"));
     } finally {
       setIsLoading(false);
     }
@@ -77,18 +111,18 @@ export default function RegisterPage() {
         className={styles.card}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
       >
         <div className={styles.header}>
           <div className={styles.logo}>🌿</div>
-          <h1 className={styles.title}>Daftar Sena Kids</h1>
-          <p className={styles.subtitle}>Mulai petualangan belajarmu!</p>
+          <h1 className={styles.title}>{t("auth.registerTitle")}</h1>
+          <p className={styles.subtitle}>{t("auth.registerSubtitle")}</p>
         </div>
 
         {error && (
           <motion.div
             className={styles.error}
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
           >
             {error}
@@ -99,16 +133,17 @@ export default function RegisterPage() {
           <div className={styles.inputGroup}>
             <label htmlFor="name" className={styles.label}>
               <User size={16} />
-              Nama
+              {t("auth.nameLabel")}
             </label>
             <input
               id="name"
               name="name"
               type="text"
+              autoComplete="name"
               value={formData.name}
               onChange={handleChange}
               className={styles.input}
-              placeholder="Nama lengkap"
+              placeholder={t("auth.namePlaceholder")}
               required
               disabled={isLoading}
             />
@@ -117,16 +152,17 @@ export default function RegisterPage() {
           <div className={styles.inputGroup}>
             <label htmlFor="email" className={styles.label}>
               <Mail size={16} />
-              Email
+              {t("auth.emailLabel")}
             </label>
             <input
               id="email"
               name="email"
               type="email"
+              autoComplete="email"
               value={formData.email}
               onChange={handleChange}
               className={styles.input}
-              placeholder="nama@email.com"
+              placeholder={t("auth.emailPlaceholder")}
               required
               disabled={isLoading}
             />
@@ -135,17 +171,18 @@ export default function RegisterPage() {
           <div className={styles.inputGroup}>
             <label htmlFor="password" className={styles.label}>
               <Lock size={16} />
-              Password
+              {t("auth.passwordLabel")}
             </label>
             <div className={styles.passwordWrapper}>
               <input
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
                 value={formData.password}
                 onChange={handleChange}
                 className={styles.input}
-                placeholder="Minimal 6 karakter"
+                placeholder={t("auth.passwordPlaceholder")}
                 required
                 disabled={isLoading}
               />
@@ -154,6 +191,8 @@ export default function RegisterPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className={styles.eyeButton}
                 disabled={isLoading}
+                tabIndex={-1}
+                aria-label={showPassword ? "Sembunyikan password" : "Lihat password"}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -163,17 +202,18 @@ export default function RegisterPage() {
           <div className={styles.inputGroup}>
             <label htmlFor="confirmPassword" className={styles.label}>
               <Lock size={16} />
-              Konfirmasi Password
+              {t("auth.confirmPasswordLabel")}
             </label>
             <div className={styles.passwordWrapper}>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className={styles.input}
-                placeholder="Ulangi password"
+                placeholder={t("auth.confirmPasswordPlaceholder")}
                 required
                 disabled={isLoading}
               />
@@ -182,9 +222,53 @@ export default function RegisterPage() {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className={styles.eyeButton}
                 disabled={isLoading}
+                tabIndex={-1}
+                aria-label={showConfirmPassword ? "Sembunyikan password" : "Lihat password"}
               >
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+            </div>
+          </div>
+
+          {/* Parental Gate Box */}
+          <div className={styles.parentalGateBox}>
+            <div className={styles.gateHead}>
+              <Shield size={18} color="var(--color-primary)" />
+              <strong>{t("parentalGate.title")}</strong>
+            </div>
+            <p className={styles.gateExplain}>{t("parentalGate.explanation")}</p>
+            
+            <div className={styles.mathChallenge}>
+              <label htmlFor="mathAnswer" className={styles.mathLabel}>
+                {t("parentalGate.mathQuestion", { num1, num2 })}
+              </label>
+              <input
+                id="mathAnswer"
+                type="number"
+                required
+                value={mathAnswer}
+                onChange={(e) => setMathAnswer(e.target.value)}
+                className={styles.mathInput}
+                placeholder={t("parentalGate.mathPlaceholder")}
+                disabled={isLoading}
+              />
+            </div>
+
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                required
+                checked={parentConsent}
+                onChange={(e) => setParentConsent(e.target.checked)}
+                className={styles.checkbox}
+                disabled={isLoading}
+              />
+              <span>{t("parentalGate.consentAffirmation")}</span>
+            </label>
+
+            <div className={styles.legalNotice}>
+              <AlertCircle size={14} />
+              <span>{t("parentalGate.legalReviewNote")}</span>
             </div>
           </div>
 
@@ -198,7 +282,7 @@ export default function RegisterPage() {
             ) : (
               <>
                 <UserPlus size={20} />
-                Daftar
+                {t("auth.submitRegister")}
               </>
             )}
           </button>
@@ -206,11 +290,21 @@ export default function RegisterPage() {
 
         <div className={styles.footer}>
           <p>
-            Sudah punya akun?{" "}
+            {t("auth.haveAccount")}{" "}
             <Link href="/login" className={styles.link}>
-              Masuk di sini
+              {t("auth.loginHere")}
             </Link>
           </p>
+
+          <div className={styles.footerLinks}>
+            <Link href="/privacy">{t("home.privacy")}</Link>
+            <span>•</span>
+            <Link href="/terms">{t("home.terms")}</Link>
+            <span>•</span>
+            <Link href="/parents">{t("home.parents")}</Link>
+            <span>•</span>
+            <Link href="/contact">{t("home.contact")}</Link>
+          </div>
         </div>
       </motion.div>
     </div>

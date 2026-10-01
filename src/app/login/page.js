@@ -5,10 +5,12 @@ import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, LogIn, Shield, Heart } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./login.module.css";
 
 function LoginForm() {
+  const { t, tx } = useLanguage();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,25 +24,24 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      const callbackUrl = searchParams.get("callbackUrl") || "/games";
+      const callbackUrl = searchParams.get("callbackUrl") || "/home";
       const result = await signIn("credentials", {
-        email,
+        email: email.trim().toLowerCase(),
         password,
         redirect: false,
         callbackUrl,
       });
 
       if (result?.error) {
-        // surface the real error code so we can diagnose production issues
-        setError(`Gagal masuk (${result.error}). Periksa email/password.`);
+        // Generic secure error message
+        setError(t("auth.invalidCredentials"));
       } else if (result?.ok || result?.url) {
-        // hard navigation so the new session cookie is picked up immediately
         window.location.href = result?.url || callbackUrl;
       } else {
-        setError("Gagal masuk. Coba lagi.");
+        setError(t("auth.invalidCredentials"));
       }
-    } catch (error) {
-      setError(`Terjadi kesalahan: ${error?.message || "coba lagi"}`);
+    } catch (err) {
+      setError(t("auth.invalidCredentials"));
     } finally {
       setIsLoading(false);
     }
@@ -52,18 +53,18 @@ function LoginForm() {
         className={styles.card}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
       >
         <div className={styles.header}>
           <div className={styles.logo}>🌿</div>
-          <h1 className={styles.title}>Masuk ke Sena Kids</h1>
-          <p className={styles.subtitle}>Selamat datang kembali!</p>
+          <h1 className={styles.title}>{t("auth.loginTitle")}</h1>
+          <p className={styles.subtitle}>{t("auth.loginSubtitle")}</p>
         </div>
 
         {error && (
           <motion.div
             className={styles.error}
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
           >
             {error}
@@ -74,34 +75,40 @@ function LoginForm() {
           <div className={styles.inputGroup}>
             <label htmlFor="email" className={styles.label}>
               <Mail size={16} />
-              Email
+              {t("auth.emailLabel")}
             </label>
             <input
               id="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={styles.input}
-              placeholder="nama@email.com"
+              placeholder={t("auth.emailPlaceholder")}
               required
               disabled={isLoading}
             />
           </div>
 
           <div className={styles.inputGroup}>
-            <label htmlFor="password" className={styles.label}>
-              <Lock size={16} />
-              Password
-            </label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <label htmlFor="password" className={styles.label}>
+                <Lock size={16} />
+                {t("auth.passwordLabel")}
+              </label>
+              <Link href="/forgot-password" className={styles.forgotLink}>
+                {t("auth.forgotPasswordLink")}
+              </Link>
+            </div>
             <div className={styles.passwordWrapper}>
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
-                placeholder="••••••••"
-                autoComplete="current-password"
+                placeholder={t("auth.passwordPlaceholder")}
                 required
                 disabled={isLoading}
               />
@@ -110,6 +117,8 @@ function LoginForm() {
                 onClick={() => setShowPassword(!showPassword)}
                 className={styles.eyeButton}
                 disabled={isLoading}
+                tabIndex={-1}
+                aria-label={showPassword ? "Sembunyikan password" : "Lihat password"}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -126,19 +135,33 @@ function LoginForm() {
             ) : (
               <>
                 <LogIn size={20} />
-                Masuk
+                {t("auth.submitLogin")}
               </>
             )}
           </button>
         </form>
 
+        <div className={styles.parentNotice}>
+          <Shield size={16} />
+          <span>{t("auth.parentNotice")}</span>
+        </div>
+
         <div className={styles.footer}>
           <p>
-            Belum punya akun?{" "}
+            {t("auth.noAccount")}{" "}
             <Link href="/register" className={styles.link}>
-              Daftar sekarang
+              {t("auth.registerHere")}
             </Link>
           </p>
+          <div className={styles.footerLinks}>
+            <Link href="/privacy">{t("home.privacy")}</Link>
+            <span>•</span>
+            <Link href="/terms">{t("home.terms")}</Link>
+            <span>•</span>
+            <Link href="/parents">{t("home.parents")}</Link>
+            <span>•</span>
+            <Link href="/contact">{t("home.contact")}</Link>
+          </div>
         </div>
       </motion.div>
     </div>
@@ -146,8 +169,9 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const { t } = useLanguage();
   return (
-    <Suspense fallback={<div className={styles.container}><div className={styles.card}><div className={styles.header}><img className={styles.logo} src="/sena-logo.svg" alt="" width="64" height="64" /><h1 className={styles.title}>Memuat...</h1></div></div></div>}>
+    <Suspense fallback={<div style={{ textAlign: "center", padding: "40px" }}>{t("common.loading")}</div>}>
       <LoginForm />
     </Suspense>
   );

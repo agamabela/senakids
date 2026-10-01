@@ -62,6 +62,31 @@ model User {
   role          String   @default("user")
   emailVerified DateTime?
   image         String?
+  resetToken    String?
+  resetExpiry   DateTime?
+  verifyToken   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model ContactReport {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String
+  category    String
+  message     String
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RateLimit {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  count     Int      @default(1)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([expiresAt])
 }

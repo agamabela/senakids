@@ -116,7 +116,7 @@ export default function OwlyClient() {
                       whileHover={unlocked ? { scale: 1.05 } : {}}
                       whileTap={unlocked ? { scale: 0.96 } : {}}
                       disabled={!unlocked}
-                      style={{ marginLeft: `${Math.sin(i * 1.1) * 40 + 40}px` }}
+                      style={{ marginLeft: `${Math.round(Math.sin(i * 1.1) * 40 + 40)}px` }}
                     >
                       {unlocked
                         ? <img src={owlyImg(lesson.img, "square")} alt="" className={styles.nodePic} draggable={false} />

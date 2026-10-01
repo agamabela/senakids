@@ -28,7 +28,7 @@
   outline: none;
   opacity: 0;
   transform: translateY(-10px);
-  animation: slideIn var(--transition-instant) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideIn var(--transition-instant) forwards;
 }
 
 @keyframes fadeIn {
@@ -161,6 +161,27 @@
   outline-offset: 3px;
 }
 
+.bodyScroll {
+  max-height: calc(82vh - 80px);
+  overflow-y: auto;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-xs) var(--space-md);
+}
+
+.subheading {
+  font-family: var(--font-family-heading);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin: var(--space-sm) var(--space-md) var(--space-xs);
+}
+
 @media (max-width: 480px) {
   .grid {
     grid-template-columns: 1fr;
@@ -169,3 +190,4 @@
     padding-inline: 12px;
   }
 }
+

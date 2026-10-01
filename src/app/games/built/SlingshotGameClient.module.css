@@ -1,0 +1,22 @@
+.wrapper { max-width: 1100px; margin: 0 auto; padding: 20px 0 40px; color: #243342; }
+.header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin: 0 0 18px; }
+.kicker { margin: 0 0 6px; color: #9b5034; font-size: .75rem; font-weight: 800; letter-spacing: .16em; }
+.header h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -.05em; }
+.header p:not(.kicker) { max-width: 630px; margin: 10px 0 0; color: #526575; line-height: 1.5; }
+.score { min-width: 120px; padding: 14px 18px; border-left: 4px solid #e7a744; background: #fff9ed; }
+.score span { display: block; color: #876a3f; font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; }
+.score strong { display: block; margin-top: 2px; font-size: 2rem; }
+.stage { overflow: hidden; border: 3px solid #324a59; background: #b9e7ff; box-shadow: 10px 10px 0 #d9c58f; }
+.stage canvas { display: block; width: 100%; height: auto; touch-action: none; }
+.aimPanel { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto; gap: 18px; align-items: end; margin-top: 22px; padding: 18px; border: 2px solid #324a59; background: #fff9ed; }
+.aimPanel label { display: grid; grid-template-columns: 1fr auto; gap: 8px; color: #526575; font-weight: 700; }
+.aimPanel input { grid-column: 1 / -1; width: 100%; accent-color: #9b5034; cursor: pointer; }
+.launchButton { min-height: 48px; padding: 10px 24px; border: 2px solid #713b2b; background: #db4d3f; color: #fff; font: inherit; font-weight: 900; cursor: pointer; box-shadow: 4px 4px 0 #713b2b; }
+.launchButton:hover, .launchButton:focus-visible { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 #713b2b; outline: 3px solid #f2c27d; outline-offset: 2px; }
+.controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 22px; padding: 14px 0; color: #526575; font-weight: 700; }
+.controls > span { flex: 1 1 260px; }
+.controls button { min-height: 44px; padding: 9px 15px; border: 1px solid #b9c7cd; background: #fff; color: #243342; font: inherit; cursor: pointer; }
+.controls button:hover, .controls button:focus-visible { border-color: #9b5034; outline: 3px solid #f2c27d; outline-offset: 2px; }
+.levels { display: flex; gap: 7px; }
+.levels .active { background: #243342; color: #fff; border-color: #243342; }
+@media (max-width: 640px) { .wrapper { padding: 10px 0 28px; } .header { align-items: start; flex-direction: column; } .score { align-self: stretch; } .stage { box-shadow: 5px 5px 0 #d9c58f; } .aimPanel { grid-template-columns: 1fr; } .controls { align-items: stretch; } .levels { width: 100%; } .levels button { flex: 1; padding-inline: 7px; } }

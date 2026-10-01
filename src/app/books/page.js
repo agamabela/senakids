@@ -1,27 +1,33 @@
 import { getBooks } from "@/app/admin/actions";
+import { LETS_READ_STORIES, INTERACTIVE_LEARNING_BOOKS } from "@/lib/content-registry";
 import BooksClient from "./BooksClient";
 
-export const dynamic = "force-dynamic";
+export const metadata = {
+  title: "Perpustakaan Buku Anak - Cerita & Belajar",
+  description: "Koleksi lengkap buku cerita bergambar Let's Read Asia, petualangan membaca, dan ensiklopedia interaktif cilik tanpa iklan.",
+  alternates: {
+    canonical: "/books",
+  },
+  openGraph: {
+    title: "Perpustakaan Buku Anak - Cerita & Belajar",
+    description: "Baca buku cerita bergambar dan belajar interaktif anak gratis dan ramah keluarga.",
+    url: "https://senakids.web.id/books",
+  },
+};
 
 export default async function BooksPage() {
-  let books = [];
+  let dbBooks = [];
   try {
-    books = await getBooks();
+    dbBooks = await getBooks();
   } catch (e) {
-    books = [];
+    dbBooks = [];
   }
 
-  // Group books by shelf
-  const shelvesMap = {};
-  books.forEach(book => {
-    if (!shelvesMap[book.shelf]) shelvesMap[book.shelf] = [];
-    shelvesMap[book.shelf].push(book);
-  });
-
-  const shelves = Object.keys(shelvesMap).map(title => ({
-    title,
-    books: shelvesMap[title]
-  }));
-
-  return <BooksClient shelves={shelves} />;
+  return (
+    <BooksClient
+      stories={LETS_READ_STORIES}
+      interactiveBooks={INTERACTIVE_LEARNING_BOOKS}
+      dbBooks={dbBooks}
+    />
+  );
 }

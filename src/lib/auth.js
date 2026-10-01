@@ -4,17 +4,19 @@ import { prisma } from "@/lib/prisma";
 import { ensureDefaultAdminUser } from "@/lib/admin-auth.mjs";
 import bcrypt from "bcryptjs";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email dan password harus diisi");
+          throw new Error("Email atau kata sandi tidak valid.");
         }
 
         const normalizedEmail = credentials.email.trim().toLowerCase();
@@ -31,11 +33,12 @@ export const authOptions = {
           }
 
           const user = await prisma.user.findUnique({
-            where: { email: normalizedEmail }
+            where: { email: normalizedEmail },
           });
 
+          // Always use identical generic error message to prevent user enumeration
           if (!user || !user.password) {
-            throw new Error("Email atau password salah");
+            throw new Error("Email atau kata sandi tidak valid.");
           }
 
           const isPasswordValid = await bcrypt.compare(
@@ -44,7 +47,7 @@ export const authOptions = {
           );
 
           if (!isPasswordValid) {
-            throw new Error("Email atau password salah");
+            throw new Error("Email atau kata sandi tidak valid.");
           }
 
           return {
@@ -54,19 +57,30 @@ export const authOptions = {
             role: user.role,
           };
         } catch (err) {
-          if (err instanceof Error && err.message === "Email atau password salah") {
+          if (err instanceof Error && err.message === "Email atau kata sandi tidak valid.") {
             throw err;
           }
 
           console.error("DB error during login:", err);
-          throw new Error("Tidak dapat terhubung ke database. Coba lagi.");
+          throw new Error("Terjadi kendala autentikasi. Silakan coba kembali.");
         }
-      }
-    })
+      },
+    }),
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  cookies: {
+    sessionToken: {
+      name: isProduction ? "__Secure-authjs.session-token" : "authjs.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: isProduction,
+      },
+    },
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -82,7 +96,7 @@ export const authOptions = {
         session.user.id = token.id;
       }
       return session;
-    }
+    },
   },
   pages: {
     signIn: "/login",

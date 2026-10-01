@@ -48,6 +48,10 @@
   --color-primary: #3D7843; /* Forest Sage Green */
   --color-primary-light: #EAF2EB; /* Soft sage tint */
   --color-primary-text: #FFFFFF;
+  --color-forest: #3D7843;
+  --color-forest-dark: #2B542F;
+  --color-amber: #BD5B32;
+  --color-amber-dark: #994420;
   
   --color-focus: #3D7843;
   --color-focus-ring: oklab(0.718319 0.151535 0.0905449 / 0.7); /* Distinct amber focus ring */
@@ -155,6 +159,10 @@
   --color-primary: #72AB79;
   --color-primary-light: #233425;
   --color-primary-text: #161311;
+  --color-forest: #72AB79;
+  --color-forest-dark: #55915d;
+  --color-amber: #E0825B;
+  --color-amber-dark: #b8603b;
 
   --color-purple: #B288B5;
   --color-pink: #D9889D;
@@ -429,14 +437,26 @@ img {
   }
 }
 
-/* --- Responsive Breakpoints --- */
-@media (max-width: 768px) {
-  .page-container {
-    padding: var(--space-lg) var(--space-md);
-  }
-
-  .card-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-lg);
-  }
+/* Accessible Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--color-primary);
+  color: #ffffff;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+  z-index: 9999;
+  text-decoration: none;
+  transition: top var(--transition-fast) ease;
+  box-shadow: var(--shadow-card);
 }
+
+.skip-to-content:focus {
+  top: 16px;
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+

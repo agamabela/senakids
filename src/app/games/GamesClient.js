@@ -11,6 +11,7 @@ const senaKidsGames = [
   { title: { id: "Ular Tangga", en: "Snakes & Ladders" }, href: "/games/built/ular-tangga", image: "https://data.cabocil.com/assets/images/others/board-snake-and-ladder-v1.png", emoji: "🪜", color: "teal" },
   { title: { id: "Super Mario Bros", en: "Super Mario Bros" }, href: "/games/built/mario", emoji: "🍄", color: "red" },
   { title: { id: "Harvest Moon 2.0", en: "Harvest Moon 2.0" }, href: "/games/built/harvest-moon", emoji: "🌾", color: "green" },
+  { title: { id: "Bird Launch", en: "Bird Launch" }, href: "/games/built/bird-launch", emoji: "🐦", color: "orange" },
   { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, href: "/games/built/petualangan-labirin", image: "https://data.cabocil.com/assets/game-thumbnails/maze.png", emoji: "💎", color: "blue" },
   { title: { id: "Labirin 3D", en: "3D Maze" }, href: "/games/built/labirin-3d", emoji: "🧊", color: "green" },
   { title: { id: "Si Bom Pintar", en: "Smart Bomber" }, href: "/games/built/bomberman", emoji: "💣", color: "orange" },
@@ -155,6 +156,7 @@ export default function GamesClient({ zones = [] }) {
               href={`#${cat.id}`}
               onClick={() => setActiveTab(cat.id)}
               className={`${styles.navPill} ${isActive ? styles.navPillActive : ""}`}
+              aria-current={isActive ? "true" : undefined}
             >
               {cat.label}
             </a>

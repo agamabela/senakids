@@ -243,16 +243,92 @@
   background: var(--color-muted);
 }
 
-.iframeWrapper {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
+.cardButton {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
 }
 
-.iframe {
-  width: 100%;
-  height: 100%;
+.levelBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(36, 28, 21, 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.attrLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.timeoutBox {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-card);
+  text-align: center;
+  z-index: 10;
+}
+
+.timeoutBox h3 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  margin: 12px 0 6px;
+  color: var(--color-text);
+}
+
+.timeoutBox p {
+  font-size: 14px;
+  color: var(--color-muted-foreground);
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.timeoutActions {
+  display: flex;
+  gap: 12px;
+}
+
+.retryBtn, .openDirectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.retryBtn {
+  background: var(--color-primary);
+  color: #fff;
   border: none;
+}
+
+.openDirectBtn {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
 .loadingOverlay {
