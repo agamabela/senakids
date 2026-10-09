@@ -1,10 +1,16 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getGame } from "@/app/admin/actions";
+import { builtGameDetails } from "@/app/games/built/[slug]/page";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
 export default async function GameDetailPage({ params }) {
   const { gameId } = await params;
+
+  if (builtGameDetails && builtGameDetails[gameId]) {
+    redirect(`/games/built/${gameId}`);
+  }
+
   const game = await getGame(gameId);
 
   if (!game) {

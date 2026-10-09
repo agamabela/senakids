@@ -30,10 +30,24 @@ import SimonBilangGameClient from "../SimonBilangGameClient";
 import LetuskanBalonGameClient from "../LetuskanBalonGameClient";
 import PlatformerGameClient from "../PlatformerGameClient";
 import SkiPagiGameClient from "../SkiPagiGameClient";
+import NumberBalanceGameClient from "../NumberBalanceGameClient";
+import BlockBlastGameClient from "../BlockBlastGameClient";
+import WordSearchGameClient from "../WordSearchGameClient";
+import ColorConnectGameClient from "../ColorConnectGameClient";
+import ZipPathGameClient from "../ZipPathGameClient";
+import TopplePartyGameClient from "../TopplePartyGameClient";
+import MathComparisonGameClient from "../MathComparisonGameClient";
+import MathFractionGameClient from "../MathFractionGameClient";
+import MathAdditionGameClient from "../MathAdditionGameClient";
+import MathSubtractionGameClient from "../MathSubtractionGameClient";
+import MathNegativeGameClient from "../MathNegativeGameClient";
+import MathMultiplicationGameClient from "../MathMultiplicationGameClient";
+import MemoryMorseGameClient from "../MemoryMorseGameClient";
+import MemahamiKoordinatGameClient from "../MemahamiKoordinatGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
-const builtGameDetails = {
+export const builtGameDetails = {
   drum: { title: "Drum", description: "Permainan drum interaktif built-in.", note: "This built-in game is implemented directly in Sena Kids." },
   "membuat-jalur": { title: "Membuat Jalur", description: "Bantu Sena menemukan jalan keluar labirin!", note: "This built-in game is implemented directly in Sena Kids." },
   "learn-english-1": { title: "Learn English 1", description: "Belajar kata sederhana dan gambar.", note: "This built-in game is implemented directly in Sena Kids." },
@@ -65,7 +79,32 @@ const builtGameDetails = {
   "letuskan-balon": { title: "Letuskan Balon", description: "Letuskan balon sesuai jumlah untuk belajar berhitung!", note: "This built-in game is implemented directly in Sena Kids." },
   "petualangan-lompat": { title: "Petualangan Lompat", description: "Lari, lompat, kumpulkan bintang, dan capai bendera!", note: "This built-in game is implemented directly in Sena Kids." },
   "ski-pagi": { title: "Ski Pagi", description: "Meluncur di lereng salju, hindari rintangan, dan kumpulkan koin.", note: "Downhill ski arcade game for Sena Kids." },
-  "ski-free": { title: "Ski Free", description: "Meluncur di lereng salju, hindari rintangan, dan kumpulkan koin.", note: "Downhill ski arcade game for Sena Kids." }
+  "ski-free": { title: "Ski Free", description: "Meluncur di lereng salju, hindari rintangan, dan kumpulkan koin.", note: "Downhill ski arcade game for Sena Kids." },
+  "timbangan-angka": { title: "Timbangan Angka", description: "Seimbangkan timbangan dengan meletakkan beban angka di sisi kiri dan kanan!", note: "This built-in game is implemented directly in Sena Kids." },
+  "number-balance": { title: "Timbangan Angka", description: "Seimbangkan timbangan dengan meletakkan beban angka di sisi kiri dan kanan!", note: "This built-in game is implemented directly in Sena Kids." },
+  "block-blast": { title: "Block Blast", description: "Teka-teki balok seru: tempatkan balok dan bersihkan baris serta kolom!", note: "This built-in game is implemented directly in Sena Kids." },
+  "cari-kata": { title: "Cari Kata", description: "Temukan kata-kata tersembunyi dalam kotak huruf!", note: "This built-in game is implemented directly in Sena Kids." },
+  "word-search": { title: "Cari Kata", description: "Temukan kata-kata tersembunyi dalam kotak huruf!", note: "This built-in game is implemented directly in Sena Kids." },
+  "sambung-warna": { title: "Sambung Warna", description: "Hubungkan titik-titik warna yang sama tanpa garis bertabrakan!", note: "This built-in game is implemented directly in Sena Kids." },
+  "color-connect": { title: "Sambung Warna", description: "Hubungkan titik-titik warna yang sama tanpa garis bertabrakan!", note: "This built-in game is implemented directly in Sena Kids." },
+  "zip-path": { title: "Zip Path", description: "Tarik satu jalur ritsleting melewati setiap titik tanpa henti!", note: "This built-in game is implemented directly in Sena Kids." },
+  "topple-party": { title: "Topple Party", description: "Jaga keseimbangan jungkat-jungkit agar tidak terjungkal!", note: "This built-in game is implemented directly in Sena Kids." },
+  membandingkan: { title: "Membandingkan Angka", description: "Latihan perbandingan lebih besar, lebih kecil, dan sama dengan.", note: "This built-in game is implemented directly in Sena Kids." },
+  comparison: { title: "Membandingkan Angka", description: "Latihan perbandingan lebih besar, lebih kecil, dan sama dengan.", note: "This built-in game is implemented directly in Sena Kids." },
+  "pecahan-lingkaran": { title: "Pecahan Lingkaran", description: "Belajar memahami pecahan dengan diagram lingkaran interaktif.", note: "This built-in game is implemented directly in Sena Kids." },
+  fractions: { title: "Pecahan Lingkaran", description: "Belajar memahami pecahan dengan diagram lingkaran interaktif.", note: "This built-in game is implemented directly in Sena Kids." },
+  penjumlahan: { title: "Latihan Penjumlahan", description: "Asah kemampuan berhitung penjumlahan angka dengan bantuan visual.", note: "This built-in game is implemented directly in Sena Kids." },
+  "numbers-add": { title: "Latihan Penjumlahan", description: "Asah kemampuan berhitung penjumlahan angka dengan bantuan visual.", note: "This built-in game is implemented directly in Sena Kids." },
+  pengurangan: { title: "Latihan Pengurangan", description: "Asah kemampuan pengurangan angka dengan ilustrasi benda yang dicoret.", note: "This built-in game is implemented directly in Sena Kids." },
+  "numbers-substract": { title: "Latihan Pengurangan", description: "Asah kemampuan pengurangan angka dengan ilustrasi benda yang dicoret.", note: "This built-in game is implemented directly in Sena Kids." },
+  "angka-negatif": { title: "Angka Negatif", description: "Pelajari bilangan di bawah nol dan garis bilangan dengan seru.", note: "This built-in game is implemented directly in Sena Kids." },
+  "negative-number": { title: "Angka Negatif", description: "Pelajari bilangan di bawah nol dan garis bilangan dengan seru.", note: "This built-in game is implemented directly in Sena Kids." },
+  perkalian: { title: "Tabel Perkalian", description: "Kuasai perkalian dasar dengan kelompok visual gambar.", note: "This built-in game is implemented directly in Sena Kids." },
+  "perkalian-dasar": { title: "Tabel Perkalian", description: "Kuasai perkalian dasar dengan kelompok visual gambar.", note: "This built-in game is implemented directly in Sena Kids." },
+  morse: { title: "Kode Morse Memori", description: "Dengarkan bunyi dan pelajari kode morse alfabet.", note: "This built-in game is implemented directly in Sena Kids." },
+  "morse-memori": { title: "Kode Morse Memori", description: "Dengarkan bunyi dan pelajari kode morse alfabet.", note: "This built-in game is implemented directly in Sena Kids." },
+  "memahami-koordinat": { title: "Memahami Koordinat", description: "Belajar sumbu X dan Y pada bidang koordinat kartesius interaktif.", note: "This built-in game is implemented directly in Sena Kids." },
+  koordinat: { title: "Memahami Koordinat", description: "Belajar sumbu X dan Y pada bidang koordinat kartesius interaktif.", note: "This built-in game is implemented directly in Sena Kids." }
 };
 
 const gameClients = {
@@ -100,7 +139,32 @@ const gameClients = {
   "letuskan-balon": LetuskanBalonGameClient,
   "petualangan-lompat": PlatformerGameClient,
   "ski-pagi": SkiPagiGameClient,
-  "ski-free": SkiPagiGameClient
+  "ski-free": SkiPagiGameClient,
+  "timbangan-angka": NumberBalanceGameClient,
+  "number-balance": NumberBalanceGameClient,
+  "block-blast": BlockBlastGameClient,
+  "cari-kata": WordSearchGameClient,
+  "word-search": WordSearchGameClient,
+  "sambung-warna": ColorConnectGameClient,
+  "color-connect": ColorConnectGameClient,
+  "zip-path": ZipPathGameClient,
+  "topple-party": TopplePartyGameClient,
+  membandingkan: MathComparisonGameClient,
+  comparison: MathComparisonGameClient,
+  "pecahan-lingkaran": MathFractionGameClient,
+  fractions: MathFractionGameClient,
+  penjumlahan: MathAdditionGameClient,
+  "numbers-add": MathAdditionGameClient,
+  pengurangan: MathSubtractionGameClient,
+  "numbers-substract": MathSubtractionGameClient,
+  "angka-negatif": MathNegativeGameClient,
+  "negative-number": MathNegativeGameClient,
+  perkalian: MathMultiplicationGameClient,
+  "perkalian-dasar": MathMultiplicationGameClient,
+  morse: MemoryMorseGameClient,
+  "morse-memori": MemoryMorseGameClient,
+  "memahami-koordinat": MemahamiKoordinatGameClient,
+  koordinat: MemahamiKoordinatGameClient
 };
 
 export async function generateStaticParams() {

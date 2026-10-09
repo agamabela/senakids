@@ -65,6 +65,20 @@ export default function sitemap() {
     "mengurutkan-balok",
     "urutkan-bola-angka",
     "quiz",
+    "block-blast",
+    "cari-kata",
+    "sambung-warna",
+    "zip-path",
+    "topple-party",
+    "timbangan-angka",
+    "membandingkan",
+    "pecahan-lingkaran",
+    "penjumlahan",
+    "pengurangan",
+    "angka-negatif",
+    "perkalian",
+    "morse",
+    "memahami-koordinat",
   ];
 
   const gameRoutes = builtInGameSlugs.map((slug) => ({

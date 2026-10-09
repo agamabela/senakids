@@ -6,11 +6,18 @@ import { Gamepad2, Brain, Globe, Sparkles, Trophy } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
+import { TOY_THEATER_CATALOG } from "@/lib/toytheater-games";
+
 // Category 1: Sena Kids Games
 const senaKidsGames = [
   { title: { id: "Ski Free", en: "Ski Free" }, href: "/games/ski-free", image: "/images/ski-pagi-key-art-v2.png", emoji: "⛷️", color: "blue" },
   { title: { id: "Ular Tangga", en: "Snakes & Ladders" }, href: "/games/built/ular-tangga", image: "https://data.cabocil.com/assets/images/others/board-snake-and-ladder-v1.png", emoji: "🪜", color: "teal" },
   { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, href: "/games/maze", image: "/images/games/maze/thumbnail.png", emoji: "💎", color: "blue" },
+  { title: { id: "Block Blast", en: "Block Blast" }, href: "/games/built/block-blast", emoji: "🧱", color: "purple" },
+  { title: { id: "Cari Kata", en: "Word Search" }, href: "/games/built/cari-kata", image: "/images/games/thumbnails/search-word.png", emoji: "🔍", color: "blue" },
+  { title: { id: "Sambung Warna", en: "Color Connect" }, href: "/games/built/sambung-warna", emoji: "🟣", color: "pink" },
+  { title: { id: "Zip Path", en: "Zip Path" }, href: "/games/built/zip-path", emoji: "⚡", color: "yellow" },
+  { title: { id: "Topple Party", en: "Topple Party" }, href: "/games/built/topple-party", emoji: "⚖️", color: "teal" },
   { title: { id: "Labirin 3D", en: "3D Maze" }, href: "/games/built/labirin-3d", emoji: "🧊", color: "green" },
   { title: { id: "Si Bom Pintar", en: "Smart Bomber" }, href: "/games/built/bomberman", emoji: "💣", color: "orange" },
   { title: { id: "Astronot Terbang", en: "Rocket Flier" }, href: "/games/built/astronot-terbang", emoji: "🚀", color: "blue" },
@@ -29,6 +36,15 @@ const senaKidsGames = [
 
 // Category 2: Sena Kids Exercises (Latihan Matematika, Logika, Memori)
 const senaKidsExercises = [
+  { title: { id: "Timbangan Angka", en: "Number Balance" }, href: "/games/built/timbangan-angka", image: "/images/games/thumbnails/numberbalance.png", emoji: "⚖️", color: "orange" },
+  { title: { id: "Membandingkan", en: "Comparison" }, href: "/games/built/membandingkan", image: "/images/games/thumbnails/comparison.png", emoji: "⚖️", color: "blue" },
+  { title: { id: "Pecahan Lingkaran", en: "Fractions" }, href: "/games/built/pecahan-lingkaran", emoji: "🥧", color: "teal" },
+  { title: { id: "Penjumlahan", en: "Addition" }, href: "/games/built/penjumlahan", image: "/images/games/thumbnails/numbersadd.png", emoji: "➕", color: "green" },
+  { title: { id: "Pengurangan", en: "Subtraction" }, href: "/games/built/pengurangan", image: "/images/games/thumbnails/numberssubstract.png", emoji: "➖", color: "red" },
+  { title: { id: "Angka Negatif", en: "Negative Numbers" }, href: "/games/built/angka-negatif", image: "/images/games/thumbnails/negative-number.png", emoji: "🧭", color: "blue" },
+  { title: { id: "Perkalian Dasar", en: "Multiplication" }, href: "/games/built/perkalian", image: "/images/games/thumbnails/perkalian.png", emoji: "✖️", color: "yellow" },
+  { title: { id: "Kode Morse Memori", en: "Morse Memory" }, href: "/games/built/morse", image: "/images/games/thumbnails/morse.png", emoji: "📻", color: "purple" },
+  { title: { id: "Memahami Koordinat", en: "Understand Coordinates" }, href: "/games/built/memahami-koordinat", emoji: "📍", color: "purple" },
   { title: { id: "Matematika Dasar", en: "Basic Math" }, href: "/games/built/berhitung", image: "https://data.cabocil.com/assets/game-thumbnails/mastermath.png", emoji: "🔢", color: "blue" },
   { title: { id: "Huruf ABC", en: "ABC Letters" }, href: "/games/built/huruf-abc", emoji: "🔤", color: "green" },
   { title: { id: "Lacak Huruf", en: "Trace Letters" }, href: "/games/built/lacak-huruf", emoji: "✏️", color: "blue" },
@@ -55,28 +71,8 @@ const gamesLainnya = [
   { title: { id: "Scratch", en: "Scratch MIT" }, href: "https://scratch.mit.edu/", image: "https://images.seeklogo.com/logo-png/43/2/scratch-cat-logo-png_seeklogo-431721.png", isExternal: true, color: "orange" },
 ];
 
-// Category 4: Toy Theater
-const toyTheaterGames = [
-  { title: { id: "Basketball", en: "Basketball" }, href: "/games/toytheater/game?gamename=basketball", image: "https://toytheater.com/wp-content/uploads/basketball.gif", color: "orange" },
-  { title: { id: "Fruit Fall", en: "Fruit Fall" }, href: "/games/toytheater/game?gamename=fruit-fall", image: "https://toytheater.com/wp-content/uploads/fruit_fall.gif", color: "red" },
-  { title: { id: "Balloon Pop", en: "Balloon Pop" }, href: "/games/toytheater/game?gamename=balloon-pop", image: "https://toytheater.com/wp-content/uploads/balloon_pop.gif", color: "pink" },
-  { title: { id: "Inch Worm", en: "Inch Worm" }, href: "/games/toytheater/game?gamename=inch-worm", image: "https://toytheater.com/wp-content/uploads/inch_worm-2.gif", color: "green" },
-  { title: { id: "Subitizing Seeds", en: "Subitizing Seeds" }, href: "/games/toytheater/game?gamename=subitizing-seeds", image: "https://toytheater.com/wp-content/uploads/subitizing-_seeds.gif", color: "yellow" },
-  { title: { id: "Fishing", en: "Fishing" }, href: "/games/toytheater/game?gamename=fishing", image: "https://toytheater.com/wp-content/uploads/fishing2.gif", color: "blue" },
-  { title: { id: "Bingo", en: "Bingo" }, href: "/games/toytheater/game?gamename=bingo", image: "https://toytheater.com/wp-content/uploads/bingo.gif", color: "purple" },
-  { title: { id: "Bowling", en: "Bowling" }, href: "/games/toytheater/game?gamename=bowling", image: "https://toytheater.com/wp-content/uploads/bowling.gif", color: "red" },
-  { title: { id: "Marbles", en: "Marbles" }, href: "/games/toytheater/game?gamename=marbles", image: "https://toytheater.com/wp-content/uploads/marbles.gif", color: "teal" },
-  { title: { id: "Cowboy", en: "Cowboy" }, href: "/games/toytheater/game?gamename=cowboy", image: "https://toytheater.com/wp-content/uploads/cowboy2.gif", color: "orange" },
-  { title: { id: "Apple Island", en: "Apple Island" }, href: "/games/toytheater/game?gamename=apple-island", image: "https://toytheater.com/wp-content/uploads/apple_island-2.gif", color: "green" },
-  { title: { id: "Kayak", en: "Kayak" }, href: "/games/toytheater/game?gamename=kayak", image: "https://toytheater.com/wp-content/uploads/kayak.gif", color: "blue" },
-  { title: { id: "Feed Freddy", en: "Feed Freddy" }, href: "/games/toytheater/game?gamename=feed-freddy", image: "https://toytheater.com/wp-content/uploads/feed_freddy.gif", color: "yellow" },
-  { title: { id: "Shake and Spill", en: "Shake and Spill" }, href: "/games/toytheater/game?gamename=shake-and-spill", image: "https://toytheater.com/wp-content/uploads/shake_spill.gif", color: "purple" },
-  { title: { id: "Addition Mine", en: "Addition Mine" }, href: "/games/toytheater/game?gamename=addition-mine", image: "https://toytheater.com/wp-content/uploads/addition_mine.gif", color: "teal" },
-  { title: { id: "Weightlifter", en: "Weightlifter" }, href: "/games/toytheater/game?gamename=weightlifter", image: "https://toytheater.com/wp-content/uploads/weightlifterl.gif", color: "red" },
-  { title: { id: "Amazon Addition", en: "Amazon Addition" }, href: "/games/toytheater/game?gamename=amazon-addition", image: "https://toytheater.com/wp-content/uploads/amazon_addition.gif", color: "green" },
-  { title: { id: "Popcorn", en: "Popcorn" }, href: "/games/toytheater/game?gamename=popcorn", image: "https://toytheater.com/wp-content/uploads/popcorn.gif", color: "yellow" },
-  { title: { id: "Math Flash Cards", en: "Math Flash Cards" }, href: "/games/toytheater/game?gamename=math-flash-cards", image: "https://toytheater.com/wp-content/uploads/math_flash_cards.gif", color: "blue" },
-];
+// Category 4: Toy Theater (Full 172 Games)
+const toyTheaterGames = TOY_THEATER_CATALOG;
 
 function CompactGameCard({ game, language }) {
   const title = typeof game.title === "object" ? (game.title[language] || game.title.id) : game.title;
