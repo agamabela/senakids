@@ -9,6 +9,31 @@ import styles from "./page.module.css";
 const STORAGE_KEY_SENA = "SENA:BLACKLIST_CHANNEL_MAP";
 const STORAGE_KEY_CABOCIL = "CABOCIL:BLACKLIST_CHANNEL_MAP";
 
+function ChannelAvatar({ name, imageUrl }) {
+  const [error, setError] = useState(false);
+  const initial = (name || "?").trim().charAt(0).toUpperCase();
+
+  if (error || !imageUrl) {
+    return (
+      <div className={styles.channelAvatarFallback} aria-hidden="true">
+        {initial}
+      </div>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={imageUrl}
+      alt={name}
+      className={styles.channelAvatar}
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setError(true)}
+    />
+  );
+}
+
 export default function ChannelsClient({ initialChannels = [] }) {
   const { lang } = useLanguage();
   const tx = (id, en) => (lang === "en" ? en : id);
@@ -246,13 +271,7 @@ export default function ChannelsClient({ initialChannels = [] }) {
                 className={`${styles.channelCard} ${isDisabled ? styles.channelCardDisabled : ""}`}
               >
                 <div className={styles.channelMain}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={channel.image_url || "https://i.ytimg.com/vi/mqdefault.jpg"}
-                    alt={channel.name}
-                    className={styles.channelAvatar}
-                    loading="lazy"
-                  />
+                  <ChannelAvatar name={channel.name} imageUrl={channel.image_url} />
                   <div className={styles.channelMeta}>
                     <h2 className={styles.channelName} title={channel.name}>
                       {channel.name}

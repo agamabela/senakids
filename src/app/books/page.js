@@ -27,7 +27,7 @@ const EDUCATIONAL_PORTALS = [
     subtitle: "Perpustakaan Cerita Anak Asia",
     description: "Ribuan buku cerita anak bergambar gratis dalam berbagai bahasa dari The Asia Foundation.",
     href: "https://www.letsreadasia.org/",
-    image: "https://data.cabocil.com/assets/book-thumbnails/thumb-lets-read.png",
+    image: "/images/books/portal-letsread.svg",
     external: true,
   },
   {
@@ -36,7 +36,7 @@ const EDUCATIONAL_PORTALS = [
     subtitle: "Katalog Buku Kemendikdasmen",
     description: "Koleksi buku pengayaan dan literasi resmi Kementerian Pendidikan Dasar dan Menengah.",
     href: "https://buku.kemendikdasmen.go.id/katalog/buku-non-teks",
-    image: "https://data.cabocil.com/assets/book-thumbnails/thumb-bukuindo.png",
+    image: "/images/books/portal-kemendikdasmen.svg",
     external: true,
   },
   {
@@ -45,7 +45,7 @@ const EDUCATIONAL_PORTALS = [
     subtitle: "Katalog Buku Kemendikdasmen",
     description: "Buku digital interaktif untuk PAUD, SD, dan jenjang pendidikan dasar Indonesia.",
     href: "https://budi.kemendikdasmen.go.id/buku?tipe=2fd97285-08d0-4d81-83f2-582f0e8b0f36",
-    image: "https://cabocil-api.cabocil.com/file_bucket/admin_uploads/admin/budi-cover.png",
+    image: "/images/books/portal-budi.svg",
     external: true,
   },
 ];

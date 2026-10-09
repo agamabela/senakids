@@ -21,6 +21,32 @@ import { useLanguage } from "@/components/LanguageProvider";
 import ActivityCard from "@/components/ActivityCard";
 import styles from "./page.module.css";
 
+function BookCover({ title, src, color, isPriority = false, badge }) {
+  const [error, setError] = useState(false);
+
+  return (
+    <div className={styles.coverBox} style={{ backgroundColor: color || "#faf8f5" }}>
+      {error || !src ? (
+        <div className={styles.coverFallback}>
+          <BookOpen size={36} color="var(--color-primary)" />
+          <span className={styles.coverFallbackTitle}>{title}</span>
+        </div>
+      ) : (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={src}
+          alt={title}
+          className={styles.coverImage}
+          loading={isPriority ? "eager" : "lazy"}
+          referrerPolicy="no-referrer"
+          onError={() => setError(true)}
+        />
+      )}
+      {badge && <span className={styles.cardLevelBadge}>{badge}</span>}
+    </div>
+  );
+}
+
 export default function BooksClient({
   stories = [],
   interactiveBooks = [],
@@ -359,7 +385,13 @@ export default function BooksClient({
               >
                 <div className={styles.portalThumbBox}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.image} alt={p.title} className={styles.portalThumb} loading="lazy" />
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className={styles.portalThumb}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
                   <span className={styles.liveTagBadge}>Portal Resmi</span>
                 </div>
                 <div className={styles.portalBody}>
@@ -511,18 +543,12 @@ export default function BooksClient({
                   className={styles.storyCard}
                   aria-label={`${t("stories.readBook")}: ${b.title}`}
                 >
-                  <div className={styles.coverBox} style={{ backgroundColor: "#faf8f5" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={b.cover}
-                      alt={b.title}
-                      className={styles.coverImage}
-                      loading="lazy"
-                    />
-                    <span className={styles.cardLevelBadge}>
-                      {b.tags?.[0] ? `#${b.tags[0]}` : "Let's Read"}
-                    </span>
-                  </div>
+                  <BookCover
+                    title={b.title}
+                    src={b.cover}
+                    color="#faf8f5"
+                    badge={b.tags?.[0] ? `#${b.tags[0]}` : "Let's Read"}
+                  />
 
                   <div className={styles.storyInfo}>
                     <h3 className={styles.storyCardTitle}>{b.title}</h3>
@@ -575,7 +601,7 @@ export default function BooksClient({
         </section>
       )}
 
-      {/* 5. Cabocil Workbooks / Lembar Aktivitas Section */}
+      {/* 5. Sena Kids Workbooks / Lembar Aktivitas Section */}
       {filteredWorkbooks.length > 0 && (
         <section className={styles.shelfSection}>
           <div className={styles.shelfHeader}>
@@ -591,34 +617,28 @@ export default function BooksClient({
           <div className={styles.storiesGrid}>
             {filteredWorkbooks.map((w) => (
               <div key={w.id} className={styles.storyCardWrapper}>
-                <a
+                <Link
                   href={w.readUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className={styles.storyCard}
                   aria-label={`Buka: ${w.title}`}
                 >
-                  <div className={styles.coverBox} style={{ backgroundColor: "#f1f5f9" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={w.cover}
-                      alt={w.title}
-                      className={styles.coverImage}
-                      loading="lazy"
-                    />
-                    <span className={styles.cardLevelBadge}>Worksheet</span>
-                  </div>
+                  <BookCover
+                    title={w.title}
+                    src={w.cover}
+                    color="#f1f5f9"
+                    badge="Worksheet"
+                  />
                   <div className={styles.storyInfo}>
                     <h3 className={styles.storyCardTitle}>{w.title}</h3>
                     <p className={styles.storyCardDesc}>{w.description}</p>
                     <div className={styles.cardActionRow}>
                       <span className={styles.readAction}>
                         <FileText size={14} />
-                        {tx("Buka Latihan", "Open Practice")}
+                        {tx("Buka Aktivitas", "Open Activity")}
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
             ))}
           </div>

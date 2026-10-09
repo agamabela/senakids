@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A45"/>
+      <stop offset="100%" stop-color="#E05624"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <circle cx="360" cy="40" r="80" fill="#fff" opacity="0.08"/>
+  <circle cx="30" cy="270" r="60" fill="#fff" opacity="0.08"/>
+  
+  <!-- Book Illustration -->
+  <g filter="url(#shadow)" transform="translate(100, 35)">
+    <!-- Book Backing -->
+    <rect x="15" y="15" width="170" height="130" rx="8" fill="#FFF5EB"/>
+    <!-- Book Pages -->
+    <path d="M 20 25 Q 100 35 100 135 Q 100 35 180 25 L 180 135 Q 100 145 100 145 Q 100 145 20 135 Z" fill="#FFFFFF"/>
+    <!-- Center Spine -->
+    <line x1="100" y1="28" x2="100" y2="142" stroke="#E05624" stroke-width="3" stroke-linecap="round"/>
+    <!-- Reading Lines -->
+    <line x1="35" y1="55" x2="85" y2="55" stroke="#FBD38D" stroke-width="4" stroke-linecap="round"/>
+    <line x1="35" y1="75" x2="85" y2="75" stroke="#FBD38D" stroke-width="4" stroke-linecap="round"/>
+    <line x1="35" y1="95" x2="70" y2="95" stroke="#FBD38D" stroke-width="4" stroke-linecap="round"/>
+    
+    <line x1="115" y1="55" x2="165" y2="55" stroke="#FBD38D" stroke-width="4" stroke-linecap="round"/>
+    <line x1="115" y1="75" x2="165" y2="75" stroke="#FBD38D" stroke-width="4" stroke-linecap="round"/>
+    <line x1="115" y1="95" x2="150" y2="95" stroke="#FBD38D" stroke-width="4" stroke-linecap="round"/>
+    <!-- Star Deco -->
+    <path d="M 100 10 L 103 18 L 112 18 L 105 23 L 108 31 L 100 26 L 92 31 L 95 23 L 88 18 L 97 18 Z" fill="#F6E05E"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="200" y="210" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="28" fill="#FFFFFF">Let's Read Asia</text>
+  <text x="200" y="240" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="14" fill="#FFECE0">Perpustakaan Cerita Anak Bergambar</text>
+  <text x="200" y="262" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="12" fill="#FFD8BF">The Asia Foundation • Gratis &amp; Terbuka</text>
+</svg>

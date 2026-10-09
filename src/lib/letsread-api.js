@@ -10,6 +10,11 @@ let memoryCache = {
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
+function normalizeCoverUrl(url) {
+  if (!url) return "";
+  return url.replace(/^http:\/\//, "https://");
+}
+
 /**
  * Dynamically fetches books from Let's Read Asia, falling back
  * safely to preloaded curated JSON if the network is unavailable.
@@ -18,6 +23,16 @@ export async function getLetsReadBooks() {
   const now = Date.now();
   if (memoryCache.data && now - memoryCache.timestamp < CACHE_TTL_MS) {
     return memoryCache.data;
+  }
+
+  const bookMap = new Map();
+
+  // Seed with fallback books first
+  for (const fb of fallbackBooks) {
+    bookMap.set(fb.id, {
+      ...fb,
+      cover: normalizeCoverUrl(fb.cover),
+    });
   }
 
   try {
@@ -34,31 +49,26 @@ export async function getLetsReadBooks() {
     clearTimeout(timeout);
 
     if (!res.ok) {
-      return fallbackBooks;
+      return Array.from(bookMap.values());
     }
 
     const data = await res.json();
     if (!Array.isArray(data) || data.length === 0) {
-      return fallbackBooks;
-    }
-
-    const bookMap = new Map();
-
-    // Seed with fallback books first
-    for (const fb of fallbackBooks) {
-      bookMap.set(fb.id, fb);
+      return Array.from(bookMap.values());
     }
 
     // Merge or add live books
     for (const item of data) {
       const tagName = item.tag?.name || "";
       for (const b of item.books || []) {
+        const coverRaw = b.coverImageUrl || b.thumborCoverImageUrl || "";
+        const cover = normalizeCoverUrl(coverRaw);
         if (!bookMap.has(b.id)) {
           bookMap.set(b.id, {
             id: b.id,
             title: b.name?.trim() || "",
             description: b.description?.trim() || "",
-            cover: b.coverImageUrl || b.thumborCoverImageUrl || "",
+            cover,
             languageId: b.languageId || "6260074016145408",
             readUrl: `https://www.letsreadasia.org/read/${b.id}?bookLang=${b.languageId || "6260074016145408"}`,
             tags: tagName ? [tagName] : [],
@@ -69,6 +79,9 @@ export async function getLetsReadBooks() {
           const existing = bookMap.get(b.id);
           if (tagName && !existing.tags.includes(tagName)) {
             existing.tags.push(tagName);
+          }
+          if (cover && !existing.cover) {
+            existing.cover = cover;
           }
         }
       }
@@ -81,6 +94,6 @@ export async function getLetsReadBooks() {
     };
     return result;
   } catch (error) {
-    return fallbackBooks;
+    return Array.from(bookMap.values());
   }
 }

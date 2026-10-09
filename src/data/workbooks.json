@@ -1,758 +1,134 @@
 [
   {
-    "id": 199,
-    "slug": "3311-2023-smc-g1",
-    "title": "2023 SMC G1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/3311-2023-smc-g1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:en"
-    ],
+    "id": "wb-lacak-huruf",
+    "slug": "lacak-huruf-abc",
+    "title": "Lembar Melacak Huruf ABC",
+    "description": "Latihan menulis dan melacak alfabet kapital dan kecil dengan panduan langkah motorik halus.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/ec967c5d-b8b7-4275-9e57-7c9ba919f851.png",
+    "tags": ["literasi", "menulis", "motorik"],
     "type": "workbook",
-    "contentCount": 24,
-    "readUrl": "https://www.cabocil.com/read/3311-2023-smc-g1"
+    "contentCount": 26,
+    "readUrl": "/games/built/lacak-huruf"
   },
   {
-    "id": 197,
-    "slug": "5140-600612997-pts-kelas-1",
-    "title": "600612997 PTS KELAS 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/5140-600612997-pts-kelas-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:id",
-      "purpose:latihan",
-      "grade:primary-1",
-      "subject:pjok"
-    ],
-    "type": "workbook",
-    "contentCount": 2,
-    "readUrl": "https://www.cabocil.com/read/5140-600612997-pts-kelas-1"
-  },
-  {
-    "id": 198,
-    "slug": "5560-618538958-sumatif-pjok-k1-s1",
-    "title": "618538958 Sumatif PJOK K1 S1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/5560-618538958-sumatif-pjok-k1-s1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:id",
-      "subject:pjok",
-      "grade:primary-1",
-      "purpose:latihan"
-    ],
-    "type": "workbook",
-    "contentCount": 3,
-    "readUrl": "https://www.cabocil.com/read/5560-618538958-sumatif-pjok-k1-s1"
-  },
-  {
-    "id": 126,
-    "slug": "8085-activity-ramadhan-for-kids---edisi-1",
-    "title": "Activity Ramadhan For Kids - Edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/8085-activity-ramadhan-for-kids---edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "muslim",
-      "activity",
-      "math",
-      "logic",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 58,
-    "readUrl": "https://www.cabocil.com/read/8085-activity-ramadhan-for-kids---edisi-1"
-  },
-  {
-    "id": 123,
-    "slug": "5391-asmaul-husna---membaca-bahasa-arab",
-    "title": "Asmaul Husna - membaca bahasa arab",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/5391-asmaul-husna---membaca-bahasa-arab/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "islam",
-      "asmaul-husna",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 23,
-    "readUrl": "https://www.cabocil.com/read/5391-asmaul-husna---membaca-bahasa-arab"
-  },
-  {
-    "id": 122,
-    "slug": "5356-asmaul-husna---mencocokan-asmaul-husna-dengan-artinya",
-    "title": "Asmaul Husna - mencocokan asmaul husna dengan artinya",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/5356-asmaul-husna---mencocokan-asmaul-husna-dengan-artinya/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "islam",
-      "asmaul-husna",
-      "lang:none"
-    ],
+    "id": "wb-lacak-angka",
+    "slug": "lacak-angka-1-20",
+    "title": "Lembar Melacak Angka 1–20",
+    "description": "Aktivitas menulis angka dan menghitung jumlah benda interaktif untuk anak usia dini.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/5948a5e4-c050-4fa2-9b8c-2a7c1f09c903.png",
+    "tags": ["numerasi", "angka", "menulis"],
     "type": "workbook",
     "contentCount": 20,
-    "readUrl": "https://www.cabocil.com/read/5356-asmaul-husna---mencocokan-asmaul-husna-dengan-artinya"
+    "readUrl": "/games/built/lacak-angka"
   },
   {
-    "id": 124,
-    "slug": "5420-asmaul-husna---mencocokan-pilihan-asmaul-husna",
-    "title": "Asmaul Husna - mencocokan pilihan asmaul husna",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/5420-asmaul-husna---mencocokan-pilihan-asmaul-husna/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "islam",
-      "asmaul-husna",
-      "lang:none"
-    ],
+    "id": "wb-mewarnai",
+    "slug": "mewarnai-kreatif",
+    "title": "Buku Mewarnai & Menggambar Bebas",
+    "description": "Kanvas kreatif dengan kuas warna-warni, stempel karakter lucu, dan palet ramah anak.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/6637613c-e7c8-4f83-bdef-cec376961d3b.png",
+    "tags": ["kreativitas", "mewarnai", "seni"],
     "type": "workbook",
-    "contentCount": 34,
-    "readUrl": "https://www.cabocil.com/read/5420-asmaul-husna---mencocokan-pilihan-asmaul-husna"
+    "contentCount": 18,
+    "readUrl": "/create"
   },
   {
-    "id": 134,
-    "slug": "2639-kuda-hewan-kuat-yang-selalu-membantu-manusia",
-    "title": "Kuda, hewan kuat yang selalu membantu manusia",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/2639-kuda-hewan-kuat-yang-selalu-membantu-manusia/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "animal",
-      "horse",
-      "nature",
-      "cerita harian",
-      "animated",
-      "lang:none"
-    ],
-    "type": "default",
+    "id": "wb-belajar-membaca",
+    "slug": "belajar-membaca-fonik",
+    "title": "Buku Mengenal Huruf & Suku Kata",
+    "description": "Metode interaktif mengenal huruf, mengeja suku kata terbuka, dan membaca kata pertama.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/2c0de2d4-265d-47bd-b044-2a14fb6a806e.jpg",
+    "tags": ["membaca", "fonik", "bahasa"],
+    "type": "workbook",
     "contentCount": 15,
-    "readUrl": "https://www.cabocil.com/read/2639-kuda-hewan-kuat-yang-selalu-membantu-manusia"
+    "readUrl": "/belajar-membaca"
   },
   {
-    "id": 127,
-    "slug": "4763-logical-reasoning-edisi-1",
-    "title": "Logical Reasoning edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/4763-logical-reasoning-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "logic",
-      "math",
-      "lang:none"
-    ],
+    "id": "wb-penjumlahan",
+    "slug": "latihan-penjumlahan-dasar",
+    "title": "Aktivitas Penjumlahan & Berhitung",
+    "description": "Latihan penjumlahan visual dengan bantuan ilustrasi buah, balon, dan benda menyenangkan.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/71328334-8e56-4b71-a11a-f51591b3a9e5.png",
+    "tags": ["matematika", "berhitung", "logika"],
     "type": "workbook",
-    "contentCount": 145,
-    "readUrl": "https://www.cabocil.com/read/4763-logical-reasoning-edisi-1"
+    "contentCount": 20,
+    "readUrl": "/games/built/penjumlahan"
   },
   {
-    "id": 171,
-    "slug": "9777-modul-al-quran",
-    "title": "MODUL AL QUR'AN",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/9777-modul-al-quran/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 114,
-    "readUrl": "https://www.cabocil.com/read/9777-modul-al-quran"
-  },
-  {
-    "id": 151,
-    "slug": "1117-mengenal-hujan-dan-proses-terjadinya",
-    "title": "Mengenal Hujan dan Proses Terjadinya",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/1117-mengenal-hujan-dan-proses-terjadinya/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "nature",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 15,
-    "readUrl": "https://www.cabocil.com/read/1117-mengenal-hujan-dan-proses-terjadinya"
-  },
-  {
-    "id": 125,
-    "slug": "7865-menulis-huruf-hijaiyah---edisi-1",
-    "title": "Menulis Huruf Hijaiyah - Edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/7865-menulis-huruf-hijaiyah---edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "muslim",
-      "menulis",
-      "hijaiyah",
-      "lang:none"
-    ],
+    "id": "wb-pengurangan",
+    "slug": "latihan-pengurangan-dasar",
+    "title": "Aktivitas Pengurangan Bergambar",
+    "description": "Belajar konsep pengurangan dengan mencoret objek dan menemukan sisa hitungan.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/ab0ba2df-806c-448e-bb8c-1fc1b62a6dd6.png",
+    "tags": ["matematika", "pengurangan"],
     "type": "workbook",
-    "contentCount": 31,
-    "readUrl": "https://www.cabocil.com/read/7865-menulis-huruf-hijaiyah---edisi-1"
+    "contentCount": 16,
+    "readUrl": "/games/built/pengurangan"
   },
   {
-    "id": 90,
-    "slug": "5493-seri-mengenal-waktu",
-    "title": "Seri Mengenal Waktu",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/5493-seri-mengenal-waktu/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "age:5",
-      "age:6",
-      "age:7",
-      "clock",
-      "lang:none"
-    ],
+    "id": "wb-english",
+    "slug": "english-vocabulary-kids",
+    "title": "Buku Kosakata Bahasa Inggris Anak",
+    "description": "Kenalkan kata benda, warna, hewan, dan benda sekitar dalam bahasa Inggris dengan suara.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/15c6cc22-cd52-46a6-8a07-54e19ff38858.png",
+    "tags": ["english", "kosakata", "bahasa"],
     "type": "workbook",
-    "contentCount": 100,
-    "readUrl": "https://www.cabocil.com/read/5493-seri-mengenal-waktu"
+    "contentCount": 30,
+    "readUrl": "/games/built/learn-english-1"
   },
   {
-    "id": 136,
-    "slug": "9637-soal-osn-sd-bidang-matematika-tingkat-kabupaten-2024",
-    "title": "Soal OSN SD Bidang Matematika Tingkat Kabupaten (2024)",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/9637-soal-osn-sd-bidang-matematika-tingkat-kabupaten-2024/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "math",
-      "2024",
-      "sd",
-      "olympiad",
-      "kabupaten",
-      "lang:none"
-    ],
+    "id": "wb-membuat-jalur",
+    "slug": "menghubungkan-jalur-logika",
+    "title": "Latihan Menghubungkan Garis & Jalur",
+    "description": "Asah koordinasi tangan-mata dan pemecahan masalah dengan membuat jalur tanpa putus.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/753a086c-3cfd-4c3c-8a27-738115933c0d.png",
+    "tags": ["logika", "motorik", "puzzle"],
+    "type": "workbook",
+    "contentCount": 14,
+    "readUrl": "/games/built/membuat-jalur"
+  },
+  {
+    "id": "wb-labirin",
+    "slug": "labirin-petualangan-cilik",
+    "title": "Buku Labirin Petualangan Motorik",
+    "description": "Menemukan jalan keluar dari berbagai rute labirin ramah anak yang menyenangkan.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/df6b423f-2e24-445f-bb12-98205dc1ff89.jpg",
+    "tags": ["labirin", "motorik", "game"],
     "type": "workbook",
     "contentCount": 12,
-    "readUrl": "https://www.cabocil.com/read/9637-soal-osn-sd-bidang-matematika-tingkat-kabupaten-2024"
+    "readUrl": "/games/maze"
   },
   {
-    "id": 137,
-    "slug": "9679-soal-osn-sd-bidang-matematika-tingkat-propinsi-2024",
-    "title": "Soal OSN SD Bidang Matematika Tingkat Propinsi (2024)",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/9679-soal-osn-sd-bidang-matematika-tingkat-propinsi-2024/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "math",
-      "2024",
-      "sd",
-      "olympiad",
-      "propinsi",
-      "lang:none"
-    ],
+    "id": "wb-sains-air",
+    "slug": "petualangan-siklus-air",
+    "title": "Buku Sains: Petualangan Tetes Air",
+    "description": "Cerita edukasi interaktif tentang bagaimana air mengalir dari gunung menuju samudra luas.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/f3fa4e1c-5d15-46b5-9ca0-7e47852c06e8.png",
+    "tags": ["sains", "alam", "siklus-air"],
     "type": "workbook",
-    "contentCount": 6,
-    "readUrl": "https://www.cabocil.com/read/9679-soal-osn-sd-bidang-matematika-tingkat-propinsi-2024"
-  },
-  {
-    "id": 135,
-    "slug": "2643-ubur-ubur-hewan-laut-yang-lembut",
-    "title": "Ubur Ubur, Hewan Laut yang Lembut",
-    "description": "jellyfish",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/2643-ubur-ubur-hewan-laut-yang-lembut/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "cerita harian",
-      "sea creature",
-      "nature",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 11,
-    "readUrl": "https://www.cabocil.com/read/2643-ubur-ubur-hewan-laut-yang-lembut"
-  },
-  {
-    "id": 107,
-    "slug": "8414-basic-math-exercise-soal-soal-logika-sederhana",
-    "title": "basic math exercise soal soal logika sederhana",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/8414-basic-math-exercise-soal-soal-logika-sederhana/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "math",
-      "logic",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 60,
-    "readUrl": "https://www.cabocil.com/read/8414-basic-math-exercise-soal-soal-logika-sederhana"
-  },
-  {
-    "id": 121,
-    "slug": "8902-dunia-di-sekitar-kita-proses-pembuatan-cokelat",
-    "title": "dunia di sekitar kita proses pembuatan cokelat",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/8902-dunia-di-sekitar-kita-proses-pembuatan-cokelat/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "knowledge",
-      "cerita harian",
-      "chocolate",
-      "food",
-      "nature",
-      "lang:none"
-    ],
-    "type": "default",
     "contentCount": 10,
-    "readUrl": "https://www.cabocil.com/read/8902-dunia-di-sekitar-kita-proses-pembuatan-cokelat"
+    "readUrl": "/petualangan-tetes-air"
   },
   {
-    "id": 187,
-    "slug": "0874-dunia-es-dan-salju-id",
-    "title": "dunia es dan salju",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/0874-dunia-es-dan-salju-id/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:id"
-    ],
-    "type": "default",
-    "contentCount": 58,
-    "readUrl": "https://www.cabocil.com/read/0874-dunia-es-dan-salju-id"
-  },
-  {
-    "id": 188,
-    "slug": "0896-dunia-es-dan-salju-en",
-    "title": "dunia es dan salju",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/0896-dunia-es-dan-salju-en/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:en"
-    ],
-    "type": "default",
-    "contentCount": 58,
-    "readUrl": "https://www.cabocil.com/read/0896-dunia-es-dan-salju-en"
-  },
-  {
-    "id": 179,
-    "slug": "4601-dzi-quest-1",
-    "title": "dzi quest 1",
-    "description": "dzi quest series - eps 1",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/4601-dzi-quest-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "dzi-quest",
-      "lang:none"
-    ],
+    "id": "wb-mengenal-hujan",
+    "slug": "mengenal-proses-hujan",
+    "title": "Buku Eksplorasi: Mengapa Ada Hujan?",
+    "description": "Pelajari proses terjadinya awan, penguapan, hingga hujan turun menyuburkan tanaman.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/3a595cb2-3cf7-4f89-8d7d-fa89a8111e1f.png",
+    "tags": ["sains", "cuaca", "hujan"],
     "type": "workbook",
-    "contentCount": 85,
-    "readUrl": "https://www.cabocil.com/read/4601-dzi-quest-1"
+    "contentCount": 8,
+    "readUrl": "/mengenal-hujan"
   },
   {
-    "id": 132,
-    "slug": "6887-elang-sang-predator-langit",
-    "title": "elang sang predator langit",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/6887-elang-sang-predator-langit/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "science",
-      "nature",
-      "eagle",
-      "animal",
-      "cerita harian",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 11,
-    "readUrl": "https://www.cabocil.com/read/6887-elang-sang-predator-langit"
-  },
-  {
-    "id": 191,
-    "slug": "3050-from-blue-earth-to-gray-moon-id",
-    "title": "from blue earth to gray moon",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/3050-from-blue-earth-to-gray-moon-id/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:id"
-    ],
-    "type": "default",
-    "contentCount": 27,
-    "readUrl": "https://www.cabocil.com/read/3050-from-blue-earth-to-gray-moon-id"
-  },
-  {
-    "id": 192,
-    "slug": "3075-from-blue-earth-to-gray-moon-en",
-    "title": "from blue earth to gray moon",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/3075-from-blue-earth-to-gray-moon-en/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:en"
-    ],
-    "type": "default",
-    "contentCount": 27,
-    "readUrl": "https://www.cabocil.com/read/3075-from-blue-earth-to-gray-moon-en"
-  },
-  {
-    "id": 159,
-    "slug": "5175-ikan-paus---raksasa-laut-yang-lembut",
-    "title": "ikan paus - raksasa laut yang lembut",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/5175-ikan-paus---raksasa-laut-yang-lembut/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "animal",
-      "nature",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 21,
-    "readUrl": "https://www.cabocil.com/read/5175-ikan-paus---raksasa-laut-yang-lembut"
-  },
-  {
-    "id": 157,
-    "slug": "4951-jejak-roda-dua",
-    "title": "jejak roda dua",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/4951-jejak-roda-dua/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 19,
-    "readUrl": "https://www.cabocil.com/read/4951-jejak-roda-dua"
-  },
-  {
-    "id": 173,
-    "slug": "2401-jelajah-dunia-dino",
-    "title": "jelajah dunia dino",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/2401-jelajah-dunia-dino/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:id",
-      "dinosaurus"
-    ],
-    "type": "default",
-    "contentCount": 93,
-    "readUrl": "https://www.cabocil.com/read/2401-jelajah-dunia-dino"
-  },
-  {
-    "id": 166,
-    "slug": "6720-kapal-melintasi-waktu-english",
-    "title": "kapal melintasi waktu english",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/6720-kapal-melintasi-waktu-english/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:en",
-      "cabocil bundle 1 transportation"
-    ],
-    "type": "default",
-    "contentCount": 31,
-    "readUrl": "https://www.cabocil.com/read/6720-kapal-melintasi-waktu-english"
-  },
-  {
-    "id": 161,
-    "slug": "5246-kapal-melintasi-waktu-indonesia",
-    "title": "kapal melintasi waktu indonesia",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/5246-kapal-melintasi-waktu-indonesia/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "cabocil bundle 1 transportation",
-      "lang:id"
-    ],
-    "type": "default",
-    "contentCount": 31,
-    "readUrl": "https://www.cabocil.com/read/5246-kapal-melintasi-waktu-indonesia"
-  },
-  {
-    "id": 178,
-    "slug": "4624-keluarga-itu-tempat-untuk-kembali",
-    "title": "keluarga itu tempat untuk kembali",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/4624-keluarga-itu-tempat-untuk-kembali/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "lang:id"
-    ],
-    "type": "default",
-    "contentCount": 21,
-    "readUrl": "https://www.cabocil.com/read/4624-keluarga-itu-tempat-untuk-kembali"
-  },
-  {
-    "id": 110,
-    "slug": "3601-labirin-extreme-edisi-1",
-    "title": "labirin extreme edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/3601-labirin-extreme-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
+    "id": "wb-sejarah-sepeda",
+    "slug": "sejarah-dan-evolusi-sepeda",
+    "title": "Buku Pengetahuan: Sejarah Sepeda",
+    "description": "Menjelajahi bagaimana manusia menemukan roda dan menciptakan sepeda hingga masa kini.",
+    "cover": "https://storage.googleapis.com/lets-read-asia/assets/images/37c3528b-bfa1-4dc2-b7bc-ca467e42d76d.png",
+    "tags": ["sejarah", "pengetahuan", "teknologi"],
     "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/3601-labirin-extreme-edisi-1"
-  },
-  {
-    "id": 113,
-    "slug": "0092-labirin-extreme-edisi-2",
-    "title": "labirin extreme edisi 2",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0092-labirin-extreme-edisi-2/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/0092-labirin-extreme-edisi-2"
-  },
-  {
-    "id": 114,
-    "slug": "0108-labirin-extreme-edisi-3",
-    "title": "labirin extreme edisi 3",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0108-labirin-extreme-edisi-3/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/0108-labirin-extreme-edisi-3"
-  },
-  {
-    "id": 109,
-    "slug": "3581-labirin-hard-edisi-1",
-    "title": "labirin hard edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/3581-labirin-hard-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/3581-labirin-hard-edisi-1"
-  },
-  {
-    "id": 111,
-    "slug": "0060-labirin-hard-edisi-2",
-    "title": "labirin hard edisi 2",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0060-labirin-hard-edisi-2/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/0060-labirin-hard-edisi-2"
-  },
-  {
-    "id": 115,
-    "slug": "0145-labirin-hard-edisi-3",
-    "title": "labirin hard edisi 3",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0145-labirin-hard-edisi-3/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/0145-labirin-hard-edisi-3"
-  },
-  {
-    "id": 104,
-    "slug": "7135-labirin-medium-edisi-1",
-    "title": "labirin medium edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/7135-labirin-medium-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/7135-labirin-medium-edisi-1"
-  },
-  {
-    "id": 105,
-    "slug": "7153-labirin-medium-edisi-2",
-    "title": "labirin medium edisi 2",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/7153-labirin-medium-edisi-2/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/7153-labirin-medium-edisi-2"
-  },
-  {
-    "id": 106,
-    "slug": "7167-labirin-medium-edisi-3",
-    "title": "labirin medium edisi 3",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/7167-labirin-medium-edisi-3/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "maze",
-      "labirin",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 25,
-    "readUrl": "https://www.cabocil.com/read/7167-labirin-medium-edisi-3"
-  },
-  {
-    "id": 180,
-    "slug": "3705-latihan-ulangan-dzillan-bupena-1a-agustus-2026",
-    "title": "latihan ulangan dzillan bupena 1A agustus 2026",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://cabocil-api.cabocil.com/file_bucket/books/3705-latihan-ulangan-dzillan-bupena-1a-agustus-2026/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "dzillan",
-      "bupena",
-      "1a",
-      "latihan",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 7,
-    "readUrl": "https://www.cabocil.com/read/3705-latihan-ulangan-dzillan-bupena-1a-agustus-2026"
-  },
-  {
-    "id": 131,
-    "slug": "0175-lebah-dan-perannya-di-sekitar-kita",
-    "title": "lebah dan perannya di sekitar kita",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0175-lebah-dan-perannya-di-sekitar-kita/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "bee",
-      "nature",
-      "science",
-      "cerita harian",
-      "lang:none"
-    ],
-    "type": "default",
     "contentCount": 10,
-    "readUrl": "https://www.cabocil.com/read/0175-lebah-dan-perannya-di-sekitar-kita"
-  },
-  {
-    "id": 130,
-    "slug": "8642-matahari-pusat-tata-surya-kita",
-    "title": "matahari: pusat tata surya kita",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/8642-matahari-pusat-tata-surya-kita/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "science",
-      "space",
-      "cerita harian",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 11,
-    "readUrl": "https://www.cabocil.com/read/8642-matahari-pusat-tata-surya-kita"
-  },
-  {
-    "id": 120,
-    "slug": "6270-membaca-2-suku-kata-edisi-1",
-    "title": "membaca 2 suku kata edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/6270-membaca-2-suku-kata-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "membaca",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 29,
-    "readUrl": "https://www.cabocil.com/read/6270-membaca-2-suku-kata-edisi-1"
-  },
-  {
-    "id": 119,
-    "slug": "6251-membaca-rangkaian-3-huruf-edisi-1",
-    "title": "membaca rangkaian 3 huruf edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/6251-membaca-rangkaian-3-huruf-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "membaca",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 27,
-    "readUrl": "https://www.cabocil.com/read/6251-membaca-rangkaian-3-huruf-edisi-1"
-  },
-  {
-    "id": 108,
-    "slug": "2157-mencocokan-benda-benda-edisi-1",
-    "title": "mencocokan benda benda edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/2157-mencocokan-benda-benda-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "matching",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 49,
-    "readUrl": "https://www.cabocil.com/read/2157-mencocokan-benda-benda-edisi-1"
-  },
-  {
-    "id": 133,
-    "slug": "0252-mengenal-landak",
-    "title": "mengenal landak",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0252-mengenal-landak/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "animal",
-      "science",
-      "nature",
-      "cerita harian",
-      "lang:none"
-    ],
-    "type": "default",
-    "contentCount": 11,
-    "readUrl": "https://www.cabocil.com/read/0252-mengenal-landak"
-  },
-  {
-    "id": 116,
-    "slug": "0217-menyambung-titik-edisi-1",
-    "title": "menyambung titik edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0217-menyambung-titik-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "connect-the-dots",
-      "menyambung-titik",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 20,
-    "readUrl": "https://www.cabocil.com/read/0217-menyambung-titik-edisi-1"
-  },
-  {
-    "id": 117,
-    "slug": "0240-menyambung-titik-edisi-2",
-    "title": "menyambung titik edisi 2",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0240-menyambung-titik-edisi-2/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "connect-the-dots",
-      "menyambung-titik",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 20,
-    "readUrl": "https://www.cabocil.com/read/0240-menyambung-titik-edisi-2"
-  },
-  {
-    "id": 118,
-    "slug": "0285-menyambung-titik-edisi-3",
-    "title": "menyambung titik edisi 3",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/0285-menyambung-titik-edisi-3/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "connect-the-dots",
-      "menyambung-titik",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 20,
-    "readUrl": "https://www.cabocil.com/read/0285-menyambung-titik-edisi-3"
-  },
-  {
-    "id": 103,
-    "slug": "6715-penjumlahan-2-digit-edisi-1",
-    "title": "penjumlahan 2 digit edisi 1",
-    "description": "Buku aktivitas dan latihan seru untuk anak.",
-    "cover": "https://cabocil-api.cabocil.com/ytkidd/api/utils/image/compress?url=https://data.cabocil.com/books/6715-penjumlahan-2-digit-edisi-1/cover.jpeg&w=0&h=0&preset=cover",
-    "tags": [
-      "math",
-      "penjumlahan",
-      "lang:none"
-    ],
-    "type": "workbook",
-    "contentCount": 11,
-    "readUrl": "https://www.cabocil.com/read/6715-penjumlahan-2-digit-edisi-1"
+    "readUrl": "/sejarah-sepeda"
   }
 ]

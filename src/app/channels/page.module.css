@@ -288,6 +288,22 @@
   background: var(--color-background);
 }
 
+.channelAvatarFallback {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 800;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
 .channelMeta {
   min-width: 0;
   display: flex;
