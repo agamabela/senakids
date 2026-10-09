@@ -12,6 +12,7 @@ export default function sitemap() {
     { url: `${baseUrl}/books`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
     { url: `${baseUrl}/buku-cerita`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/tv`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/channels`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/games`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
     { url: `${baseUrl}/games/maze`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/create`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },

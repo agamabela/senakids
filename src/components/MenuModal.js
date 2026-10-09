@@ -25,6 +25,7 @@ const primaryMenuItems = [
   { nameKey: "menuModal.books", href: "/books", icon: Book },
   { nameKey: "menuModal.stories", href: "/buku-cerita", icon: BookOpen },
   { nameKey: "menuModal.tv", href: "/tv", icon: Tv },
+  { nameKey: "menuModal.channels", label: { id: "Channel Pilihan", en: "Selected Channels" }, href: "/channels", icon: Tv },
   { nameKey: "menuModal.games", href: "/games", icon: Gamepad2 },
   { nameKey: "menuModal.create", href: "/create", icon: Palette },
   { nameKey: "menuModal.curriculum", href: "/owly", icon: Sparkles },
@@ -38,7 +39,7 @@ const parentMenuItems = [
 ];
 
 export default function MenuModal({ isOpen, onClose }) {
-  const { t, tx } = useLanguage();
+  const { t, tx, lang } = useLanguage();
   const modalRef = useRef(null);
   const closeRef = useRef(null);
 
@@ -138,7 +139,9 @@ export default function MenuModal({ isOpen, onClose }) {
                   className={styles.menuItem}
                 >
                   <Icon className={styles.icon} size={20} />
-                  <span className={styles.itemName}>{t(item.nameKey)}</span>
+                  <span className={styles.itemName}>
+                    {item.label ? (lang === "en" ? item.label.en : item.label.id) : t(item.nameKey)}
+                  </span>
                   <ChevronRight className={styles.arrow} size={16} aria-hidden="true" />
                 </Link>
               );

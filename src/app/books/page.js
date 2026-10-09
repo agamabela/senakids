@@ -1,10 +1,15 @@
 import { getBooks } from "@/app/admin/actions";
 import { LETS_READ_STORIES, INTERACTIVE_LEARNING_BOOKS } from "@/lib/content-registry";
+import { getLetsReadBooks } from "@/lib/letsread-api";
+import workbooksData from "@/data/workbooks.json";
 import BooksClient from "./BooksClient";
+
+export const revalidate = 3600; // Auto revalidate page every 1 hour
 
 export const metadata = {
   title: "Perpustakaan Buku Anak - Cerita & Belajar",
-  description: "Koleksi lengkap buku cerita bergambar Let's Read Asia, petualangan membaca, dan ensiklopedia interaktif cilik tanpa iklan.",
+  description:
+    "Koleksi lengkap buku cerita bergambar Let's Read Asia, portal buku Kemendikdasmen, petualangan membaca, dan ensiklopedia interaktif cilik tanpa iklan.",
   alternates: {
     canonical: "/books",
   },
@@ -15,6 +20,36 @@ export const metadata = {
   },
 };
 
+const EDUCATIONAL_PORTALS = [
+  {
+    id: "portal-letsread",
+    title: "Let's Read",
+    subtitle: "Perpustakaan Cerita Anak Asia",
+    description: "Ribuan buku cerita anak bergambar gratis dalam berbagai bahasa dari The Asia Foundation.",
+    href: "https://www.letsreadasia.org/",
+    image: "https://data.cabocil.com/assets/book-thumbnails/thumb-lets-read.png",
+    external: true,
+  },
+  {
+    id: "portal-nonteks",
+    title: "Buku Nonteks",
+    subtitle: "Katalog Buku Kemendikdasmen",
+    description: "Koleksi buku pengayaan dan literasi resmi Kementerian Pendidikan Dasar dan Menengah.",
+    href: "https://buku.kemendikdasmen.go.id/katalog/buku-non-teks",
+    image: "https://data.cabocil.com/assets/book-thumbnails/thumb-bukuindo.png",
+    external: true,
+  },
+  {
+    id: "portal-budi",
+    title: "Budi Kemendikdasmen",
+    subtitle: "Katalog Buku Kemendikdasmen",
+    description: "Buku digital interaktif untuk PAUD, SD, dan jenjang pendidikan dasar Indonesia.",
+    href: "https://budi.kemendikdasmen.go.id/buku?tipe=2fd97285-08d0-4d81-83f2-582f0e8b0f36",
+    image: "https://cabocil-api.cabocil.com/file_bucket/admin_uploads/admin/budi-cover.png",
+    external: true,
+  },
+];
+
 export default async function BooksPage() {
   let dbBooks = [];
   try {
@@ -23,11 +58,21 @@ export default async function BooksPage() {
     dbBooks = [];
   }
 
+  let liveLetsReadBooks = [];
+  try {
+    liveLetsReadBooks = await getLetsReadBooks();
+  } catch (e) {
+    liveLetsReadBooks = [];
+  }
+
   return (
     <BooksClient
       stories={LETS_READ_STORIES}
       interactiveBooks={INTERACTIVE_LEARNING_BOOKS}
       dbBooks={dbBooks}
+      portals={EDUCATIONAL_PORTALS}
+      liveLetsReadBooks={liveLetsReadBooks}
+      workbooks={workbooksData || []}
     />
   );
 }

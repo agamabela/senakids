@@ -1,4 +1,5 @@
 import { getVideos } from "@/app/admin/actions";
+import { getAllTvVideos } from "@/lib/tv-videos-api";
 import TvClient from "./TvClient";
 
 export const dynamic = "force-dynamic";
@@ -20,12 +21,21 @@ export const metadata = {
 };
 
 export default async function TvPage() {
-  let videos = [];
+  let dbVideos = [];
   try {
-    videos = await getVideos();
+    dbVideos = await getVideos();
   } catch (e) {
-    videos = [];
+    dbVideos = [];
   }
+
+  let baseVideos = [];
+  try {
+    baseVideos = await getAllTvVideos();
+  } catch (e) {
+    baseVideos = [];
+  }
+
+  const allVideos = [...baseVideos, ...dbVideos];
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://senakids.web.id";
   const jsonLd = {
@@ -42,7 +52,7 @@ export default async function TvPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <TvClient videos={videos} />
+      <TvClient videos={allVideos} />
     </>
   );
 }

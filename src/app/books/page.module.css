@@ -604,3 +604,107 @@
     padding: var(--space-xl) var(--space-lg);
   }
 }
+
+/* Educational Portals Grid */
+.portalGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (min-width: 640px) {
+  .portalGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.portalCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-instant), border-color var(--transition-instant), box-shadow var(--transition-instant);
+}
+
+.portalCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.portalThumbBox {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--color-surface-muted);
+  overflow: hidden;
+  position: relative;
+}
+
+.portalThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.portalCard:hover .portalThumb {
+  transform: scale(1.04);
+}
+
+.portalBody {
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.portalTitle {
+  font-family: var(--font-family-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-text-heading);
+  margin: 0 0 4px;
+}
+
+.portalSubtitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 8px;
+}
+
+.portalDesc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+  margin: 0 0 var(--space-md);
+  flex: 1;
+}
+
+.portalActionRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.liveTagBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #10b981;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

@@ -77,8 +77,29 @@
 }
 
 .sidebarTitleBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 4px 8px 8px;
   border-bottom: 1px solid var(--color-border);
+}
+
+.manageChannelsLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(224, 86, 36, 0.1);
+  transition: all var(--transition-instant);
+}
+
+.manageChannelsLink:hover {
+  background: rgba(224, 86, 36, 0.2);
 }
 
 .sidebarTitle {

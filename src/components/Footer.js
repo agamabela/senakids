@@ -31,6 +31,7 @@ export default function Footer() {
               <li><Link href="/home">{t("footer.home")}</Link></li>
               <li><Link href="/books">{t("footer.books")}</Link></li>
               <li><Link href="/tv">{t("footer.tv")}</Link></li>
+              <li><Link href="/channels">{tx("Channel Pilihan", "Channels")}</Link></li>
               <li><Link href="/games">{t("footer.games")}</Link></li>
             </ul>
           </div>

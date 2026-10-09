@@ -8,12 +8,13 @@ import {
   BookOpen,
   Star,
   Search,
-  ChevronRight,
   ExternalLink,
   X,
   RefreshCw,
   AlertCircle,
   ShieldCheck,
+  Compass,
+  FileText,
   Sparkles,
 } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -24,6 +25,9 @@ export default function BooksClient({
   stories = [],
   interactiveBooks = [],
   dbBooks = [],
+  portals = [],
+  liveLetsReadBooks = [],
+  workbooks = [],
 }) {
   const { t, tx, language } = useLanguage();
   const [activeCategory, setActiveCategory] = useState("__all__");
@@ -31,11 +35,35 @@ export default function BooksClient({
   const [activeModalStory, setActiveModalStory] = useState(null);
   const [isIframeLoading, setIsIframeLoading] = useState(false);
   const [loadTimedOut, setLoadTimedOut] = useState(false);
+  const [liveBooks, setLiveBooks] = useState(liveLetsReadBooks);
+  const [visibleLiveCount, setVisibleLiveCount] = useState(24);
   const timeoutTimerRef = useRef(null);
+
+  // Background fetch to ensure latest books from Let's Read Asia API
+  useEffect(() => {
+    let isMounted = true;
+    async function updateBooks() {
+      try {
+        const res = await fetch("/api/books/letsread");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.books) && isMounted) {
+            setLiveBooks(data.books);
+          }
+        }
+      } catch (err) {
+        // Fallback already preloaded
+      }
+    }
+    updateBooks();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Synchronize modal reader with browser history & URL
   useEffect(() => {
-    const handlePopState = (event) => {
+    const handlePopState = () => {
       if (activeModalStory) {
         setActiveModalStory(null);
       }
@@ -64,13 +92,14 @@ export default function BooksClient({
 
   const openStoryModal = (story) => {
     setActiveModalStory(story);
-    // Push state so back button closes modal
     try {
-      window.history.pushState(
-        { modal: true, slug: story.slug },
-        "",
-        `/books/stories/${story.slug}`
-      );
+      if (story.slug) {
+        window.history.pushState(
+          { modal: true, slug: story.slug },
+          "",
+          `/books/stories/${story.slug}`
+        );
+      }
     } catch {}
   };
 
@@ -81,11 +110,34 @@ export default function BooksClient({
     } catch {}
   };
 
-  // Filter items based on activeCategory and searchQuery
+  // 1. Portals Filtering
+  const filteredPortals = useMemo(() => {
+    if (activeCategory !== "__all__" && activeCategory !== "portals") return [];
+    if (!searchQuery.trim()) return portals;
+    const q = searchQuery.toLowerCase();
+    return portals.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        (p.subtitle || "").toLowerCase().includes(q) ||
+        (p.description || "").toLowerCase().includes(q)
+    );
+  }, [portals, activeCategory, searchQuery]);
+
+  // 2. Interactive Books Filtering
+  const filteredInteractive = useMemo(() => {
+    if (activeCategory !== "__all__" && activeCategory !== "interactive") return [];
+    return interactiveBooks.filter((b) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      const title = (b.title[language] || b.title.id).toLowerCase();
+      const desc = (b.description[language] || b.description.id).toLowerCase();
+      return title.includes(q) || desc.includes(q);
+    });
+  }, [interactiveBooks, activeCategory, searchQuery, language]);
+
+  // 3. Curated Local Stories Filtering
   const filteredStories = useMemo(() => {
-    if (activeCategory !== "__all__" && activeCategory !== "stories") {
-      return [];
-    }
+    if (activeCategory !== "__all__" && activeCategory !== "stories") return [];
     return stories.filter((s) => {
       if (!searchQuery.trim()) return true;
       const q = searchQuery.toLowerCase();
@@ -96,25 +148,58 @@ export default function BooksClient({
     });
   }, [stories, activeCategory, searchQuery, language]);
 
-  const filteredInteractive = useMemo(() => {
-    if (activeCategory !== "__all__" && activeCategory !== "interactive") {
-      return [];
-    }
-    return interactiveBooks.filter((b) => {
+  // 4. Live Let's Read Asia Books Filtering
+  const filteredLiveBooks = useMemo(() => {
+    if (activeCategory !== "__all__" && activeCategory !== "stories") return [];
+    return liveBooks.filter((b) => {
       if (!searchQuery.trim()) return true;
       const q = searchQuery.toLowerCase();
-      const title = (b.title[language] || b.title.id).toLowerCase();
-      const desc = (b.description[language] || b.description.id).toLowerCase();
+      const title = (b.title || "").toLowerCase();
+      const desc = (b.description || "").toLowerCase();
+      const tags = (b.tags || []).join(" ").toLowerCase();
+      return title.includes(q) || desc.includes(q) || tags.includes(q);
+    });
+  }, [liveBooks, activeCategory, searchQuery]);
+
+  // 5. Workbooks Filtering
+  const filteredWorkbooks = useMemo(() => {
+    if (activeCategory !== "__all__" && activeCategory !== "workbooks") return [];
+    return workbooks.filter((w) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      const title = (w.title || "").toLowerCase();
+      const desc = (w.description || "").toLowerCase();
       return title.includes(q) || desc.includes(q);
     });
-  }, [interactiveBooks, activeCategory, searchQuery, language]);
+  }, [workbooks, activeCategory, searchQuery]);
 
-  const totalResults = filteredStories.length + filteredInteractive.length;
+  // 6. Community DB Books
   const filteredCommunityBooks = useMemo(() => {
-    if (activeCategory !== "__all__" || !searchQuery.trim()) return activeCategory === "__all__" ? dbBooks : [];
+    if (activeCategory !== "__all__" || !searchQuery.trim())
+      return activeCategory === "__all__" ? dbBooks : [];
     const q = searchQuery.toLowerCase();
-    return dbBooks.filter((book) => `${book.title} ${book.description} ${book.shelf || ""}`.toLowerCase().includes(q));
+    return dbBooks.filter((book) =>
+      `${book.title} ${book.description} ${book.shelf || ""}`.toLowerCase().includes(q)
+    );
   }, [dbBooks, activeCategory, searchQuery]);
+
+  const totalResults =
+    filteredPortals.length +
+    filteredInteractive.length +
+    filteredStories.length +
+    filteredLiveBooks.length +
+    filteredWorkbooks.length +
+    filteredCommunityBooks.length;
+
+  const modalTitle = activeModalStory
+    ? typeof activeModalStory.title === "string"
+      ? activeModalStory.title
+      : activeModalStory.title[language] || activeModalStory.title.id
+    : "";
+
+  const modalUrl = activeModalStory
+    ? activeModalStory.url || activeModalStory.readUrl
+    : "";
 
   return (
     <div className={styles.container}>
@@ -198,7 +283,15 @@ export default function BooksClient({
             onClick={() => setActiveCategory("stories")}
             aria-pressed={activeCategory === "stories"}
           >
-            {t("books.filterStories")}
+            {tx("Cerita Let's Read", "Let's Read Stories")}
+          </button>
+          <button
+            type="button"
+            className={activeCategory === "portals" ? styles.filterBtnActive : styles.filterBtn}
+            onClick={() => setActiveCategory("portals")}
+            aria-pressed={activeCategory === "portals"}
+          >
+            <Compass size={16} /> {tx("Portal Edukasi", "Official Portals")}
           </button>
           <button
             type="button"
@@ -208,10 +301,18 @@ export default function BooksClient({
           >
             {t("books.filterInteractive")}
           </button>
+          <button
+            type="button"
+            className={activeCategory === "workbooks" ? styles.filterBtnActive : styles.filterBtn}
+            onClick={() => setActiveCategory("workbooks")}
+            aria-pressed={activeCategory === "workbooks"}
+          >
+            <FileText size={16} /> {tx("Worksheet", "Worksheets")}
+          </button>
         </section>
       </div>
 
-      {/* Child-Friendly Empty State */}
+      {/* Empty State */}
       {totalResults === 0 && (
         <div className={styles.emptyContainer}>
           <div className={styles.emptyEmoji}>🌟</div>
@@ -230,7 +331,53 @@ export default function BooksClient({
         </div>
       )}
 
-      {/* Interactive Learning Section */}
+      {/* 1. Educational Portals Section */}
+      {filteredPortals.length > 0 && (
+        <section className={styles.shelfSection}>
+          <div className={styles.shelfHeader}>
+            <div>
+              <h2 className={styles.shelfTitle}>
+                {tx("Portal Membaca Resmi & Perpustakaan", "Official Reading Portals")}
+              </h2>
+              <p className={styles.shelfSubtitle}>
+                {tx(
+                  "Akses ribuan buku kurikulum resmi Kemendikdasmen dan perpustakaan internasional Asia.",
+                  "Access curated books from the Ministry of Education and international digital libraries."
+                )}
+              </p>
+            </div>
+            <span className={styles.shelfCount}>{filteredPortals.length}</span>
+          </div>
+          <div className={styles.portalGrid}>
+            {filteredPortals.map((p) => (
+              <a
+                key={p.id}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.portalCard}
+              >
+                <div className={styles.portalThumbBox}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.image} alt={p.title} className={styles.portalThumb} loading="lazy" />
+                  <span className={styles.liveTagBadge}>Portal Resmi</span>
+                </div>
+                <div className={styles.portalBody}>
+                  <h3 className={styles.portalTitle}>{p.title}</h3>
+                  <div className={styles.portalSubtitle}>{p.subtitle}</div>
+                  <p className={styles.portalDesc}>{p.description}</p>
+                  <div className={styles.portalActionRow}>
+                    <span>{tx("Buka Perpustakaan", "Open Library")}</span>
+                    <ExternalLink size={14} />
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 2. Interactive Learning Section */}
       {filteredInteractive.length > 0 && (
         <section className={styles.shelfSection}>
           <div className={styles.shelfHeader}>
@@ -255,38 +402,17 @@ export default function BooksClient({
         </section>
       )}
 
-      {filteredCommunityBooks.length > 0 && (
-        <section className={styles.shelfSection}>
-          <div className={styles.shelfHeader}>
-            <div>
-              <h2 className={styles.shelfTitle}>{tx("Pilihan Baru di Rak", "New on the Shelf")}</h2>
-              <p className={styles.shelfSubtitle}>{tx("Buku tambahan yang dipilih oleh pengelola Sena Kids.", "Additional books selected by the Sena Kids team.")}</p>
-            </div>
-            <span className={styles.shelfCount}>{filteredCommunityBooks.length}</span>
-          </div>
-          <div className={styles.interactiveGrid}>
-            {filteredCommunityBooks.map((book) => (
-              <ActivityCard
-                key={book.id}
-                title={book.title}
-                description={book.description}
-                emoji={book.emoji || "📖"}
-                href={book.pdfUrl || book.href || "/books"}
-                color={book.color || "green"}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Let's Read Asia Storybooks Section */}
+      {/* 3. Curated Let's Read Local Stories */}
       {filteredStories.length > 0 && (
         <section className={styles.shelfSection}>
           <div className={styles.shelfHeader}>
             <div>
               <h2 className={styles.shelfTitle}>{t("books.storiesSectionTitle")}</h2>
               <p className={styles.shelfSubtitle}>
-                {tx("Baca langsung gratis dengan ilustrasi menarik dan pesan moral.", "Read free illustrated stories with heartwarming moral lessons.")}
+                {tx(
+                  "Baca langsung gratis dengan ilustrasi menarik dan pesan moral.",
+                  "Read free illustrated stories with heartwarming moral lessons."
+                )}
               </p>
             </div>
             <span className={styles.shelfCount}>
@@ -304,7 +430,6 @@ export default function BooksClient({
                   <Link
                     href={`/books/stories/${story.slug}`}
                     onClick={(e) => {
-                      // Open smooth modal on desktop, synchronizing URL
                       if (window.innerWidth > 640) {
                         e.preventDefault();
                         openStoryModal(story);
@@ -343,9 +468,96 @@ export default function BooksClient({
               );
             })}
           </div>
+        </section>
+      )}
+
+      {/* 4. Dynamic Live Let's Read Asia Catalog */}
+      {filteredLiveBooks.length > 0 && (
+        <section className={styles.shelfSection}>
+          <div className={styles.shelfHeader}>
+            <div>
+              <h2 className={styles.shelfTitle}>
+                {tx("Perpustakaan Lengkap Let's Read Asia", "Full Let's Read Asia Library")}
+              </h2>
+              <p className={styles.shelfSubtitle}>
+                {tx(
+                  "Koleksi ratusan buku cerita bahasa Indonesia yang otomatis diperbarui dari The Asia Foundation.",
+                  "Hundreds of Indonesian storybooks automatically updated from The Asia Foundation."
+                )}
+              </p>
+            </div>
+            <span className={styles.shelfCount}>{filteredLiveBooks.length}</span>
+          </div>
+
+          <div className={styles.storiesGrid}>
+            {filteredLiveBooks.slice(0, visibleLiveCount).map((b) => (
+              <div key={b.id} className={styles.storyCardWrapper}>
+                <a
+                  href={b.readUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (window.innerWidth > 640) {
+                      e.preventDefault();
+                      openStoryModal({
+                        id: b.id,
+                        title: b.title,
+                        readUrl: b.readUrl,
+                        url: b.readUrl,
+                        cover: b.cover,
+                      });
+                    }
+                  }}
+                  className={styles.storyCard}
+                  aria-label={`${t("stories.readBook")}: ${b.title}`}
+                >
+                  <div className={styles.coverBox} style={{ backgroundColor: "#faf8f5" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={b.cover}
+                      alt={b.title}
+                      className={styles.coverImage}
+                      loading="lazy"
+                    />
+                    <span className={styles.cardLevelBadge}>
+                      {b.tags?.[0] ? `#${b.tags[0]}` : "Let's Read"}
+                    </span>
+                  </div>
+
+                  <div className={styles.storyInfo}>
+                    <h3 className={styles.storyCardTitle}>{b.title}</h3>
+                    <p className={styles.storyCardDesc}>
+                      {b.description || tx("Buku cerita bergambar anak dari Let's Read Asia.", "Children's picture book from Let's Read Asia.")}
+                    </p>
+                    <div className={styles.cardActionRow}>
+                      <span className={styles.readAction}>
+                        <BookOpen size={14} />
+                        {t("stories.readNow")}
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+
+          {visibleLiveCount < filteredLiveBooks.length && (
+            <div style={{ textAlign: "center", marginTop: "24px" }}>
+              <button
+                type="button"
+                onClick={() => setVisibleLiveCount((prev) => prev + 24)}
+                className={styles.resetFilterBtn}
+              >
+                {tx(
+                  `Muat Lebih Banyak (${filteredLiveBooks.length - visibleLiveCount} Tersisa)`,
+                  `Load More (${filteredLiveBooks.length - visibleLiveCount} Remaining)`
+                )}
+              </button>
+            </div>
+          )}
 
           {/* Attribution Box */}
-          <div className={styles.attributionBox}>
+          <div className={styles.attributionBox} style={{ marginTop: "24px" }}>
             <ShieldCheck size={18} color="var(--color-primary)" />
             <p>
               {t("books.attributionText")}{" "}
@@ -359,6 +571,83 @@ export default function BooksClient({
               </a>
               . {t("books.attributionLicense")}
             </p>
+          </div>
+        </section>
+      )}
+
+      {/* 5. Cabocil Workbooks / Lembar Aktivitas Section */}
+      {filteredWorkbooks.length > 0 && (
+        <section className={styles.shelfSection}>
+          <div className={styles.shelfHeader}>
+            <div>
+              <h2 className={styles.shelfTitle}>{tx("Worksheet & Lembar Aktivitas", "Worksheets & Activity Books")}</h2>
+              <p className={styles.shelfSubtitle}>
+                {tx("Lembar latihan belajar angka, membaca, dan motorik anak.", "Practice sheets for numbers, reading, and motor skills.")}
+              </p>
+            </div>
+            <span className={styles.shelfCount}>{filteredWorkbooks.length}</span>
+          </div>
+
+          <div className={styles.storiesGrid}>
+            {filteredWorkbooks.map((w) => (
+              <div key={w.id} className={styles.storyCardWrapper}>
+                <a
+                  href={w.readUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.storyCard}
+                  aria-label={`Buka: ${w.title}`}
+                >
+                  <div className={styles.coverBox} style={{ backgroundColor: "#f1f5f9" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={w.cover}
+                      alt={w.title}
+                      className={styles.coverImage}
+                      loading="lazy"
+                    />
+                    <span className={styles.cardLevelBadge}>Worksheet</span>
+                  </div>
+                  <div className={styles.storyInfo}>
+                    <h3 className={styles.storyCardTitle}>{w.title}</h3>
+                    <p className={styles.storyCardDesc}>{w.description}</p>
+                    <div className={styles.cardActionRow}>
+                      <span className={styles.readAction}>
+                        <FileText size={14} />
+                        {tx("Buka Latihan", "Open Practice")}
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 6. Community / Database Books */}
+      {filteredCommunityBooks.length > 0 && (
+        <section className={styles.shelfSection}>
+          <div className={styles.shelfHeader}>
+            <div>
+              <h2 className={styles.shelfTitle}>{tx("Pilihan Baru di Rak", "New on the Shelf")}</h2>
+              <p className={styles.shelfSubtitle}>
+                {tx("Buku tambahan yang dipilih oleh pengelola Sena Kids.", "Additional books selected by the Sena Kids team.")}
+              </p>
+            </div>
+            <span className={styles.shelfCount}>{filteredCommunityBooks.length}</span>
+          </div>
+          <div className={styles.interactiveGrid}>
+            {filteredCommunityBooks.map((book) => (
+              <ActivityCard
+                key={book.id}
+                title={book.title}
+                description={book.description}
+                emoji={book.emoji || "📖"}
+                href={book.pdfUrl || book.href || "/books"}
+                color={book.color || "green"}
+              />
+            ))}
           </div>
         </section>
       )}
@@ -383,11 +672,11 @@ export default function BooksClient({
             >
               <div className={styles.modalHeader}>
                 <h2 id="modal-story-title" className={styles.modalTitle}>
-                  {activeModalStory.title[language] || activeModalStory.title.id}
+                  {modalTitle}
                 </h2>
                 <div className={styles.modalActions}>
                   <a
-                    href={activeModalStory.url}
+                    href={modalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.modalExternalLink}
@@ -433,7 +722,7 @@ export default function BooksClient({
                         {t("stories.retry")}
                       </button>
                       <a
-                        href={activeModalStory.url}
+                        href={modalUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.modalDirectBtn}
@@ -446,8 +735,8 @@ export default function BooksClient({
                 )}
 
                 <iframe
-                  src={activeModalStory.url}
-                  title={activeModalStory.title[language] || activeModalStory.title.id}
+                  src={modalUrl}
+                  title={modalTitle}
                   className={styles.modalIframe}
                   onLoad={() => {
                     setIsIframeLoading(false);

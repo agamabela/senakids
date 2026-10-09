@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Tv,
@@ -14,6 +15,7 @@ import {
   ChevronDown,
   Layers,
   ShieldCheck,
+  Settings,
 } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { CURATED_TV_VIDEOS } from "@/lib/content-registry";
@@ -151,7 +153,42 @@ export default function TvClient({ videos = [] }) {
   const [selectedAge, setSelectedAge] = useState("all");
   const [selectedDuration, setSelectedDuration] = useState("all");
   const [visibleCount, setVisibleCount] = useState(18); // Render 18 cards initially
+  const [blacklistMap, setBlacklistMap] = useState({});
   const stageRef = useRef(null);
+
+  // Load blacklist from localStorage & listen for changes
+  useEffect(() => {
+    const loadBlacklist = () => {
+      try {
+        const stored =
+          localStorage.getItem("SENA:BLACKLIST_CHANNEL_MAP") ||
+          localStorage.getItem("CABOCIL:BLACKLIST_CHANNEL_MAP");
+        if (stored) {
+          setBlacklistMap(JSON.parse(stored));
+        } else {
+          setBlacklistMap({});
+        }
+      } catch (e) {
+        console.warn("Could not read channels blacklist", e);
+      }
+    };
+    loadBlacklist();
+    window.addEventListener("sena-channels-updated", loadBlacklist);
+    window.addEventListener("storage", loadBlacklist);
+    return () => {
+      window.removeEventListener("sena-channels-updated", loadBlacklist);
+      window.removeEventListener("storage", loadBlacklist);
+    };
+  }, []);
+
+  // Helper to determine if channel is disabled
+  const isChannelDisabled = (v) => {
+    const name = v.category || v.channel || "";
+    return Boolean(
+      blacklistMap[name] ||
+      (v.channelId && blacklistMap[v.channelId])
+    );
+  };
 
   // Normalize items
   const normalizedVideos = useMemo(() => {
@@ -165,10 +202,26 @@ export default function TvClient({ videos = [] }) {
     });
   }, [rawPlaylist]);
 
-  // Channels list
+  // Filter out blacklisted channels
+  const activeVideos = useMemo(() => {
+    return normalizedVideos.filter((v) => !isChannelDisabled(v));
+  }, [normalizedVideos, blacklistMap]);
+
+  // Fallback active video if currently selected video gets disabled
+  useEffect(() => {
+    if (active && isChannelDisabled(active)) {
+      if (activeVideos.length > 0) {
+        setActive(activeVideos[0]);
+      }
+    } else if (!active && activeVideos.length > 0) {
+      setActive(activeVideos[0]);
+    }
+  }, [active, activeVideos, blacklistMap]);
+
+  // Channels list (shows only non-disabled channels)
   const channelsList = useMemo(() => {
     const counts = {};
-    for (const v of normalizedVideos) {
+    for (const v of activeVideos) {
       counts[v.category] = (counts[v.category] || 0) + 1;
     }
     const names = Object.keys(counts).sort((a, b) => {
@@ -179,7 +232,7 @@ export default function TvClient({ videos = [] }) {
     });
 
     return [
-      { id: "all", label: tx("Semua Channel", "All Channels"), emoji: "✨", count: normalizedVideos.length },
+      { id: "all", label: tx("Semua Channel", "All Channels"), emoji: "✨", count: activeVideos.length },
       ...names.map((name) => ({
         id: name,
         label: name,
@@ -187,11 +240,11 @@ export default function TvClient({ videos = [] }) {
         count: counts[name],
       })),
     ];
-  }, [normalizedVideos, lang]);
+  }, [activeVideos, lang]);
 
   // Filtering
   const filteredVideos = useMemo(() => {
-    return normalizedVideos.filter((v) => {
+    return activeVideos.filter((v) => {
       // Channel
       if (selectedChannel !== "all" && v.category !== selectedChannel) {
         return false;
@@ -295,6 +348,10 @@ export default function TvClient({ videos = [] }) {
         <aside className={styles.channelSidebar} aria-label={tx("Pilih Channel", "Select Channel")}>
           <div className={styles.sidebarTitleBox}>
             <span className={styles.sidebarTitle}>{tx("Channel Pilihan", "Channels")}</span>
+            <Link href="/channels" className={styles.manageChannelsLink} title={tx("Atur Channel Pilihan", "Manage Channels")}>
+              <Settings size={12} />
+              <span>{tx("Atur", "Manage")}</span>
+            </Link>
           </div>
           <div className={styles.channelList}>
             {channelsList.map((ch) => {
