@@ -21,20 +21,22 @@ import styles from "./page.module.css";
 
 const SHOW_ORDER = [
   "Nussa",
-  "Omar & Hana",
   "Riko The Series",
-  "Diva The Series",
   "Kok Bisa",
+  "Diva The Series",
+  "Omar & Hana",
+  "Shimajiro",
   "Bluey",
   "Lagu Anak",
 ];
 
 const SHOW_EMOJI = {
   Nussa: "🧒",
-  "Omar & Hana": "🎶",
   "Riko The Series": "🤖",
-  "Diva The Series": "🐱",
   "Kok Bisa": "🔬",
+  "Diva The Series": "🐱",
+  "Omar & Hana": "🎶",
+  Shimajiro: "🐯",
   Bluey: "🐶",
   "Lagu Anak": "🎵",
 };
