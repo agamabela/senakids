@@ -1,0 +1,397 @@
+.gamePage {
+  --kid-green: #299954;
+  --kid-sky: #3b82f6;
+  --kid-yellow: #f59e0b;
+  --kid-mint: #10b981;
+  --kid-coral: #ef4444;
+  height: 100dvh;
+  min-height: 520px;
+  overflow: hidden;
+  padding: max(10px, env(safe-area-inset-top)) 12px max(10px, env(safe-area-inset-bottom));
+  color: var(--color-text, #382e26);
+  background: var(--color-background, #faf6f0);
+  font-family: var(--font-body, system-ui, sans-serif);
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  margin: 0 auto;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  max-width: 1024px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    gap: 14px;
+  }
+}
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 16px;
+  border: 2px solid var(--color-border, #e2d7cb);
+  background: var(--color-card, #ffffff);
+  padding: 10px 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+}
+
+.hudGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hudBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 2px solid var(--color-border, #e2d7cb);
+  background: var(--color-background, #faf6f0);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text, #382e26);
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 2px solid var(--color-border, #e2d7cb);
+  background: var(--color-card, #ffffff);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text, #382e26);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.menuButton:hover {
+  background: var(--color-surface-muted, #f2ebe1);
+  transform: translateY(-1px);
+}
+
+.audioButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border, #e2d7cb);
+  background: var(--color-card, #ffffff);
+  color: var(--color-text, #382e26);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.audioButton:hover {
+  background: var(--color-surface-muted, #f2ebe1);
+}
+
+.viewportCard {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid var(--color-border, #e2d7cb);
+  background: var(--color-card, #ffffff);
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mazeViewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.mazeCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 140ms ease-out;
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.wall {
+  background-color: var(--kid-mint);
+}
+
+.path {
+  background-color: var(--color-card, #ffffff);
+}
+
+.gemIcon, .homeIcon {
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+.hazardWarning {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--kid-coral);
+  background: rgba(245, 158, 11, 0.7);
+  font-size: 16px;
+  font-weight: 900;
+  color: #1f2937;
+  animation: pulseWarning 0.3s ease-in-out infinite alternate;
+}
+
+.hazardImpact {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #b91c1c;
+  background: var(--kid-coral);
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
+  animation: shake 0.2s ease-in-out;
+}
+
+@keyframes pulseWarning {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.character {
+  position: absolute;
+  z-index: 10;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.compassArrow {
+  position: absolute;
+  z-index: 30;
+  pointer-events: none;
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--kid-yellow);
+  background: #ffffff;
+  font-size: 18px;
+  font-weight: 900;
+  color: #382e26;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.statusMessage {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text, #382e26);
+  min-height: 20px;
+}
+
+.controlsSection {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2px;
+}
+
+.dpadBox {
+  border-radius: 16px;
+  border: 2px solid var(--color-border, #e2d7cb);
+  background: var(--color-card, #ffffff);
+  padding: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.dpadGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-gap: 6px;
+}
+
+@media (min-width: 640px) {
+  .dpadGrid {
+    grid-template-columns: repeat(3, 48px);
+    grid-gap: 8px;
+  }
+}
+
+.dpadBtn {
+  width: 44px;
+  height: 44px;
+  touch-action: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--color-border, #e2d7cb);
+  background: rgba(59, 130, 246, 0.15);
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--color-text, #382e26);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+@media (min-width: 640px) {
+  .dpadBtn {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+.dpadBtn:active, .dpadActive {
+  background: var(--kid-sky);
+  color: #ffffff;
+  border-color: var(--kid-sky);
+  transform: scale(0.95);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  padding: 16px;
+}
+
+.victoryCard {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 20px;
+  border: 1px solid var(--color-border, #e2d7cb);
+  background: var(--color-card, #ffffff);
+  padding: 28px 24px;
+  text-align: center;
+  color: var(--color-text, #382e26);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.victoryIcon {
+  font-size: 56px;
+  margin-bottom: 12px;
+}
+
+.victoryTitle {
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  color: var(--color-text-heading, #241c15);
+}
+
+.victoryDesc {
+  font-size: 14px;
+  color: var(--color-text-muted, #6e5d4f);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.modalButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.replayBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--kid-green);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.replayBtn:hover {
+  background: #238245;
+  transform: translateY(-1px);
+}
+
+.backMenuBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--color-card, #ffffff);
+  border: 2px solid var(--color-border, #e2d7cb);
+  color: var(--color-text, #382e26);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.backMenuBtn:hover {
+  background: var(--color-surface-muted, #f2ebe1);
+}

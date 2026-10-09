@@ -10,7 +10,7 @@ import styles from "./page.module.css";
 const senaKidsGames = [
   { title: { id: "Ski Free", en: "Ski Free" }, href: "/games/ski-free", image: "/images/ski-pagi-key-art-v2.png", emoji: "⛷️", color: "blue" },
   { title: { id: "Ular Tangga", en: "Snakes & Ladders" }, href: "/games/built/ular-tangga", image: "https://data.cabocil.com/assets/images/others/board-snake-and-ladder-v1.png", emoji: "🪜", color: "teal" },
-  { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, href: "/games/built/petualangan-labirin", image: "https://data.cabocil.com/assets/game-thumbnails/maze.png", emoji: "💎", color: "blue" },
+  { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, href: "/games/maze", image: "/images/games/maze/thumbnail.png", emoji: "💎", color: "blue" },
   { title: { id: "Labirin 3D", en: "3D Maze" }, href: "/games/built/labirin-3d", emoji: "🧊", color: "green" },
   { title: { id: "Si Bom Pintar", en: "Smart Bomber" }, href: "/games/built/bomberman", emoji: "💣", color: "orange" },
   { title: { id: "Astronot Terbang", en: "Rocket Flier" }, href: "/games/built/astronot-terbang", emoji: "🚀", color: "blue" },
