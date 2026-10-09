@@ -132,8 +132,13 @@ export default function TvClient({ videos = [] }) {
   const { lang } = useLanguage();
   const tx = (id, en) => (lang === "en" ? en : id);
 
-  // Combine database videos with curated registry if database is empty
-  const rawPlaylist = videos && videos.length > 0 ? videos : CURATED_TV_VIDEOS;
+  // Keep the reviewed library available while allowing editors to add new shows.
+  // Database entries use a separate id prefix so an editorial item cannot replace
+  // a reviewed item with the same numeric id.
+  const rawPlaylist = useMemo(() => [
+    ...CURATED_TV_VIDEOS,
+    ...(videos || []).map((video) => ({ ...video, id: `editor-${video.id}` })),
+  ], [videos]);
 
   // State
   const [active, setActive] = useState(rawPlaylist[0]);

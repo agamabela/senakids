@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { SessionProvider } from "@/components/SessionProvider";
 import AmbientSound from "@/components/AmbientSound";
+import JourneyTracker from "@/components/JourneyTracker";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -75,6 +76,7 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           <div className="app-wrapper">
             <LanguageProvider>
+              <JourneyTracker />
               <Navbar />
               <main id="main-content" className="main-content" tabIndex={-1}>
                 {children}

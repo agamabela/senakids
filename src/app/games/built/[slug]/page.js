@@ -29,9 +29,7 @@ import PukulTikusGameClient from "../PukulTikusGameClient";
 import SimonBilangGameClient from "../SimonBilangGameClient";
 import LetuskanBalonGameClient from "../LetuskanBalonGameClient";
 import PlatformerGameClient from "../PlatformerGameClient";
-import MarioGameClient from "../MarioGameClient";
-import HarvestMoonGameClient from "../HarvestMoonGameClient";
-import SlingshotGameClient from "../SlingshotGameClient";
+import SkiPagiGameClient from "../SkiPagiGameClient";
 import BackButton from "@/components/BackButton";
 import styles from "./page.module.css";
 
@@ -66,9 +64,8 @@ const builtGameDetails = {
   "simon-bilang": { title: "Simon Bilang", description: "Ingat dan ulangi urutan warna yang makin panjang!", note: "This built-in game is implemented directly in Sena Kids." },
   "letuskan-balon": { title: "Letuskan Balon", description: "Letuskan balon sesuai jumlah untuk belajar berhitung!", note: "This built-in game is implemented directly in Sena Kids." },
   "petualangan-lompat": { title: "Petualangan Lompat", description: "Lari, lompat, kumpulkan bintang, dan capai bendera!", note: "This built-in game is implemented directly in Sena Kids." },
-  mario: { title: "Super Mario Bros", description: "Mainkan petualangan klasik Super Mario Bros secara langsung di browser Anda!", note: "Classic retro HTML5 game." },
-  "harvest-moon": { title: "Harvest Moon 2.0", description: "Bercocok tanam dan kembangkan ladang impianmu!", note: "Farming simulation game with gamepad support." },
-  "bird-launch": { title: "Bird Launch", description: "Tarik ketapel, atur sudut, dan hancurkan target!", note: "A browser canvas physics game." }
+  "ski-pagi": { title: "Ski Pagi", description: "Meluncur di lereng salju, hindari rintangan, dan kumpulkan koin.", note: "Downhill ski arcade game for Sena Kids." },
+  "ski-free": { title: "Ski Free", description: "Meluncur di lereng salju, hindari rintangan, dan kumpulkan koin.", note: "Downhill ski arcade game for Sena Kids." }
 };
 
 const gameClients = {
@@ -102,9 +99,8 @@ const gameClients = {
   "simon-bilang": SimonBilangGameClient,
   "letuskan-balon": LetuskanBalonGameClient,
   "petualangan-lompat": PlatformerGameClient,
-  mario: MarioGameClient,
-  "harvest-moon": HarvestMoonGameClient,
-  "bird-launch": SlingshotGameClient
+  "ski-pagi": SkiPagiGameClient,
+  "ski-free": SkiPagiGameClient
 };
 
 export async function generateStaticParams() {

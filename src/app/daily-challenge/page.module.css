@@ -1,0 +1,13 @@
+.page { max-width: 760px; margin: 0 auto; padding: clamp(48px, 10vw, 112px) 24px; }
+.challenge { border: 1px solid var(--color-border-strong); border-top: 8px solid var(--color-amber); border-radius: var(--radius-xl); background: var(--color-surface); padding: clamp(28px, 7vw, 56px); text-align: center; box-shadow: var(--shadow-card); }
+.iconWrap { width: 68px; height: 68px; display: grid; place-items: center; margin: 0 auto 20px; border-radius: 50%; background: var(--color-primary-light); color: var(--color-forest); }
+.eyebrow { color: var(--color-amber-dark); font-weight: 800; margin-bottom: 8px; }
+.challenge h1 { font-family: var(--font-family-heading); font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1; color: var(--color-text-heading); }
+.description { max-width: 490px; margin: 18px auto 0; color: var(--color-text-muted); font-size: 1.05rem; line-height: 1.6; }
+.actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+.startButton, .completeButton { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border-radius: var(--radius-md); font: inherit; font-weight: 800; text-decoration: none; cursor: pointer; }
+.startButton { background: var(--color-forest); color: white; border: 1px solid var(--color-forest); }
+.completeButton { background: transparent; color: var(--color-text); border: 1px solid var(--color-border-strong); }
+.completeButton:disabled { color: var(--color-forest-dark); border-color: var(--color-forest); background: var(--color-primary-light); cursor: default; }
+.startButton:focus-visible, .completeButton:focus-visible { outline: 3px solid var(--color-focus-ring); outline-offset: 3px; }
+.note { margin-top: 20px; color: var(--color-text-muted); font-size: .85rem; }

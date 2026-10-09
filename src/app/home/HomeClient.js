@@ -1,270 +1,112 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import {
-  Heart,
-  ChevronRight,
-  Gamepad2,
-  BookOpen,
-  Sparkles,
-  Tv,
-  ExternalLink,
-} from "lucide-react";
-import ActivityCard from "@/components/ActivityCard";
+import { useEffect, useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
+import { BookOpen, CalendarCheck, CirclePlay, Gamepad2, GraduationCap, Tv } from "lucide-react";
+import { getDailyActivity, readActivity, readDailyCompletion, todayKey } from "@/lib/journey";
 import { useLanguage } from "@/components/LanguageProvider";
-import { LETS_READ_STORIES } from "@/lib/content-registry";
 import styles from "./page.module.css";
 
-const bookActivities = [
-  {
-    title: { id: "Belajar Membaca", en: "Learn to Read" },
-    description: { id: "Membaca rangkaian 3 huruf", en: "Read three-letter words" },
-    emoji: "📚",
-    href: "/belajar-membaca",
-    color: "yellow",
-  },
-  {
-    title: { id: "Sejarah Sepeda", en: "History of Bicycles" },
-    description: { id: "Ensiklopedia untuk Anak", en: "Encyclopedia for Kids" },
-    emoji: "🚲",
-    href: "/sejarah-sepeda",
-    color: "green",
-  },
-  {
-    title: { id: "Petualangan Tetes Air", en: "The Water Drop's Adventure" },
-    description: { id: "Kisah Siklus Air", en: "The Water Cycle Story" },
-    emoji: "💧",
-    href: "/petualangan-tetes-air",
-    color: "blue",
-  },
-  {
-    title: { id: "Mengenal Hujan", en: "All About Rain" },
-    description: { id: "Proses Terjadinya Hujan", en: "How Rain Happens" },
-    emoji: "🌧️",
-    href: "/mengenal-hujan",
-    color: "pink",
-  },
+// Design decisions: the existing forest, terracotta, and linen palette keeps the
+// child-first Sena Kids identity; the daily activity is the only strong accent;
+// mixed panels mirror the varied activities rather than repeating card grids.
+const iconByKind = { book: BookOpen, game: Gamepad2, lesson: GraduationCap, tv: Tv };
+
+const pathways = [
+  { label: { id: "Baca cerita", en: "Read a story" }, detail: { id: "Buku cerita dan belajar", en: "Stories and learning books" }, href: "/books", kind: "book" },
+  { label: { id: "Nonton pilihan", en: "Watch a pick" }, detail: { id: "Video edukasi terkurasi", en: "Curated educational video" }, href: "/tv", kind: "tv" },
+  { label: { id: "Main dan belajar", en: "Play and learn" }, detail: { id: "Game dan latihan langsung", en: "Games and hands-on practice" }, href: "/games", kind: "game" },
 ];
 
-const gameActivities = [
-  {
-    title: { id: "Drum", en: "Drum" },
-    description: { id: "Ketuk untuk main!", en: "Tap to play!" },
-    emoji: "🥁",
-    href: "/games/built/drum",
-    color: "purple",
-  },
-  {
-    title: { id: "Membuat Jalur", en: "Build the Path" },
-    description: { id: "Bangun rute yang benar.", en: "Build the right route." },
-    emoji: "🧭",
-    href: "/games/built/membuat-jalur",
-    color: "blue",
-  },
-  {
-    title: { id: "Flashcard Simple", en: "Simple Flashcards" },
-    description: { id: "Ingat gambar dan kata.", en: "Remember pictures and words." },
-    emoji: "🃏",
-    href: "/games/built/flashcard-simple",
-    color: "orange",
-  },
-  {
-    title: { id: "Piano Interaktif", en: "Interactive Piano" },
-    description: { id: "Main nada musik ceria.", en: "Play cheerful music notes." },
-    emoji: "🎹",
-    href: "/games/built/piano",
-    color: "purple",
-  },
-  {
-    title: { id: "Petualangan Labirin", en: "Maze Adventure" },
-    description: { id: "Kumpulkan permata!", en: "Collect the gems!" },
-    emoji: "🧑‍🚀",
-    href: "/games/built/petualangan-labirin",
-    color: "blue",
-  },
+const recommendations = [
+  { title: { id: "Buku cerita bergambar", en: "Illustrated storybooks" }, detail: { id: "Pilih cerita untuk dibaca bersama.", en: "Choose a story to read together." }, href: "/books", kind: "book" },
+  { title: { id: "Piano interaktif", en: "Interactive piano" }, detail: { id: "Coba bunyi dan susun nadamu sendiri.", en: "Try sounds and make your own notes." }, href: "/games/built/piano", kind: "game" },
+  { title: { id: "Sena TV", en: "Sena TV" }, detail: { id: "Cari topik video yang ingin kamu tonton.", en: "Find a video topic you want to watch." }, href: "/tv", kind: "tv" },
 ];
 
-export default function Home() {
-  const { t, lang } = useLanguage();
-  const L = (o) => (o && typeof o === "object" ? (o[lang] ?? o.id) : o);
+export default function HomeClient() {
+  const { lang } = useLanguage();
+  const { data: session } = useSession();
+  const [activity, setActivity] = useState([]);
+  const [activityState, setActivityState] = useState("loading");
+  const [challengeComplete, setChallengeComplete] = useState(false);
+  const daily = useMemo(() => getDailyActivity(), []);
+  const L = (item) => (typeof item === "object" ? item[lang] || item.id : item);
+  const name = session?.user?.name?.trim()?.split(" ")[0];
 
-  // Take only 6 featured stories on homepage for fast loading & compact mobile view
-  const featuredStories = LETS_READ_STORIES.slice(0, 6);
+  useEffect(() => {
+    const sync = () => {
+      try {
+        setActivity(readActivity());
+        setChallengeComplete(readDailyCompletion() === todayKey());
+        setActivityState("ready");
+      } catch {
+        setActivityState("error");
+      }
+    };
+    sync();
+    window.addEventListener("senakids-activity-change", sync);
+    window.addEventListener("senakids-daily-challenge-change", sync);
+    return () => {
+      window.removeEventListener("senakids-activity-change", sync);
+      window.removeEventListener("senakids-daily-challenge-change", sync);
+    };
+  }, []);
+
+  const greeting = name
+    ? (lang === "en" ? `Welcome back, ${name}` : `Halo lagi, ${name}`)
+    : (lang === "en" ? "What would you like to do today?" : "Mau melakukan apa hari ini?");
+  const DailyIcon = iconByKind[daily.kind] || Gamepad2;
 
   return (
-    <div className={styles.container}>
-      {/* Hero / Value Proposition Section */}
-      <section className={styles.heroSection} aria-label={t("home.heroH1")}>
-        <div className={styles.heroPill}>
-          <Sparkles size={16} aria-hidden="true" />
-          <span>{t("home.valueProposition")}</span>
+    <div className={styles.page}>
+      <section className={styles.welcome} aria-labelledby="welcome-title">
+        <div className={styles.welcomeCopy}>
+          <p className={styles.kicker}>{lang === "en" ? "Sena Kids today" : "Sena Kids hari ini"}</p>
+          <h1 id="welcome-title">{greeting}</h1>
+          <p>{lang === "en" ? "Pick one small activity, then let the next idea find you." : "Pilih satu kegiatan kecil, lalu lanjutkan saat kamu siap."}</p>
         </div>
-        <h1 className={styles.heroH1}>{t("home.heroH1")}</h1>
-        <p className={styles.heroSubtitle}>{t("home.heroSubtitle")}</p>
+        <nav className={styles.pathways} aria-label={lang === "en" ? "Choose an activity" : "Pilih kegiatan"}>
+          {pathways.map((path) => {
+            const Icon = iconByKind[path.kind];
+            return <Link className={styles.pathway} href={path.href} key={path.href}>
+              <Icon size={22} aria-hidden="true" />
+              <span><strong>{L(path.label)}</strong><small>{L(path.detail)}</small></span>
+            </Link>;
+          })}
+        </nav>
+      </section>
 
-        <div className={styles.heroActions}>
-          <Link href="/books" className={styles.primaryHeroBtn}>
-            <BookOpen size={20} aria-hidden="true" />
-            <span>{t("home.startReading")}</span>
-          </Link>
-          <Link href="/games" className={styles.secondaryHeroBtn}>
-            <Gamepad2 size={20} aria-hidden="true" />
-            <span>{t("home.exploreGames")}</span>
-          </Link>
-          <Link href="/tv" className={styles.tertiaryHeroBtn}>
-            <Tv size={20} aria-hidden="true" />
-            <span>{lang === "en" ? "Watch TV" : "Nonton TV"}</span>
-          </Link>
+      <section className={styles.daily} aria-labelledby="daily-title">
+        <div className={styles.dailyIcon}><DailyIcon size={30} aria-hidden="true" /></div>
+        <div className={styles.dailyCopy}>
+          <p>{lang === "en" ? "Today’s activity" : "Tantangan hari ini"}</p>
+          <h2 id="daily-title">{daily.title}</h2>
+          <span>{daily.description}</span>
+        </div>
+        <div className={styles.dailyActions}>
+          {challengeComplete && <span className={styles.complete}><CalendarCheck size={17} aria-hidden="true" /> {lang === "en" ? "Completed" : "Sudah selesai"}</span>}
+          <Link href="/daily-challenge" className={styles.dailyButton}>{lang === "en" ? "Open activity" : "Buka tantangan"}</Link>
         </div>
       </section>
 
-      {/* Support / Saweria Banner */}
-      <aside className={styles.supportBanner} aria-label={t("home.supportTitle")}>
-        <div className={styles.bannerLeft}>
-          <div className={styles.heartIcon}>
-            <Heart fill="currentColor" size={24} aria-hidden="true" />
-          </div>
-          <div>
-            <h2 className={styles.bannerTitle}>{t("home.supportTitle")}</h2>
-            <p className={styles.bannerSubtitle}>{t("home.supportSubtitle")}</p>
-          </div>
+      <section className={styles.activitySection} aria-labelledby="activity-title">
+        <div className={styles.sectionHeading}>
+          <div><p className={styles.kicker}>{lang === "en" ? "Your activity" : "Aktivitasmu"}</p><h2 id="activity-title">{lang === "en" ? "Continue from where you left off" : "Lanjutkan yang terakhir kamu buka"}</h2></div>
+          <Link href="/learning-journeys" className={styles.textLink}>{lang === "en" ? "See learning paths" : "Lihat jalur belajar"}</Link>
         </div>
-        <a
-          href="https://saweria.co/senakids"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.bannerButton}
-          aria-label={`${t("home.supportButton")} - Saweria (${t("home.supportExternalNotice")})`}
-        >
-          <span>{t("home.supportButton")}</span>
-          <ExternalLink size={16} aria-hidden="true" />
-        </a>
-      </aside>
-
-      {/* Interactive Books Section */}
-      <section className={styles.section} aria-labelledby="interactive-books-heading">
-        <div className={styles.sectionHeader}>
-          <h2 id="interactive-books-heading" className={styles.sectionTitle}>
-            {t("home.booksSection")}
-          </h2>
-          <Link href="/books" className={styles.seeAllBtn}>
-            <span>{t("home.seeAll")}</span>
-            <ChevronRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
-        <div className={styles.cardGrid}>
-          {bookActivities.map((activity, index) => (
-            <ActivityCard
-              key={activity.href}
-              {...activity}
-              title={L(activity.title)}
-              description={L(activity.description)}
-              delay={0.05 * index}
-            />
-          ))}
-        </div>
+        {activityState === "loading" && <p className={styles.stateText} role="status">{lang === "en" ? "Loading activity history..." : "Memuat riwayat kegiatan..."}</p>}
+        {activityState === "error" && <p className={styles.stateText} role="alert">{lang === "en" ? "Activity history is not available on this device." : "Riwayat kegiatan belum tersedia di perangkat ini."}</p>}
+        {activityState === "ready" && activity.length === 0 && <div className={styles.empty}><CirclePlay size={26} aria-hidden="true" /><p>{lang === "en" ? "Your recent books, videos, and games will appear here after you open one." : "Buku, video, dan game yang kamu buka akan muncul di sini."}</p></div>}
+        {activityState === "ready" && activity.length > 0 && <div className={styles.recentList}>{activity.slice(0, 4).map((item) => { const Icon = iconByKind[item.kind] || Gamepad2; return <Link className={styles.recentItem} href={item.href} key={item.href}><Icon size={20} aria-hidden="true" /><span><strong>{item.title}</strong><small>{item.label}</small></span></Link>; })}</div>}
       </section>
 
-      {/* Featured Let's Read Stories Section */}
-      <section className={styles.section} aria-labelledby="stories-section-heading">
-        <div className={styles.sectionHeader}>
-          <div>
-            <h2 id="stories-section-heading" className={styles.sectionTitle}>
-              {t("home.storiesSection")}
-            </h2>
-            <p className={styles.sectionSubtitle}>
-              {lang === "en"
-                ? "Illustrated storybooks curated from Let's Read Asia. Read directly here!"
-                : "Cerita anak bergambar pilihan dari Let's Read Asia, baca langsung di sini!"}
-            </p>
-          </div>
-          <Link href="/books" className={styles.seeAllBtn}>
-            <span>{t("home.seeAll")}</span>
-            <ChevronRight size={16} aria-hidden="true" />
-          </Link>
+      <section className={styles.recommendSection} aria-labelledby="recommend-title">
+        <div className={styles.sectionHeading}><div><p className={styles.kicker}>{lang === "en" ? "Keep going" : "Lanjutkan dengan"}</p><h2 id="recommend-title">{lang === "en" ? "Three places to start" : "Tiga tempat untuk mulai"}</h2></div></div>
+        <div className={styles.recommendations}>
+          {recommendations.map((item, index) => { const Icon = iconByKind[item.kind] || Gamepad2; return <Link href={item.href} key={item.href} className={`${styles.recommendation} ${styles[`recommendation${index + 1}`]}`}><Icon size={26} aria-hidden="true" /><h3>{L(item.title)}</h3><p>{L(item.detail)}</p></Link>; })}
         </div>
-
-        <div className={styles.letsReadGrid}>
-          {featuredStories.map((story, index) => (
-            <Link
-              key={story.slug}
-              href={`/books/stories/${story.slug}`}
-              className={styles.letsReadCard}
-            >
-              <div className={styles.letsReadCover}>
-                <Image
-                  src={story.cover}
-                  alt={L(story.title)}
-                  fill
-                  sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 180px"
-                  priority={index === 0}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  className={styles.coverImage}
-                />
-                <div className={styles.readBadge}>
-                  <BookOpen size={12} aria-hidden="true" />
-                  <span>{lang === "en" ? "Read" : "Baca"}</span>
-                </div>
-              </div>
-              <div className={styles.letsReadInfo}>
-                <h3 className={styles.letsReadTitle}>{L(story.title)}</h3>
-                <p className={styles.letsReadDesc}>{L(story.description)}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <div className={styles.viewMoreStoriesRow}>
-          <Link href="/books" className={styles.viewAllStoriesBtn}>
-            <BookOpen size={18} aria-hidden="true" />
-            <span>
-              {lang === "en"
-                ? "Explore All 16 Storybooks & Books"
-                : "Lihat Semua 16 Cerita & Ensiklopedia"}
-            </span>
-            <ChevronRight size={18} aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Built-in Games Section */}
-      <section className={styles.section} aria-labelledby="games-section-heading">
-        <div className={styles.sectionHeader}>
-          <h2 id="games-section-heading" className={styles.sectionTitle}>
-            {t("home.gamesSection")}
-          </h2>
-          <Link href="/games" className={styles.seeAllBtn}>
-            <span>{t("home.seeAll")}</span>
-            <ChevronRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
-        <div className={styles.cardGrid}>
-          {gameActivities.map((activity, index) => (
-            <ActivityCard
-              key={activity.href}
-              {...activity}
-              title={L(activity.title)}
-              description={L(activity.description)}
-              delay={0.05 * index}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* CTA to Games */}
-      <section className={styles.ctaSection} aria-label={lang === "en" ? "Games Directory" : "Katalog Permainan"}>
-        <Gamepad2 size={40} color="var(--color-forest)" aria-hidden="true" />
-        <h2>{lang === "en" ? "Discover More Fun Games!" : "Lihat Semua Permainan Seru!"}</h2>
-        <p>
-          {lang === "en"
-            ? "Explore logic puzzles, creative instruments, and educational challenges safe for kids."
-            : "Tersedia game logika, alat musik ceria, dan teka-teki edukatif ramah anak."}
-        </p>
-        <Link href="/games" className={styles.ctaButton}>
-          <Gamepad2 size={20} aria-hidden="true" />
-          <span>{lang === "en" ? "Explore Games" : "Jelajahi Permainan"}</span>
-        </Link>
       </section>
     </div>
   );

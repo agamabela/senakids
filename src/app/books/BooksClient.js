@@ -110,6 +110,11 @@ export default function BooksClient({
   }, [interactiveBooks, activeCategory, searchQuery, language]);
 
   const totalResults = filteredStories.length + filteredInteractive.length;
+  const filteredCommunityBooks = useMemo(() => {
+    if (activeCategory !== "__all__" || !searchQuery.trim()) return activeCategory === "__all__" ? dbBooks : [];
+    const q = searchQuery.toLowerCase();
+    return dbBooks.filter((book) => `${book.title} ${book.description} ${book.shelf || ""}`.toLowerCase().includes(q));
+  }, [dbBooks, activeCategory, searchQuery]);
 
   return (
     <div className={styles.container}>
@@ -244,6 +249,30 @@ export default function BooksClient({
                 href={book.href}
                 color={book.color}
                 delay={idx * 0.05}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {filteredCommunityBooks.length > 0 && (
+        <section className={styles.shelfSection}>
+          <div className={styles.shelfHeader}>
+            <div>
+              <h2 className={styles.shelfTitle}>{tx("Pilihan Baru di Rak", "New on the Shelf")}</h2>
+              <p className={styles.shelfSubtitle}>{tx("Buku tambahan yang dipilih oleh pengelola Sena Kids.", "Additional books selected by the Sena Kids team.")}</p>
+            </div>
+            <span className={styles.shelfCount}>{filteredCommunityBooks.length}</span>
+          </div>
+          <div className={styles.interactiveGrid}>
+            {filteredCommunityBooks.map((book) => (
+              <ActivityCard
+                key={book.id}
+                title={book.title}
+                description={book.description}
+                emoji={book.emoji || "📖"}
+                href={book.pdfUrl || book.href || "/books"}
+                color={book.color || "green"}
               />
             ))}
           </div>
