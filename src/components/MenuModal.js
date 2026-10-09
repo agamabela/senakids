@@ -15,7 +15,7 @@ import {
   Shield,
   FileText,
   MessageSquare,
-  Sparkles,
+  GraduationCap,
 } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./MenuModal.module.css";
@@ -28,7 +28,7 @@ const primaryMenuItems = [
   { nameKey: "menuModal.channels", label: { id: "Channel Pilihan", en: "Selected Channels" }, href: "/channels", icon: Tv },
   { nameKey: "menuModal.games", href: "/games", icon: Gamepad2 },
   { nameKey: "menuModal.create", href: "/create", icon: Palette },
-  { nameKey: "menuModal.curriculum", href: "/owly", icon: Sparkles },
+  { nameKey: "menuModal.curriculum", href: "/learning-journeys", icon: GraduationCap },
 ];
 
 const parentMenuItems = [

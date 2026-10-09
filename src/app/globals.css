@@ -27,49 +27,89 @@
 
 /* ===================================
    Sena Kids Design System
-   A warm, minimal, utility-first, accessibility-prioritized design system.
+   Child-first, warm and tactile. The paper canvas gives reading room; teal
+   identifies the Sena Kids world, coral marks the next playful action, and
+   indigo supports games and discovery. Category tints provide recognition
+   without turning every surface into a rainbow.
+   Design read: learning-and-play space for early-primary children, with a
+   storybook workshop visual language. ENERGY 3 / RHYTHM 3 / MOTION 1.
    =================================== */
 
 /* --- CSS Custom Properties --- */
 :root {
-  /* Light Mode (Default) - Warm Cream & Earthy Contrast */
-  --color-background: #FAF6F0; /* Warm linen/cream canvas */
+  /* Light Mode (Default) - warm paper with a focused activity palette */
+  --color-background: #FFF8EE;
   --color-card: #FFFFFF; /* Crisp card surface */
   --color-surface: #FFFFFF;
-  --color-surface-muted: #F2EBE1; /* Soft warm secondary surface */
-  --color-border: #E2D7CB; /* Defined subtle border */
-  --color-border-strong: #C5B7A7;
+  --color-surface-muted: #FFF0D7;
+  --color-border: #E7D8BF;
+  --color-border-strong: #D6B98A;
   
-  --color-text: #382E26; /* Espresso dark brown (> 8:1 contrast) */
-  --color-text-heading: #241C15; /* Deep espresso (> 11:1 contrast) */
-  --color-text-muted: #6E5D4F; /* Muted warm slate brown (> 4.5:1 WCAG AA) */
+  --color-text: #26333C;
+  --color-text-heading: #172B35;
+  --color-text-muted: #5E6971;
   --color-text-white: #FFFFFF;
 
-  --color-primary: #3D7843; /* Forest Sage Green */
-  --color-primary-light: #EAF2EB; /* Soft sage tint */
+  --color-primary: #137C7A;
+  --color-primary-light: #DDF3EF;
   --color-primary-text: #FFFFFF;
-  --color-forest: #3D7843;
-  --color-forest-dark: #2B542F;
-  --color-amber: #BD5B32;
-  --color-amber-dark: #994420;
+  --color-forest: #137C7A;
+  --color-forest-dark: #0D5B5B;
+  --color-amber: #EA6A4F;
+  --color-amber-dark: #AB412E;
+  --color-indigo: #5C54B8;
+  --color-indigo-light: #E8E5FF;
+  --color-sun: #F6B940;
+  --color-sun-light: #FFF1BE;
   
   --color-focus: #3D7843;
   --color-focus-ring: oklab(0.718319 0.151535 0.0905449 / 0.7); /* Distinct amber focus ring */
 
   /* Semantic Category Colors */
-  --color-purple: #784E7B; /* Muted Plum */
-  --color-pink: #A85368; /* Warm Dusty Berry */
-  --color-red: #C24343; /* Warm Brick Red */
-  --color-yellow: #B8781B; /* Warm Ochre */
-  --color-teal: #2F7C77; /* Deep Teal */
-  --color-orange: #BD5B32; /* Terracotta */
-  --color-blue: #2E6A8E; /* Slate Ocean Blue */
-  --color-green: #3D7843; /* Forest Green */
+  --color-purple: #5C54B8;
+  --color-pink: #D85B81;
+  --color-red: #D4524D;
+  --color-yellow: #A66A00;
+  --color-teal: #137C7A;
+  --color-orange: #EA6A4F;
+  --color-blue: #267ABF;
+  --color-green: #24885F;
 
-  --color-muted: #F2EBE1;
-  --color-muted-foreground: #6E5D4F;
-  --color-accent: #F2EBE1;
-  --color-accent-foreground: #382E26;
+  /* Child-First Category Tokens (Books, TV, Games, Create, Joy) */
+  --color-cat-books: #FF7A68;
+  --color-cat-books-bg: #FFF0ED;
+  --color-cat-books-border: #FFC5BC;
+  --color-cat-books-text: #96251A;
+  --color-cat-books-shadow: #E25D4B;
+
+  --color-cat-tv: #3A98EA;
+  --color-cat-tv-bg: #EDF6FF;
+  --color-cat-tv-border: #B7DCFE;
+  --color-cat-tv-text: #0E539A;
+  --color-cat-tv-shadow: #267AC7;
+
+  --color-cat-games: #8B6DE9;
+  --color-cat-games-bg: #F4F0FF;
+  --color-cat-games-border: #D2C4FA;
+  --color-cat-games-text: #482C9E;
+  --color-cat-games-shadow: #7354D2;
+
+  --color-cat-create: #27B26E;
+  --color-cat-create-bg: #EDFAF2;
+  --color-cat-create-border: #A7E7C5;
+  --color-cat-create-text: #0C6A3B;
+  --color-cat-create-shadow: #199457;
+
+  --color-cat-joy: #FFB800;
+  --color-cat-joy-bg: #FFF9E6;
+  --color-cat-joy-border: #FFE28A;
+  --color-cat-joy-text: #8C5700;
+  --color-cat-joy-shadow: #D89800;
+
+  --color-muted: #FFF0D7;
+  --color-muted-foreground: #5E6971;
+  --color-accent: #FFF0D7;
+  --color-accent-foreground: #26333C;
 
   /* Fonts & Transitions */
   --font-nunito: var(--font-body);
@@ -91,17 +131,17 @@
   --space-3xl: 48px;
 
   /* Border Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 34px;
   --radius-full: 9999px;
 
   /* Shadows (Restrained, tactile elevation) */
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06);
-  --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.08), 0 1px 4px -1px rgb(0 0 0 / 0.04);
-  --shadow-hover: 0 6px 16px -4px rgb(0 0 0 / 0.12), 0 2px 6px -2px rgb(0 0 0 / 0.06);
+  --shadow-sm: 0 2px 0 rgb(54 77 85 / 0.1);
+  --shadow-card: 0 5px 0 rgb(75 56 24 / 0.08);
+  --shadow-hover: 0 7px 0 rgb(19 124 122 / 0.16);
 
   /* Layout */
   --sidebar-width: 14rem;
@@ -110,111 +150,213 @@
 
 /* Explicit Light Mode */
 [data-theme="light"] {
-  --color-background: #FAF6F0;
+  --color-background: #FFF8EE;
   --color-card: #FFFFFF;
   --color-surface: #FFFFFF;
-  --color-surface-muted: #F2EBE1;
-  --color-border: #E2D7CB;
-  --color-border-strong: #C5B7A7;
+  --color-surface-muted: #FFF0D7;
+  --color-border: #E7D8BF;
+  --color-border-strong: #D6B98A;
   
-  --color-text: #382E26;
-  --color-text-heading: #241C15;
-  --color-text-muted: #6E5D4F;
+  --color-text: #26333C;
+  --color-text-heading: #172B35;
+  --color-text-muted: #5E6971;
   --color-text-white: #FFFFFF;
 
-  --color-primary: #3D7843;
-  --color-primary-light: #EAF2EB;
+  --color-primary: #137C7A;
+  --color-primary-light: #DDF3EF;
   --color-primary-text: #FFFFFF;
   
-  --color-purple: #784E7B;
-  --color-pink: #A85368;
-  --color-red: #C24343;
-  --color-yellow: #B8781B;
-  --color-teal: #2F7C77;
-  --color-orange: #BD5B32;
-  --color-blue: #2E6A8E;
-  --color-green: #3D7843;
+  --color-purple: #5C54B8;
+  --color-pink: #D85B81;
+  --color-red: #D4524D;
+  --color-yellow: #A66A00;
+  --color-teal: #137C7A;
+  --color-orange: #EA6A4F;
+  --color-blue: #267ABF;
+  --color-green: #24885F;
 
-  --color-muted: #F2EBE1;
-  --color-muted-foreground: #6E5D4F;
-  --color-accent: #F2EBE1;
-  --color-accent-foreground: #382E26;
+  --color-cat-books: #FF7A68;
+  --color-cat-books-bg: #FFF0ED;
+  --color-cat-books-border: #FFC5BC;
+  --color-cat-books-text: #96251A;
+  --color-cat-books-shadow: #E25D4B;
+
+  --color-cat-tv: #3A98EA;
+  --color-cat-tv-bg: #EDF6FF;
+  --color-cat-tv-border: #B7DCFE;
+  --color-cat-tv-text: #0E539A;
+  --color-cat-tv-shadow: #267AC7;
+
+  --color-cat-games: #8B6DE9;
+  --color-cat-games-bg: #F4F0FF;
+  --color-cat-games-border: #D2C4FA;
+  --color-cat-games-text: #482C9E;
+  --color-cat-games-shadow: #7354D2;
+
+  --color-cat-create: #27B26E;
+  --color-cat-create-bg: #EDFAF2;
+  --color-cat-create-border: #A7E7C5;
+  --color-cat-create-text: #0C6A3B;
+  --color-cat-create-shadow: #199457;
+
+  --color-cat-joy: #FFB800;
+  --color-cat-joy-bg: #FFF9E6;
+  --color-cat-joy-border: #FFE28A;
+  --color-cat-joy-text: #8C5700;
+  --color-cat-joy-shadow: #D89800;
+
+  --color-muted: #FFF0D7;
+  --color-muted-foreground: #5E6971;
+  --color-accent: #FFF0D7;
+  --color-accent-foreground: #26333C;
 }
 
-/* Explicit Dark Mode - Warm, legible, premium dark canvas */
+/* Explicit Dark Mode - Vibrant Child-Friendly Midnight Indigo Canvas */
 [data-theme="dark"] {
-  --color-background: #161311;
-  --color-card: #211D19;
-  --color-surface: #211D19;
-  --color-surface-muted: #2C2622;
+  --color-background: #161B2E;
+  --color-card: #1E253D;
+  --color-surface: #1E253D;
+  --color-surface-muted: #27304E;
   
-  --color-text: #F4EFEA;
+  --color-text: #F3F5FA;
   --color-text-heading: #FFFFFF;
-  --color-text-muted: #B0A296;
+  --color-text-muted: #B8C2D8;
   --color-text-white: #FFFFFF;
 
-  --color-border: #38312A;
-  --color-border-strong: #4F453B;
+  --color-border: #313D63;
+  --color-border-strong: #4B5A8A;
   
-  --color-primary: #72AB79;
-  --color-primary-light: #233425;
-  --color-primary-text: #161311;
-  --color-forest: #72AB79;
-  --color-forest-dark: #55915d;
-  --color-amber: #E0825B;
-  --color-amber-dark: #b8603b;
+  --color-primary: #4DD0C7;
+  --color-primary-light: #163B3F;
+  --color-primary-text: #161B2E;
+  --color-forest: #4DD0C7;
+  --color-forest-dark: #82E5DE;
+  --color-amber: #FFA08A;
+  --color-amber-dark: #FFC4B5;
+  --color-indigo: #B4A2F8;
+  --color-indigo-light: #2D2353;
+  --color-sun: #FFD166;
+  --color-sun-light: #443513;
 
-  --color-purple: #B288B5;
-  --color-pink: #D9889D;
-  --color-red: #E57373;
-  --color-yellow: #DE9E3B;
-  --color-teal: #5BBAB3;
-  --color-orange: #E0825B;
-  --color-blue: #5C9EC9;
-  --color-green: #72AB79;
+  --color-purple: #B4A2F8;
+  --color-pink: #FFA0BD;
+  --color-red: #FFA49E;
+  --color-yellow: #FFD166;
+  --color-teal: #4DD0C7;
+  --color-orange: #FFA08A;
+  --color-blue: #71BEFB;
+  --color-green: #59DCA0;
 
-  --color-muted: #2C2622;
-  --color-muted-foreground: #B0A296;
-  --color-accent: #2C2622;
-  --color-accent-foreground: #F4EFEA;
-  --color-focus: #72AB79;
+  --color-cat-books: #FFA08A;
+  --color-cat-books-bg: #351C22;
+  --color-cat-books-border: #632B36;
+  --color-cat-books-text: #FFCEC5;
+  --color-cat-books-shadow: #52202A;
+
+  --color-cat-tv: #71BEFB;
+  --color-cat-tv-bg: #162642;
+  --color-cat-tv-border: #233F6E;
+  --color-cat-tv-text: #C4E3FD;
+  --color-cat-tv-shadow: #19315A;
+
+  --color-cat-games: #B4A2F8;
+  --color-cat-games-bg: #271E44;
+  --color-cat-games-border: #443477;
+  --color-cat-games-text: #E3DBFC;
+  --color-cat-games-shadow: #34265E;
+
+  --color-cat-create: #59DCA0;
+  --color-cat-create-bg: #133324;
+  --color-cat-create-border: #20553B;
+  --color-cat-create-text: #BAF5D8;
+  --color-cat-create-shadow: #18442E;
+
+  --color-cat-joy: #FFD166;
+  --color-cat-joy-bg: #3A2E12;
+  --color-cat-joy-border: #614D1C;
+  --color-cat-joy-text: #FFE9B3;
+  --color-cat-joy-shadow: #4A3A14;
+
+  --color-muted: #27304E;
+  --color-muted-foreground: #B8C2D8;
+  --color-accent: #27304E;
+  --color-accent-foreground: #F3F5FA;
+  --color-focus: #4DD0C7;
   --color-focus-ring: oklab(0.718319 0.151535 0.0905449 / 0.85);
 }
 
 /* Media prefers dark mode fallback */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-background: #161311;
-    --color-card: #211D19;
-    --color-surface: #211D19;
-    --color-surface-muted: #2C2622;
+    --color-background: #161B2E;
+    --color-card: #1E253D;
+    --color-surface: #1E253D;
+    --color-surface-muted: #27304E;
     
-    --color-text: #F4EFEA;
+    --color-text: #F3F5FA;
     --color-text-heading: #FFFFFF;
-    --color-text-muted: #B0A296;
+    --color-text-muted: #B8C2D8;
     --color-text-white: #FFFFFF;
 
-    --color-border: #38312A;
-    --color-border-strong: #4F453B;
+    --color-border: #313D63;
+    --color-border-strong: #4B5A8A;
     
-    --color-primary: #72AB79;
-    --color-primary-light: #233425;
-    --color-primary-text: #161311;
+    --color-primary: #4DD0C7;
+    --color-primary-light: #163B3F;
+    --color-primary-text: #161B2E;
+    --color-forest: #4DD0C7;
+    --color-forest-dark: #82E5DE;
+    --color-amber: #FFA08A;
+    --color-amber-dark: #FFC4B5;
+    --color-indigo: #B4A2F8;
+    --color-indigo-light: #2D2353;
+    --color-sun: #FFD166;
+    --color-sun-light: #443513;
 
-    --color-purple: #B288B5;
-    --color-pink: #D9889D;
-    --color-red: #E57373;
-    --color-yellow: #DE9E3B;
-    --color-teal: #5BBAB3;
-    --color-orange: #E0825B;
-    --color-blue: #5C9EC9;
-    --color-green: #72AB79;
+    --color-purple: #B4A2F8;
+    --color-pink: #FFA0BD;
+    --color-red: #FFA49E;
+    --color-yellow: #FFD166;
+    --color-teal: #4DD0C7;
+    --color-orange: #FFA08A;
+    --color-blue: #71BEFB;
+    --color-green: #59DCA0;
 
-    --color-muted: #2C2622;
-    --color-muted-foreground: #B0A296;
-    --color-accent: #2C2622;
-    --color-accent-foreground: #F4EFEA;
-    --color-focus: #72AB79;
+    --color-cat-books: #FFA08A;
+    --color-cat-books-bg: #351C22;
+    --color-cat-books-border: #632B36;
+    --color-cat-books-text: #FFCEC5;
+    --color-cat-books-shadow: #52202A;
+
+    --color-cat-tv: #71BEFB;
+    --color-cat-tv-bg: #162642;
+    --color-cat-tv-border: #233F6E;
+    --color-cat-tv-text: #C4E3FD;
+    --color-cat-tv-shadow: #19315A;
+
+    --color-cat-games: #B4A2F8;
+    --color-cat-games-bg: #271E44;
+    --color-cat-games-border: #443477;
+    --color-cat-games-text: #E3DBFC;
+    --color-cat-games-shadow: #34265E;
+
+    --color-cat-create: #59DCA0;
+    --color-cat-create-bg: #133324;
+    --color-cat-create-border: #20553B;
+    --color-cat-create-text: #BAF5D8;
+    --color-cat-create-shadow: #18442E;
+
+    --color-cat-joy: #FFD166;
+    --color-cat-joy-bg: #3A2E12;
+    --color-cat-joy-border: #614D1C;
+    --color-cat-joy-text: #FFE9B3;
+    --color-cat-joy-shadow: #4A3A14;
+
+    --color-muted: #27304E;
+    --color-muted-foreground: #B8C2D8;
+    --color-accent: #27304E;
+    --color-accent-foreground: #F3F5FA;
+    --color-focus: #4DD0C7;
     --color-focus-ring: oklab(0.718319 0.151535 0.0905449 / 0.85);
   }
 }
@@ -231,18 +373,18 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   font-family: var(--font-body), 'Nunito', sans-serif;
-  font-size: 14px; /* Base font size */
+  font-size: 16px;
   font-weight: 400; /* Base weight */
-  line-height: 1.25; /* Line height (17.5px) */
+  line-height: 1.45;
   background-color: var(--color-background);
   color: var(--color-text);
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -253,7 +395,7 @@ body {
   min-height: 100vh;
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .main-content {
@@ -270,6 +412,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), 'Fredoka', sans-serif;
   font-weight: 500;
   line-height: 1.2;
+  color: var(--color-text-heading);
+}
+
+::selection {
+  background: var(--color-sun-light);
   color: var(--color-text-heading);
 }
 

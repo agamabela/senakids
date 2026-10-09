@@ -4,11 +4,10 @@ import fs from "node:fs";
 
 const BASE_URL = process.env.TEST_APP_URL || "http://localhost:3000";
 
-test("Header is static and not sticky or fixed", () => {
+test("Header is sticky at top of page", () => {
   const css = fs.readFileSync("src/components/Navbar.module.css", "utf8");
-  assert.match(css, /\.header\s*\{[^}]*position:\s*static;/, "Navbar header must be position: static");
-  assert.doesNotMatch(css, /\.header\s*\{[^}]*position:\s*sticky;/, "Navbar header must not be position: sticky");
-  assert.doesNotMatch(css, /\.header\s*\{[^}]*position:\s*fixed;/, "Navbar header must not be position: fixed");
+  assert.match(css, /\.header\s*\{[^}]*position:\s*sticky;/, "Navbar header must be position: sticky");
+  assert.match(css, /\.header\s*\{[^}]*top:\s*0;/, "Navbar header must have top: 0");
 });
 
 test("Channels API returns 100+ kids-friendly channels", async () => {

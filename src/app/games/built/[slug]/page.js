@@ -44,7 +44,10 @@ import MathNegativeGameClient from "../MathNegativeGameClient";
 import MathMultiplicationGameClient from "../MathMultiplicationGameClient";
 import MemoryMorseGameClient from "../MemoryMorseGameClient";
 import MemahamiKoordinatGameClient from "../MemahamiKoordinatGameClient";
+import AviatorGameClient from "../AviatorGameClient";
+import ToyCarGameClient from "../ToyCarGameClient";
 import BackButton from "@/components/BackButton";
+import { getSiteUrl } from "@/lib/site-url";
 import styles from "./page.module.css";
 
 export const builtGameDetails = {
@@ -104,7 +107,11 @@ export const builtGameDetails = {
   morse: { title: "Kode Morse Memori", description: "Dengarkan bunyi dan pelajari kode morse alfabet.", note: "This built-in game is implemented directly in Sena Kids." },
   "morse-memori": { title: "Kode Morse Memori", description: "Dengarkan bunyi dan pelajari kode morse alfabet.", note: "This built-in game is implemented directly in Sena Kids." },
   "memahami-koordinat": { title: "Memahami Koordinat", description: "Belajar sumbu X dan Y pada bidang koordinat kartesius interaktif.", note: "This built-in game is implemented directly in Sena Kids." },
-  koordinat: { title: "Memahami Koordinat", description: "Belajar sumbu X dan Y pada bidang koordinat kartesius interaktif.", note: "This built-in game is implemented directly in Sena Kids." }
+  koordinat: { title: "Memahami Koordinat", description: "Belajar sumbu X dan Y pada bidang koordinat kartesius interaktif.", note: "This built-in game is implemented directly in Sena Kids." },
+  "the-aviator": { title: "Pesawat Cilik 3D", description: "Terbangkan pesawat kartun 3D, kumpulkan koin energi, dan jelajahi langit yang indah!", note: "Built with Three.js from the Patel230 sample games collection." },
+  aviator: { title: "Pesawat Cilik 3D", description: "Terbangkan pesawat kartun 3D, kumpulkan koin energi, dan jelajahi langit yang indah!", note: "Built with Three.js from the Patel230 sample games collection." },
+  "toy-car": { title: "Mobil Mainan 3D", description: "Kendarai mobil mainan 3D di taman bermain seru, tabrak menara balok kayu, dan kumpulkan bintang!", note: "Built with Three.js from the Patel230 sample games collection." },
+  "mobil-mainan-3d": { title: "Mobil Mainan 3D", description: "Kendarai mobil mainan 3D di taman bermain seru, tabrak menara balok kayu, dan kumpulkan bintang!", note: "Built with Three.js from the Patel230 sample games collection." }
 };
 
 const gameClients = {
@@ -164,7 +171,11 @@ const gameClients = {
   morse: MemoryMorseGameClient,
   "morse-memori": MemoryMorseGameClient,
   "memahami-koordinat": MemahamiKoordinatGameClient,
-  koordinat: MemahamiKoordinatGameClient
+  koordinat: MemahamiKoordinatGameClient,
+  "the-aviator": AviatorGameClient,
+  aviator: AviatorGameClient,
+  "toy-car": ToyCarGameClient,
+  "mobil-mainan-3d": ToyCarGameClient
 };
 
 export async function generateStaticParams() {
@@ -183,7 +194,7 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://senakids.web.id";
+  const baseUrl = getSiteUrl();
   const canonicalUrl = `${baseUrl}/games/built/${slug}`;
 
   return {
@@ -210,7 +221,7 @@ export default async function BuiltGamePage({ params }) {
   }
 
   const GameClient = gameClients[slug];
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://senakids.web.id";
+  const baseUrl = getSiteUrl();
   const gameJsonLd = {
     "@context": "https://schema.org",
     "@type": "Game",

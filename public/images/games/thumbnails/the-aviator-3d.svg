@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffeaa7" />
+      <stop offset="50%" stop-color="#fdcb6e" />
+      <stop offset="100%" stop-color="#81ecec" />
+    </linearGradient>
+    <linearGradient id="seaGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00cec9" />
+      <stop offset="100%" stop-color="#0984e3" />
+    </linearGradient>
+    <linearGradient id="planeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff7675" />
+      <stop offset="100%" stop-color="#d63031" />
+    </linearGradient>
+    <linearGradient id="coinGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffeaa7" />
+      <stop offset="100%" stop-color="#e17055" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Sky Background -->
+  <rect width="400" height="300" rx="24" fill="url(#skyGrad)" />
+
+  <!-- Rolling Ocean Arc -->
+  <ellipse cx="200" cy="380" rx="260" ry="140" fill="url(#seaGrad)" />
+  <path d="M 0 250 Q 100 230, 200 250 T 400 250 L 400 300 L 0 300 Z" fill="#74b9ff" opacity="0.3" />
+
+  <!-- Puffy Low-Poly Clouds -->
+  <g opacity="0.9" filter="url(#shadow)">
+    <circle cx="90" cy="80" r="32" fill="#ffffff" />
+    <circle cx="130" cy="70" r="42" fill="#ffffff" />
+    <circle cx="170" cy="85" r="30" fill="#ffffff" />
+    
+    <circle cx="310" cy="110" r="28" fill="#ffffff" />
+    <circle cx="345" cy="100" r="36" fill="#ffffff" />
+  </g>
+
+  <!-- Spinning Gold Coins -->
+  <g filter="url(#shadow)">
+    <circle cx="280" cy="70" r="16" fill="url(#coinGrad)" stroke="#fff" stroke-width="3" />
+    <polygon points="280,60 284,68 292,68 286,74 288,82 280,77 272,82 274,74 268,68 276,68" fill="#fff" />
+
+    <circle cx="330" cy="50" r="14" fill="url(#coinGrad)" stroke="#fff" stroke-width="2.5" />
+    <polygon points="330,42 333,48 340,48 335,53 337,60 330,56 323,60 325,53 320,48 327,48" fill="#fff" />
+  </g>
+
+  <!-- Red Cartoon Airplane -->
+  <g transform="translate(140, 120) rotate(-6)" filter="url(#shadow)">
+    <!-- Shadow beneath plane -->
+    <ellipse cx="20" cy="70" rx="55" ry="10" fill="rgba(0,0,0,0.15)" />
+
+    <!-- Fuselage Body -->
+    <path d="M -50 0 L 50 -10 Q 75 0, 75 12 L 65 24 Q 40 28, -50 16 Z" fill="url(#planeGrad)" />
+
+    <!-- Engine Nose -->
+    <rect x="70" y="2" width="16" height="20" rx="4" fill="#ffffff" stroke="#2d3436" stroke-width="2" />
+
+    <!-- Propeller -->
+    <rect x="84" y="-22" width="6" height="66" rx="3" fill="#2d3436" />
+    <circle cx="87" cy="12" r="7" fill="#d63031" />
+
+    <!-- Windshield -->
+    <polygon points="20,-8 35,-8 30,5 15,5" fill="#74b9ff" opacity="0.85" stroke="#fff" stroke-width="1.5" />
+
+    <!-- Cute Pilot -->
+    <circle cx="10" cy="-6" r="14" fill="#ffbe76" stroke="#2d3436" stroke-width="2" />
+    <!-- Pilot Goggles -->
+    <rect x="10" y="-12" width="12" height="9" rx="3" fill="#2d3436" />
+    <rect x="12" y="-10" width="8" height="5" rx="2" fill="#81ecec" />
+    <!-- Flapping Scarf/Hair -->
+    <path d="M 0 -2 Q -15 -14, -28 -8 Q -18 -2, -2 -2 Z" fill="#e17055" />
+
+    <!-- Wings -->
+    <rect x="-10" y="8" width="34" height="65" rx="6" fill="#d63031" stroke="#b71540" stroke-width="2" transform="skewX(-15)" />
+    <!-- Tail Fin -->
+    <polygon points="-46,4 -36,-26 -24,-24 -36,6" fill="#d63031" stroke="#b71540" stroke-width="1.5" />
+  </g>
+
+  <!-- Title Badge -->
+  <g transform="translate(200, 260)">
+    <rect x="-120" y="-20" width="240" height="40" rx="20" fill="#ffffff" stroke="#2d3436" stroke-width="3" filter="url(#shadow)" />
+    <text x="0" y="6" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#2d3436" text-anchor="middle">
+      ✈️ THE AVIATOR 3D
+    </text>
+  </g>
+</svg>

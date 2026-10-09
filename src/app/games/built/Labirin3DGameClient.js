@@ -181,7 +181,7 @@ export default function Labirin3DGameClient() {
       }
   }, []);
 
-  // Move in an absolute world direction (0=N,1=E,2=S,3=W) — exactly like the
+  // Move in an absolute world direction (0=N,1=E,2=S,3=W) - exactly like the
   // 2D maze. The camera heading stays FIXED (facing north), so there is no
   // confusing rotation: up = away, down = toward you, left/right = sideways.
   const moveDir = useCallback((worldDir) => {
@@ -246,7 +246,7 @@ export default function Labirin3DGameClient() {
     scene.background = new THREE.Color(0x87ceeb);
     scene.fog = new THREE.Fog(0x87ceeb, 8, 20);
 
-    // Overhead follow camera — fixed orientation (never rotates) so the
+    // Overhead follow camera - fixed orientation (never rotates) so the
     // arrow controls map exactly like the 2D maze.
     const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100);
     camera.position.set(1, 5, 5);
@@ -285,7 +285,7 @@ export default function Labirin3DGameClient() {
           scene.add(m);
         }
 
-    // Gems (goal) — spinning cyan diamonds
+    // Gems (goal) - spinning cyan diamonds
     const gemGeo = new THREE.OctahedronGeometry(0.28, 0);
     const gemMat = new THREE.MeshStandardMaterial({
       color: 0x38e1d6,
@@ -513,13 +513,13 @@ export default function Labirin3DGameClient() {
         )}
       </div>
 
-      {/* Minimap — outside the 3D box */}
+      {/* Minimap - outside the 3D box */}
       <div className={styles.miniPanel}>
         <span className={styles.miniLabel}>🗺️ {t("Peta", "Map")}</span>
         <canvas ref={miniRef} width={132} height={132} className={styles.minimap} />
       </div>
 
-      {/* Floating D-pad — fixed bottom-right; arrows move in world directions */}
+      {/* Floating D-pad - fixed bottom-right; arrows move in world directions */}
       <DPad
         onUp={() => moveDir(0)}
         onDown={() => moveDir(2)}

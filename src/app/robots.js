@@ -1,5 +1,7 @@
+import { getSiteUrl } from "@/lib/site-url";
+
 export default function robots() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://senakids.web.id";
+  const baseUrl = getSiteUrl();
 
   return {
     rules: [
@@ -24,6 +26,9 @@ export default function robots() {
           "/terms",
           "/parents",
           "/contact",
+          "/images/*",
+          "/_next/static/*",
+          "/_next/image*",
         ],
         disallow: [
           "/admin",

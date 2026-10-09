@@ -9,8 +9,8 @@
 
 /* Header Banner Card */
 .headerBanner {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: linear-gradient(135deg, var(--color-surface) 0%, #d8eefc 100%);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-lg) var(--space-xl);
   box-shadow: var(--shadow-sm);
@@ -32,9 +32,9 @@
   width: 52px;
   height: 52px;
   border-radius: var(--radius-lg);
-  background-color: var(--color-surface-muted);
-  border: 1px solid var(--color-border);
-  color: var(--color-forest);
+  background-color: #d8eefc;
+  border: 2px solid var(--color-blue);
+  color: var(--color-blue);
   flex-shrink: 0;
 }
 
@@ -54,6 +54,11 @@
   line-height: 1.4;
 }
 
+:global([data-theme="dark"]) .headerBanner { background: linear-gradient(135deg, var(--color-surface) 0%, #254d65 100%); }
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .headerBanner { background: linear-gradient(135deg, var(--color-surface) 0%, #254d65 100%); }
+}
+
 /* Two-column layout */
 .tvLayout {
   display: grid;
@@ -67,10 +72,10 @@
   position: sticky;
   top: 76px;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-md);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
@@ -142,13 +147,13 @@
 }
 
 .channelBtnActive {
-  background-color: var(--color-forest);
+  background-color: var(--color-blue);
   color: #ffffff;
   border-color: var(--color-forest);
 }
 
 .channelBtnActive:hover {
-  background-color: var(--color-forest);
+  background-color: var(--color-blue);
   color: #ffffff;
 }
 

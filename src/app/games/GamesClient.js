@@ -12,6 +12,8 @@ import { TOY_THEATER_CATALOG } from "@/lib/toytheater-games";
 
 // Category 1: Sena Kids Games
 const senaKidsGames = [
+  { title: { id: "Pesawat Cilik 3D", en: "The Aviator 3D" }, href: "/games/built/the-aviator", image: "/images/games/thumbnails/the-aviator-3d.svg", color: "blue" },
+  { title: { id: "Mobil Mainan 3D", en: "Toy Car 3D" }, href: "/games/built/toy-car", image: "/images/games/thumbnails/toy-car-3d.svg", color: "orange" },
   { title: { id: "Ski Free", en: "Ski Free" }, href: "/games/ski-free", image: "/images/ski-pagi-key-art-v2.png", emoji: "⛷️", color: "blue" },
   { title: { id: "Ular Tangga", en: "Snakes & Ladders" }, href: "/games/built/ular-tangga", image: "https://data.cabocil.com/assets/images/others/board-snake-and-ladder-v1.png", emoji: "🪜", color: "teal" },
   { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, href: "/games/maze", image: "/images/games/maze/thumbnail.png", emoji: "💎", color: "blue" },

@@ -452,20 +452,25 @@
   position: absolute;
   right: 0;
   top: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   font-size: 1.8rem;
   cursor: pointer;
-  color: #aaa;
+  color: #475569;
 }
 
 .closeBtn:hover {
-  color: #e57373;
+  color: #dc2626;
 }
 
 .shopGold {
   background: #fff9c4;
-  color: #fbc02d;
+  color: #b45309;
   font-weight: 800;
   font-size: 1.1rem;
   border-radius: 12px;

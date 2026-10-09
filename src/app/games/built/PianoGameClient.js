@@ -203,7 +203,7 @@ export default function PianoGameClient() {
             : tx("🔤 Tampilkan Label", "🔤 Show Labels")}
         </button>
         <div className={styles.nowPlaying} aria-live="polite" aria-atomic="true">
-          {lastNote ? `🎵 ${lastNote}` : "🎵 —"}
+          {lastNote ? `🎵 ${lastNote}` : "🎵 -"}
         </div>
       </div>
 

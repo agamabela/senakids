@@ -167,7 +167,7 @@
   height: 100% !important;
 }
 
-/* Minimap panel — sits OUTSIDE the 3D box */
+/* Minimap panel - sits OUTSIDE the 3D box */
 .miniPanel {
   display: flex;
   flex-direction: column;

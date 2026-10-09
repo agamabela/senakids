@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/components/LanguageProvider";
 import { SessionProvider } from "@/components/SessionProvider";
 import AmbientSound from "@/components/AmbientSound";
 import JourneyTracker from "@/components/JourneyTracker";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -21,8 +22,10 @@ const nunito = Nunito({
   display: "swap",
 });
 
+const siteUrl = getSiteUrl();
+
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://senakids.web.id"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Sena Kids - Platform Belajar & Bermain Ceria Ramah Anak",
     template: "%s | Sena Kids",
@@ -35,7 +38,7 @@ export const metadata = {
   openGraph: {
     title: "Sena Kids - Belajar & Bermain Ramah Anak",
     description: "Buku cerita bergambar anak, video edukasi aman, dan game logika interaktif tanpa iklan pengganggu.",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://senakids.web.id",
+    url: siteUrl,
     siteName: "Sena Kids",
     images: [
       {
@@ -57,6 +60,16 @@ export const metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "c55rVqLzV3qXG7Jd4_H_T-F7zY4V0X9Q3Y",
   },
 };
 

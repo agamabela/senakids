@@ -220,7 +220,7 @@ export default function InfiniteFlierGameClient() {
   const [screen, setScreen] = useState("intro"); // intro | playing | dead
   const [bestScore, setBestScore] = useState(0);
 
-  // game state in refs — animation loop reads these without stale closures
+  // game state in refs - animation loop reads these without stale closures
   const game = useRef({
     vy: 0, py: H / 2, px: 80,
     thrusting: false,
@@ -310,7 +310,7 @@ export default function InfiniteFlierGameClient() {
         }
       }
 
-      // collision — ceiling & floor
+      // collision - ceiling & floor
       if (g.py < 10 || g.py > H - 30) {
         g.alive = false;
         setBestScore((b) => Math.max(b, g.score));
@@ -318,7 +318,7 @@ export default function InfiniteFlierGameClient() {
         return;
       }
 
-      // collision — pipes (forgiving hitbox for little kids)
+      // collision - pipes (forgiving hitbox for little kids)
       for (const p of g.pipes) {
         const pw = 44;
         const inX = g.px + 7 > p.x && g.px - 7 < p.x + pw;

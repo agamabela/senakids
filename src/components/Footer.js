@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Shield, Heart, ExternalLink, BookOpen, Tv, Gamepad2 } from "lucide-react";
+import { Shield, Heart, ExternalLink, BookOpen, Tv, Gamepad2, Palette } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./Footer.module.css";
 
@@ -25,19 +25,30 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className={styles.linksCol}>
-            <h3 className={styles.colTitle}>{t("footer.aboutTitle")}</h3>
-            <ul className={styles.linkList}>
-              <li><Link href="/home">{t("footer.home")}</Link></li>
-              <li><Link href="/books">{t("footer.books")}</Link></li>
-              <li><Link href="/tv">{t("footer.tv")}</Link></li>
-              <li><Link href="/channels">{tx("Channel Pilihan", "Channels")}</Link></li>
-              <li><Link href="/games">{t("footer.games")}</Link></li>
-            </ul>
+          <div className={styles.playCol}>
+            <h3 className={styles.colTitle}>{tx("Pilih petualangan", "Choose an adventure")}</h3>
+            <div className={styles.playLinks}>
+              <Link href="/books" className={`${styles.playLink} ${styles.playLink_books}`}>
+                <BookOpen size={22} aria-hidden="true" />
+                <span>{t("footer.books")}</span>
+              </Link>
+              <Link href="/tv" className={`${styles.playLink} ${styles.playLink_tv}`}>
+                <Tv size={22} aria-hidden="true" />
+                <span>{t("footer.tv")}</span>
+              </Link>
+              <Link href="/games" className={`${styles.playLink} ${styles.playLink_games}`}>
+                <Gamepad2 size={22} aria-hidden="true" />
+                <span>{t("footer.games")}</span>
+              </Link>
+              <Link href="/create" className={`${styles.playLink} ${styles.playLink_create}`}>
+                <Palette size={22} aria-hidden="true" />
+                <span>{tx("Studio Kreasi", "Creative Studio")}</span>
+              </Link>
+            </div>
           </div>
 
           <div className={styles.linksCol}>
-            <h3 className={styles.colTitle}>{t("footer.parentTitle")}</h3>
+            <h3 className={styles.colTitle}>{tx("Untuk orang tua", "For grown-ups")}</h3>
             <ul className={styles.linkList}>
               <li><Link href="/parents">{t("footer.parents")}</Link></li>
               <li><Link href="/parents#timer">{t("footer.parentControls")}</Link></li>

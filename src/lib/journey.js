@@ -96,10 +96,10 @@ export const DAILY_ACTIVITIES = [
     href: "/games/built/drum",
   },
   {
-    title: "Belajar bersama Owly",
-    description: "Selesaikan satu langkah kecil di pelajaran Owly.",
+    title: "Petualangan Belajar",
+    description: "Buka satu jalur belajar dan temukan pengetahuan seru hari ini.",
     kind: "lesson",
-    href: "/owly",
+    href: "/learning-journeys",
   },
   {
     title: "Tonton dan ceritakan",

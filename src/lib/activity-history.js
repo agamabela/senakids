@@ -248,6 +248,10 @@ const BUILT_GAME_NAMES = {
   perkalian: { title: "Perkalian Dasar", emoji: "✖️", color: "yellow" },
   morse: { title: "Kode Morse Memori", emoji: "📻", color: "purple" },
   "memahami-koordinat": { title: "Memahami Koordinat", emoji: "📍", color: "purple" },
+  "the-aviator": { title: "Pesawat Cilik 3D", color: "blue", emoji: "✈️" },
+  aviator: { title: "Pesawat Cilik 3D", color: "blue", emoji: "✈️" },
+  "toy-car": { title: "Mobil Mainan 3D", color: "orange", emoji: "🚗" },
+  "mobil-mainan-3d": { title: "Mobil Mainan 3D", color: "orange", emoji: "🚗" },
 };
 
 /**

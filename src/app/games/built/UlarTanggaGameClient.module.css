@@ -72,11 +72,11 @@
 .addRow { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
 .addRow input { width: 100%; min-width: 0; padding: 7px 6px; border-radius: 8px; border: 1.5px solid var(--color-border); font-size: .85rem; text-align: center; }
 .addRow span { color: var(--color-muted-foreground); font-weight: 700; }
-.addRow button { flex-shrink: 0; width: 32px; height: 32px; border: none; border-radius: 8px; background: #16a34a; color: #fff; font-size: 1.2rem; font-weight: 800; cursor: pointer; }
+.addRow button { flex-shrink: 0; min-width: 44px; min-height: 44px; width: 44px; height: 44px; border: none; border-radius: 8px; background: #16a34a; color: #fff; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .itemList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
 .itemList li { display: flex; align-items: center; justify-content: space-between; background: #fff; border-radius: 8px; padding: 5px 10px; font-size: .85rem; font-weight: 700; }
 .itemList li.empty { justify-content: center; color: var(--color-muted-foreground); font-weight: 400; background: transparent; }
-.itemList li button { border: none; background: #fee2e2; color: #dc2626; border-radius: 6px; width: 22px; height: 22px; cursor: pointer; font-weight: 800; }
+.itemList li button { border: none; background: #fee2e2; color: #dc2626; border-radius: 6px; min-width: 36px; min-height: 36px; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; }
 .buildErr { color: #dc2626; font-size: .85rem; font-weight: 700; margin: 8px 0; }
 
 /* ── drag-and-drop builder ── */

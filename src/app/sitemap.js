@@ -80,6 +80,8 @@ export default function sitemap() {
     "perkalian",
     "morse",
     "memahami-koordinat",
+    "the-aviator",
+    "toy-car",
   ];
 
   const gameRoutes = builtInGameSlugs.map((slug) => ({

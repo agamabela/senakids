@@ -150,6 +150,6 @@
 .tapZone:active { background: rgba(255,255,255,0.2); }
 
 @media (min-width: 520px) {
-  /* On bigger screens the canvas is already big — hide the extra tap button */
+  /* On bigger screens the canvas is already big - hide the extra tap button */
   .tapZone { display: none; }
 }

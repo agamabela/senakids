@@ -11,6 +11,10 @@
   align-items: center;
   gap: 16px;
   margin-bottom: 32px;
+  padding: 20px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--color-surface) 0%, #ffe4dc 100%);
 }
 
 .backBtn {
@@ -46,6 +50,15 @@
   margin-top: 4px;
 }
 
+:global([data-theme="dark"]) .header { background: linear-gradient(135deg, var(--color-surface) 0%, #56382f 100%); }
+:global([data-theme="dark"]) .bookCard:nth-child(3n + 2) .bookCover { background: #3d3979; }
+:global([data-theme="dark"]) .bookCard:nth-child(3n + 3) .bookCover { background: #244c55; }
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .header { background: linear-gradient(135deg, var(--color-surface) 0%, #56382f 100%); }
+  :global(:root:not([data-theme="light"])) .bookCard:nth-child(3n + 2) .bookCover { background: #3d3979; }
+  :global(:root:not([data-theme="light"])) .bookCard:nth-child(3n + 3) .bookCover { background: #244c55; }
+}
+
 /* Book Grid */
 .bookGrid {
   display: grid;
@@ -59,8 +72,8 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-card);
-  border: 1.5px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--color-border);
+  box-shadow: var(--shadow-card);
   cursor: pointer;
   text-decoration: none;
   text-align: left;
@@ -71,8 +84,12 @@
 }
 
 .bookCard:hover {
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
 }
+
+.bookCard:nth-child(3n + 2) .bookCover { background: var(--color-indigo-light); }
+.bookCard:nth-child(3n + 3) .bookCover { background: var(--color-primary-light); }
 
 .bookCard:focus-visible,
 .backBtn:focus-visible,

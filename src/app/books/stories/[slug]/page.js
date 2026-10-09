@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getStoryBySlug, LETS_READ_STORIES } from "@/lib/content-registry";
+import { getSiteUrl } from "@/lib/site-url";
 import StoryReaderClient from "./StoryReaderClient";
 
 export async function generateStaticParams() {
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://senakids.web.id";
+  const baseUrl = getSiteUrl();
   const canonicalUrl = `${baseUrl}/books/stories/${story.slug}`;
 
   return {

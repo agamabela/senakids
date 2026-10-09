@@ -114,7 +114,7 @@ export default function LacakAngkaGameClient() {
       <div className={styles.stageWrap}>
         <TraceStage ref={stageRef} glyph={D} strokes={strokes} accent="#16a34a" level={level} reveal={reveal} resetKey={`${D}-${level}-${resetKey}`} onComplete={onComplete} />
         {celebrate && <div className={styles.celebrate}>⭐ {t("Bagus!", "Great!")}</div>}
-        {fail && <div className={styles.failBanner}>🤔 {t("Begini angka yang benar — coba lagi!", "Here's the correct number — try again!")}</div>}
+        {fail && <div className={styles.failBanner}>🤔 {t("Begini angka yang benar, coba lagi!", "Here's the correct number, try again!")}</div>}
       </div>
 
       <p className={styles.hint}>

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./MenyabungPipaGameClient.module.css";
 
-// Pipe types — connections: [top, right, bottom, left]
+// Pipe types: connections: [top, right, bottom, left]
 const PIPE_TYPES = {
   straight:   { connections: [true,  false, true,  false] },
   straight_h: { connections: [false, true,  false, true]  },
@@ -417,8 +417,8 @@ export default function MenyabungPipaGameClient() {
 
       <div className={styles.hint}>
         {language === "id"
-          ? "💡 Ketuk pipa untuk memutarnya — sambungkan 🟢 ke 🔴"
-          : "💡 Tap a pipe to rotate it — connect 🟢 to 🔴"}
+          ? "💡 Ketuk pipa untuk memutarnya: sambungkan 🟢 ke 🔴"
+          : "💡 Tap a pipe to rotate it: connect 🟢 to 🔴"}
       </div>
     </div>
   );

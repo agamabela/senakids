@@ -27,12 +27,12 @@ import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./Navbar.module.css";
 
 const navLinks = [
-  { key: "nav.home", href: "/home", icon: Home },
-  { key: "nav.books", href: "/books", icon: Book },
-  { key: "nav.stories", href: "/buku-cerita", icon: BookOpen },
-  { key: "nav.tv", href: "/tv", icon: Tv },
-  { key: "nav.games", href: "/games", icon: Gamepad2 },
-  { key: "nav.create", href: "/create", icon: Palette },
+  { key: "nav.home", href: "/home", icon: Home, category: "home" },
+  { key: "nav.books", href: "/books", icon: Book, category: "books" },
+  { key: "nav.stories", href: "/buku-cerita", icon: BookOpen, category: "stories" },
+  { key: "nav.tv", href: "/tv", icon: Tv, category: "tv" },
+  { key: "nav.games", href: "/games", icon: Gamepad2, category: "games" },
+  { key: "nav.create", href: "/create", icon: Palette, category: "create" },
 ];
 
 export default function Navbar() {
@@ -104,9 +104,9 @@ export default function Navbar() {
                   <Link
                     key={link.key}
                     href={link.href}
-                    className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
+                    className={`${styles.navLink} ${styles[`navLink_${link.category}`] || ""} ${isActive ? styles.navLinkActive : ""}`}
                   >
-                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className={styles.navIcon} />
                     <span>{t(link.key)}</span>
                   </Link>
                 );

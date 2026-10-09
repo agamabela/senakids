@@ -132,11 +132,12 @@
 }
 
 .progress {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;
-  max-width: 420px; margin-top: 4px;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+  max-width: 440px; margin-top: 6px;
 }
 .progDot {
-  width: 26px; height: 26px; border-radius: 8px; border: none;
-  background: #dbe7f5; color: #5b7290; font-weight: 800; font-size: .75rem; cursor: pointer;
+  min-width: 34px; min-height: 34px; border-radius: 10px; border: none;
+  background: #dbe7f5; color: #5b7290; font-weight: 800; font-size: .85rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
 }
 .progActive { background: #2563eb; color: #fff; }

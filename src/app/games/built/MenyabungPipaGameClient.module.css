@@ -229,7 +229,7 @@
   background: #243044;
 }
 
-/* Empty (non-pipe) cell — keeps grid spacing on easy levels */
+/* Empty (non-pipe) cell - keeps grid spacing on easy levels */
 .emptyCell {
   width: 90px;
   height: 90px;
@@ -238,17 +238,16 @@
   border-radius: 6px;
 }
 
-/* Flowing state — steady blue glow, no blipping */
+/* Flowing state: clear active water accent */
 .cell.flowing {
   background: #0c2a3d;
   border-color: #0ea5e9;
-  box-shadow: inset 0 0 12px rgba(14,165,233,.25);
 }
 
-/* Win state — cyan glow */
+/* Win state: bright clear victory accent */
 .cell.complete {
+  background: #0f394c;
   border-color: #22d3ee;
-  box-shadow: inset 0 0 16px rgba(34,211,238,.3);
 }
 
 /* Start / End border accents */

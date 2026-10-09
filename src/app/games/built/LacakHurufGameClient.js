@@ -134,7 +134,7 @@ export default function LacakHurufGameClient() {
       <div className={styles.stageWrap}>
         <TraceStage ref={stageRef} glyph={glyph} strokes={strokes} accent="#3b82d6" level={level} reveal={reveal} resetKey={`${U}-${caseMode}-${level}-${resetKey}`} onComplete={onComplete} />
         {celebrate && <div className={styles.celebrate}>⭐ {t("Bagus!", "Great!")}</div>}
-        {fail && <div className={styles.failBanner}>🤔 {t("Begini huruf yang benar — coba lagi!", "Here's the correct letter — try again!")}</div>}
+        {fail && <div className={styles.failBanner}>🤔 {t("Begini huruf yang benar, coba lagi!", "Here's the correct letter, try again!")}</div>}
       </div>
 
       <p className={styles.hint}>

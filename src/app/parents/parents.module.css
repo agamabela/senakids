@@ -9,6 +9,10 @@
   align-items: flex-start;
   gap: var(--space-md);
   margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
 }
 
 .backBtn {
@@ -86,10 +90,10 @@
 
 .card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
 }
 
 .cardHead {

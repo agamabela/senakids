@@ -7,10 +7,15 @@
 .headerCard {
   border-radius: var(--radius-xl);
   border: 2px solid var(--color-border);
-  background: var(--color-surface);
+  background: linear-gradient(135deg, var(--color-surface) 0%, #d8eefc 100%);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
   margin-bottom: var(--space-lg);
+}
+
+:global([data-theme="dark"]) .headerCard { background: linear-gradient(135deg, var(--color-surface) 0%, #254d65 100%); }
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .headerCard { background: linear-gradient(135deg, var(--color-surface) 0%, #254d65 100%); }
 }
 
 .headerTop {
@@ -85,7 +90,7 @@
   font-size: var(--text-sm);
   font-weight: 700;
   border: 2px solid transparent;
-  background: var(--color-primary);
+  background: var(--color-blue);
   color: white;
   text-decoration: none;
   cursor: pointer;

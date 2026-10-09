@@ -168,7 +168,7 @@ function collidePlatforms(p, platforms) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
- * SOUND (Web Audio API generated tones — no asset files needed)
+ * SOUND (Web Audio API generated tones - no asset files needed)
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 function makeAudio() {
@@ -401,7 +401,7 @@ export default function PlatformerGameClient() {
   }, [screen, levelIdx]);
 
   /* ═════════════════════════════════════════════════════════════════════════
-   * RENDERING (canvas draw — kept separate from physics/update above)
+   * RENDERING (canvas draw - kept separate from physics/update above)
    * ═════════════════════════════════════════════════════════════════════════ */
   const draw = (ctx, g, lv, VIEW_W, VIEW_H) => {
     // Sky
@@ -663,7 +663,7 @@ export default function PlatformerGameClient() {
           </div>
         )}
 
-        {/* Touch controls — large, bottom corners, for tablets */}
+        {/* Touch controls - large, bottom corners, for tablets */}
         <div className={styles.touchLeft}>
           <button
             className={styles.padBtn}
