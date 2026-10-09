@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { CURATED_TV_VIDEOS } from "@/lib/content-registry";
+import { addHistory } from "@/lib/activity-history";
+import ContinueShelf from "@/components/ContinueShelf";
 import styles from "./page.module.css";
 
 const SHOW_ORDER = [
@@ -304,6 +306,16 @@ export default function TvClient({ videos = [] }) {
   const onSelect = (item) => {
     setActive(item);
     setIsPlaying(true);
+    const thumbId = getYouTubeId(item.url);
+    addHistory({
+      id: `tv-${item.id || item.url}`,
+      type: "tv",
+      title: item.title,
+      href: "/tv",
+      image: thumbId ? `https://i.ytimg.com/vi/${thumbId}/hqdefault.jpg` : "",
+      emoji: "📺",
+      label: item.category || "Sena TV",
+    });
     if (stageRef.current) {
       stageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -377,6 +389,9 @@ export default function TvClient({ videos = [] }) {
 
         {/* Right Main Content */}
         <main className={styles.mainContent}>
+          {/* Continue Watching History Shelf */}
+          <ContinueShelf type="tv" seeAllHref="#tv-catalog" />
+
           {/* Cinema Stage Player */}
           <section className={styles.stage} ref={stageRef} aria-label={tx("Pemutar Video", "Video Player")}>
             <motion.div

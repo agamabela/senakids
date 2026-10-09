@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import ActivityCard from "@/components/ActivityCard";
+import ContinueShelf from "@/components/ContinueShelf";
+import { addHistory } from "@/lib/activity-history";
 import styles from "./page.module.css";
 
 function BookCover({ title, src, color, isPriority = false, badge }) {
@@ -118,6 +120,15 @@ export default function BooksClient({
 
   const openStoryModal = (story) => {
     setActiveModalStory(story);
+    const title = typeof story.title === "object" ? story.title[language] || story.title.id : story.title;
+    addHistory({
+      id: `book-${story.slug || story.id}`,
+      type: "book",
+      title,
+      href: story.slug ? `/books/stories/${story.slug}` : story.readUrl || story.url,
+      image: story.cover || "",
+      label: "Buku Cerita",
+    });
     try {
       if (story.slug) {
         window.history.pushState(
@@ -356,6 +367,11 @@ export default function BooksClient({
           </button>
         </div>
       )}
+
+      {/* Continue Reading History Shelf */}
+      <ContinueShelf type="book" seeAllHref="#books-catalog" />
+
+      <div id="books-catalog" />
 
       {/* 1. Educational Portals Section */}
       {filteredPortals.length > 0 && (
@@ -621,6 +637,16 @@ export default function BooksClient({
                   href={w.readUrl}
                   className={styles.storyCard}
                   aria-label={`Buka: ${w.title}`}
+                  onClick={() => {
+                    addHistory({
+                      id: `workbook-${w.id}`,
+                      type: "book",
+                      title: w.title,
+                      href: w.readUrl,
+                      image: w.cover || "",
+                      label: "Worksheet",
+                    });
+                  }}
                 >
                   <BookCover
                     title={w.title}

@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { BookOpen, CalendarCheck, CirclePlay, Gamepad2, GraduationCap, Tv } from "lucide-react";
 import { getDailyActivity, readActivity, readDailyCompletion, todayKey } from "@/lib/journey";
+import { useActivityHistory } from "@/lib/activity-history";
+import ContinueShelf from "@/components/ContinueShelf";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
 
@@ -28,6 +30,7 @@ const recommendations = [
 export default function HomeClient() {
   const { lang } = useLanguage();
   const { data: session } = useSession();
+  const { history, isLoaded } = useActivityHistory("all");
   const [activity, setActivity] = useState([]);
   const [activityState, setActivityState] = useState("loading");
   const [challengeComplete, setChallengeComplete] = useState(false);
@@ -92,14 +95,24 @@ export default function HomeClient() {
       </section>
 
       <section className={styles.activitySection} aria-labelledby="activity-title">
-        <div className={styles.sectionHeading}>
-          <div><p className={styles.kicker}>{lang === "en" ? "Your activity" : "Aktivitasmu"}</p><h2 id="activity-title">{lang === "en" ? "Continue from where you left off" : "Lanjutkan yang terakhir kamu buka"}</h2></div>
-          <Link href="/learning-journeys" className={styles.textLink}>{lang === "en" ? "See learning paths" : "Lihat jalur belajar"}</Link>
-        </div>
-        {activityState === "loading" && <p className={styles.stateText} role="status">{lang === "en" ? "Loading activity history..." : "Memuat riwayat kegiatan..."}</p>}
-        {activityState === "error" && <p className={styles.stateText} role="alert">{lang === "en" ? "Activity history is not available on this device." : "Riwayat kegiatan belum tersedia di perangkat ini."}</p>}
-        {activityState === "ready" && activity.length === 0 && <div className={styles.empty}><CirclePlay size={26} aria-hidden="true" /><p>{lang === "en" ? "Your recent books, videos, and games will appear here after you open one." : "Buku, video, dan game yang kamu buka akan muncul di sini."}</p></div>}
-        {activityState === "ready" && activity.length > 0 && <div className={styles.recentList}>{activity.slice(0, 4).map((item) => { const Icon = iconByKind[item.kind] || Gamepad2; return <Link className={styles.recentItem} href={item.href} key={item.href}><Icon size={20} aria-hidden="true" /><span><strong>{item.title}</strong><small>{item.label}</small></span></Link>; })}</div>}
+        {isLoaded && history.length > 0 ? (
+          <ContinueShelf
+            type="all"
+            title={lang === "en" ? "Continue from where you left off" : "Lanjutkan yang terakhir kamu buka"}
+            seeAllHref="/learning-journeys"
+          />
+        ) : (
+          <>
+            <div className={styles.sectionHeading}>
+              <div><p className={styles.kicker}>{lang === "en" ? "Your activity" : "Aktivitasmu"}</p><h2 id="activity-title">{lang === "en" ? "Continue from where you left off" : "Lanjutkan yang terakhir kamu buka"}</h2></div>
+              <Link href="/learning-journeys" className={styles.textLink}>{lang === "en" ? "See learning paths" : "Lihat jalur belajar"}</Link>
+            </div>
+            <div className={styles.empty}>
+              <CirclePlay size={26} aria-hidden="true" />
+              <p>{lang === "en" ? "Your recent books, videos, and games will appear here after you open one." : "Buku, video, dan game yang kamu buka akan muncul di sini."}</p>
+            </div>
+          </>
+        )}
       </section>
 
       <section className={styles.recommendSection} aria-labelledby="recommend-title">

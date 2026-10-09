@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Gamepad2, Brain, Globe, Sparkles, Trophy } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
+import { addHistory } from "@/lib/activity-history";
+import ContinueShelf from "@/components/ContinueShelf";
 import styles from "./page.module.css";
 
 import { TOY_THEATER_CATALOG } from "@/lib/toytheater-games";
@@ -75,15 +77,36 @@ const gamesLainnya = [
 const toyTheaterGames = TOY_THEATER_CATALOG;
 
 function CompactGameCard({ game, language }) {
+  const [imgError, setImgError] = useState(false);
   const title = typeof game.title === "object" ? (game.title[language] || game.title.id) : game.title;
   const isExternal = game.isExternal || false;
+
+  const handleRecord = () => {
+    addHistory({
+      id: `game-${game.href}`,
+      type: "game",
+      title,
+      href: game.href,
+      image: game.image || "",
+      emoji: game.emoji || "🎮",
+      color: game.color || "primary",
+      label: "Game",
+    });
+  };
 
   const cardContent = (
     <div className={styles.gameCard}>
       <div className={styles.gameThumbWrapper} style={{ "--game-accent": `var(--color-${game.color || 'primary'})` }}>
-        {game.image ? (
+        {game.image && !imgError ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={game.image} alt={title} className={styles.gameThumbImg} loading="lazy" />
+          <img
+            src={game.image}
+            alt={title}
+            className={styles.gameThumbImg}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={() => setImgError(true)}
+          />
         ) : (
           <span className={styles.gameThumbEmoji}>{game.emoji || "🎮"}</span>
         )}
@@ -96,14 +119,20 @@ function CompactGameCard({ game, language }) {
 
   if (isExternal) {
     return (
-      <a href={game.href} target="_blank" rel="noopener noreferrer" className={styles.gameCardLink}>
+      <a
+        href={game.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.gameCardLink}
+        onClick={handleRecord}
+      >
         {cardContent}
       </a>
     );
   }
 
   return (
-    <Link href={game.href} className={styles.gameCardLink}>
+    <Link href={game.href} className={styles.gameCardLink} onClick={handleRecord}>
       {cardContent}
     </Link>
   );
@@ -139,6 +168,9 @@ export default function GamesClient({ zones = [] }) {
           </div>
         </div>
       </div>
+
+      {/* Continue Playing History Shelf */}
+      <ContinueShelf type="game" seeAllHref="#sena-games" />
 
       {/* Sticky Category Navigation */}
       <nav className={styles.stickyCategoryNav} aria-label="Game categories">
