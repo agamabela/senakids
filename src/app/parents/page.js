@@ -1,4 +1,5 @@
 import ParentsClient from "./ParentsClient";
+import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
   title: "Panduan & Pengaturan Orang Tua",
@@ -12,6 +13,7 @@ export const metadata = {
     description:
       "Informasi privasi anak, timer pembatas waktu layar, kontrol suara, dan panduan keamanan digital untuk orang tua.",
     url: "https://senakids.web.id/parents",
+    images: [socialImage],
     type: "website",
   },
 };

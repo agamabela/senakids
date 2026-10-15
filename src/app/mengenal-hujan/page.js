@@ -1,4 +1,5 @@
 import MengenalHujanClient from "./MengenalHujanClient";
+import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
   title: "Mengenal Hujan - Proses Terjadinya Hujan",
@@ -12,6 +13,7 @@ export const metadata = {
     description:
       "Penjelasan sains ramah anak mengenai tahap-tahap terjadinya hujan: penguapan, kondensasi, awan, dan presipitasi.",
     url: "https://senakids.web.id/mengenal-hujan",
+    images: [socialImage],
     type: "article",
   },
 };

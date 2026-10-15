@@ -1,4 +1,5 @@
 import BukuCeritaClient from "./BukuCeritaClient";
+import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
   title: "Koleksi Cerita Bergambar Let's Read",
@@ -12,6 +13,7 @@ export const metadata = {
     description:
       "Baca cerita bergambar anak Let's Read Asia berlisensi Creative Commons CC BY 4.0 secara gratis dan interaktif.",
     url: "https://senakids.web.id/buku-cerita",
+    images: [socialImage],
     type: "website",
   },
 };

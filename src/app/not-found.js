@@ -44,7 +44,7 @@ export default function NotFound() {
         marginBottom: "24px",
       }}>
         <Link
-          href="/home"
+          href="/"
           style={{
             display: "flex",
             flexDirection: "column",

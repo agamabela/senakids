@@ -24,7 +24,7 @@ function LoginForm() {
     setIsLoading(true);
 
     try {
-      const callbackUrl = searchParams.get("callbackUrl") || "/home";
+      const callbackUrl = searchParams.get("callbackUrl") || "/";
       const result = await signIn("credentials", {
         email: email.trim().toLowerCase(),
         password,

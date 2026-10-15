@@ -17,7 +17,8 @@ test("GET /sitemap.xml returns HTTP 200 with public routes and no private routes
   const res = await fetch(`${BASE_URL}/sitemap.xml`);
   assert.equal(res.status, 200);
   const xml = await res.text();
-  assert.match(xml, /<loc>.*\/home<\/loc>/);
+  assert.match(xml, /<loc>https:\/\/senakids\.web\.id\/<\/loc>/);
+  assert.match(xml, /<loc>.*\/blog<\/loc>/);
   assert.match(xml, /<loc>.*\/books<\/loc>/);
   assert.match(xml, /<loc>.*\/tv<\/loc>/);
   assert.match(xml, /<loc>.*\/games<\/loc>/);
@@ -26,10 +27,10 @@ test("GET /sitemap.xml returns HTTP 200 with public routes and no private routes
   assert.doesNotMatch(xml, /<loc>.*\/api/);
 });
 
-test("GET / returns 308 Permanent Redirect to /home", async () => {
-  const res = await fetch(`${BASE_URL}/`, { redirect: "manual" });
+test("GET /home returns a 308 Permanent Redirect to the canonical root URL", async () => {
+  const res = await fetch(`${BASE_URL}/home`, { redirect: "manual" });
   assert.equal(res.status, 308);
-  assert.equal(res.headers.get("location"), "/home");
+  assert.equal(res.headers.get("location"), "/");
 });
 
 test("GET /non-existent-page returns 404 Not Found", async () => {
@@ -38,7 +39,7 @@ test("GET /non-existent-page returns 404 Not Found", async () => {
 });
 
 test("Security headers are enforced on public routes", async () => {
-  const res = await fetch(`${BASE_URL}/home`);
+  const res = await fetch(`${BASE_URL}/`);
   assert.equal(res.status, 200);
   const csp = res.headers.get("content-security-policy");
   assert.ok(csp, "CSP header missing");

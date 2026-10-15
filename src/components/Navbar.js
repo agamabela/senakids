@@ -27,7 +27,7 @@ import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./Navbar.module.css";
 
 const navLinks = [
-  { key: "nav.home", href: "/home", icon: Home, category: "home" },
+  { key: "nav.home", href: "/", icon: Home, category: "home" },
   { key: "nav.books", href: "/books", icon: Book, category: "books" },
   { key: "nav.stories", href: "/buku-cerita", icon: BookOpen, category: "stories" },
   { key: "nav.tv", href: "/tv", icon: Tv, category: "tv" },
@@ -61,7 +61,7 @@ export default function Navbar() {
   };
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/home" });
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -70,7 +70,7 @@ export default function Navbar() {
         <div className={styles.container}>
           {/* Left Section: Logo */}
           <div className={styles.leftSection}>
-            <Link href="/home" className={styles.logoLink} aria-label="Sena Kids Home">
+            <Link href="/" className={styles.logoLink} aria-label="Sena Kids Home">
               <div className={styles.logoBox}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/sena-logo.svg" alt="Sena Kids" width={36} height={36} />
@@ -98,7 +98,7 @@ export default function Navbar() {
               {navLinks.map((link) => {
                 const isActive =
                   pathname === link.href ||
-                  (link.href !== "/home" && pathname.startsWith(`${link.href}/`));
+                  (link.href !== "/" && pathname.startsWith(`${link.href}/`));
                 const Icon = link.icon;
                 return (
                   <Link

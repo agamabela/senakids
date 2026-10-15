@@ -193,9 +193,9 @@ test("Contact API validates inputs, enforces honeypot, and persists safely witho
   }
 });
 
-test("Canonical URLs are self-referencing and never inherit /home globally", async () => {
+test("Canonical URLs are self-referencing and use the root homepage globally", async () => {
   const routesToCheck = [
-    { path: "/home", expected: "https://senakids.web.id/home" },
+    { path: "/", expected: "https://senakids.web.id/" },
     { path: "/books", expected: "https://senakids.web.id/books" },
     { path: "/buku-cerita", expected: "https://senakids.web.id/buku-cerita" },
     { path: "/tv", expected: "https://senakids.web.id/tv" },
@@ -228,7 +228,7 @@ test("Canonical URLs are self-referencing and never inherit /home globally", asy
 });
 
 test("Page titles avoid duplicated branding template", async () => {
-  const pages = ["/home", "/books", "/tv", "/games", "/privacy", "/terms", "/contact"];
+  const pages = ["/", "/books", "/tv", "/games", "/privacy", "/terms", "/contact"];
   for (const page of pages) {
     const res = await fetch(`${BASE_URL}${page}`);
     assert.equal(res.status, 200);
@@ -249,7 +249,7 @@ test("Page titles avoid duplicated branding template", async () => {
 
 test("Every public route has exactly one H1 tag", async () => {
   const routes = [
-    "/home",
+    "/",
     "/books",
     "/buku-cerita",
     "/tv",
@@ -299,6 +299,7 @@ test("Sitemap.xml contains public site URLs with stable lastModified", async () 
   const xml = await res.text();
 
   assert.ok(!xml.includes("localhost"), "Sitemap must not contain localhost URLs");
-  assert.ok(xml.includes("https://senakids.web.id/home"), "Sitemap must contain public home URL");
+  assert.ok(xml.includes("https://senakids.web.id/</loc>"), "Sitemap must contain the canonical root URL");
+  assert.ok(xml.includes("https://senakids.web.id/blog"), "Sitemap must contain the public blog URL");
   assert.ok(xml.includes("<lastmod>2026-10-01"), "Sitemap must contain stable release date");
 });

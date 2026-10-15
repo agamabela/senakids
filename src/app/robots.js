@@ -9,7 +9,7 @@ export default function robots() {
         userAgent: "*",
         allow: [
           "/",
-          "/home",
+          "/blog",
           "/books",
           "/books/stories/*",
           "/buku-cerita",

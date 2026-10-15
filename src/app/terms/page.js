@@ -1,4 +1,5 @@
 import TermsClient from "./TermsClient";
+import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
   title: "Syarat & Ketentuan Penggunaan",
@@ -12,6 +13,7 @@ export const metadata = {
     description:
       "Ketentuan penggunaan platform Sena Kids untuk anak, orang tua, guru, dan institusi pendidikan ramah anak.",
     url: "https://senakids.web.id/terms",
+    images: [socialImage],
     type: "website",
   },
 };

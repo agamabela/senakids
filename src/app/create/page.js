@@ -1,4 +1,5 @@
 import CreateClient from "./CreateClient";
+import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
   title: "Studio Kreasi & Kanvas Menggambar Anak",
@@ -12,6 +13,7 @@ export const metadata = {
     description:
       "Kanvas menggambar digital interaktif untuk anak mengekspresikan imajinasi dan kreativitas dengan berbagai warna dan kuas.",
     url: "https://senakids.web.id/create",
+    images: [socialImage],
     type: "website",
   },
 };

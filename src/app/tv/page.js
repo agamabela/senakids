@@ -1,5 +1,6 @@
 import { getVideos } from "@/app/admin/actions";
 import { getAllTvVideos } from "@/lib/tv-videos-api";
+import { socialImage } from "@/lib/seo-metadata";
 import TvClient from "./TvClient";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +17,7 @@ export const metadata = {
     description:
       "Tonton video edukasi, lagu anak, dongeng, dan animasi pilihan ramah anak dengan pemutar tanpa iklan perilaku.",
     url: "https://senakids.web.id/tv",
+    images: [socialImage],
     type: "website",
   },
 };

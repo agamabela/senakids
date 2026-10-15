@@ -21,7 +21,7 @@ import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./MenuModal.module.css";
 
 const primaryMenuItems = [
-  { nameKey: "menuModal.home", href: "/home", icon: Home },
+  { nameKey: "menuModal.home", href: "/", icon: Home },
   { nameKey: "menuModal.books", href: "/books", icon: Book },
   { nameKey: "menuModal.stories", href: "/buku-cerita", icon: BookOpen },
   { nameKey: "menuModal.tv", href: "/tv", icon: Tv },
@@ -33,6 +33,7 @@ const primaryMenuItems = [
 
 const parentMenuItems = [
   { nameKey: "menuModal.parents", href: "/parents", icon: Shield },
+  { nameKey: "menuModal.parents", label: { id: "Panduan keluarga", en: "Family guides" }, href: "/blog", icon: BookOpen },
   { nameKey: "menuModal.privacy", href: "/privacy", icon: Shield },
   { nameKey: "menuModal.terms", href: "/terms", icon: FileText },
   { nameKey: "menuModal.contact", href: "/contact", icon: MessageSquare },
@@ -134,7 +135,7 @@ export default function MenuModal({ isOpen, onClose }) {
               return (
                 <Link
                   href={item.href}
-                  key={item.nameKey}
+                  key={item.href}
                   onClick={onClose}
                   className={styles.menuItem}
                 >
@@ -157,12 +158,14 @@ export default function MenuModal({ isOpen, onClose }) {
               return (
                 <Link
                   href={item.href}
-                  key={item.nameKey}
+                  key={item.href}
                   onClick={onClose}
                   className={styles.menuItem}
                 >
                   <Icon className={styles.icon} size={18} />
-                  <span className={styles.itemName}>{t(item.nameKey)}</span>
+                  <span className={styles.itemName}>
+                    {item.label ? (lang === "en" ? item.label.en : item.label.id) : t(item.nameKey)}
+                  </span>
                   <ChevronRight className={styles.arrow} size={16} aria-hidden="true" />
                 </Link>
               );

@@ -24,8 +24,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/",
-        destination: "/home",
+        source: "/home",
+        destination: "/",
         permanent: true, // 308 Permanent Redirect for canonical homepage
       },
     ];

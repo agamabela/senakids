@@ -1,4 +1,5 @@
 import { getChannelsList } from "@/lib/channels-api";
+import { socialImage } from "@/lib/seo-metadata";
 import ChannelsClient from "./ChannelsClient";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export const metadata = {
     description:
       "Atur dan pilih channel YouTube ramah anak yang boleh ditonton di Sena TV.",
     url: "https://senakids.web.id/channels",
+    images: [socialImage],
     type: "website",
   },
 };

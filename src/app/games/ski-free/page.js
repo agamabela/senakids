@@ -1,4 +1,5 @@
 import SkiPagiGameClient from "../built/SkiPagiGameClient";
+import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
   title: "Ski Free · Petualangan Lereng Gunung Salju",
@@ -12,6 +13,7 @@ export const metadata = {
     description:
       "Meluncur di lereng bersalju, hindari pepohonan dan bebatuan, lewati gerbang slalom, dan kumpulkan koin di lereng gunung.",
     url: "https://senakids.web.id/games/ski-free",
+    images: [socialImage],
     type: "website",
   },
 };

@@ -51,6 +51,7 @@ export default function Footer() {
             <h3 className={styles.colTitle}>{tx("Untuk orang tua", "For grown-ups")}</h3>
             <ul className={styles.linkList}>
               <li><Link href="/parents">{t("footer.parents")}</Link></li>
+              <li><Link href="/blog">{tx("Panduan keluarga", "Family guides")}</Link></li>
               <li><Link href="/parents#timer">{t("footer.parentControls")}</Link></li>
               <li><Link href="/contact?category=data">{t("footer.deletionRequest")}</Link></li>
               <li><Link href="/contact?category=broken">{t("footer.reportContent")}</Link></li>

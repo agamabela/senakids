@@ -11,7 +11,7 @@ export default function TermsPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/home" className={styles.backBtn} aria-label={t("common.back")}>
+        <Link href="/" className={styles.backBtn} aria-label={t("common.back")}>
           <ArrowLeft size={20} />
         </Link>
         <div>

@@ -1,4 +1,5 @@
 import { getGames } from "@/app/admin/actions";
+import { socialImage } from "@/lib/seo-metadata";
 import GamesClient from "./GamesClient";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export const metadata = {
     description:
       "Koleksi permainan logika, matematika, memori, musik, dan teka-teki edukatif yang aman dan menyenangkan untuk anak-anak.",
     url: "https://senakids.web.id/games",
+    images: [socialImage],
     type: "website",
   },
 };

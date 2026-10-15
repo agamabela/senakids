@@ -1,4 +1,5 @@
 import { LETS_READ_STORIES } from "@/lib/content-registry";
+import { BLOG_POSTS } from "@/lib/blog-posts.mjs";
 
 // Stable truthful modification date for release snapshot
 const RELEASE_DATE = new Date("2026-10-01T00:00:00.000Z");
@@ -8,7 +9,7 @@ export default function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://senakids.web.id";
 
   const staticRoutes = [
-    { url: `${baseUrl}/home`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 1.0 },
+    { url: `${baseUrl}/`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 1.0 },
     { url: `${baseUrl}/books`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
     { url: `${baseUrl}/buku-cerita`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/tv`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
@@ -25,7 +26,15 @@ export default function sitemap() {
     { url: `${baseUrl}/terms`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/parents`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/contact`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/blog`, lastModified: new Date(BLOG_POSTS[0].datePublished), changeFrequency: "weekly", priority: 0.8 },
   ];
+
+  const blogRoutes = BLOG_POSTS.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.datePublished),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
 
   const storyRoutes = LETS_READ_STORIES.map((story) => ({
     url: `${baseUrl}/books/stories/${story.slug}`,
@@ -91,5 +100,5 @@ export default function sitemap() {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...storyRoutes, ...gameRoutes];
+  return [...staticRoutes, ...blogRoutes, ...storyRoutes, ...gameRoutes];
 }

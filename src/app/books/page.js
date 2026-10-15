@@ -1,6 +1,7 @@
 import { getBooks } from "@/app/admin/actions";
 import { LETS_READ_STORIES, INTERACTIVE_LEARNING_BOOKS } from "@/lib/content-registry";
 import { getLetsReadBooks } from "@/lib/letsread-api";
+import { socialImage } from "@/lib/seo-metadata";
 import workbooksData from "@/data/workbooks.json";
 import BooksClient from "./BooksClient";
 
@@ -17,6 +18,7 @@ export const metadata = {
     title: "Perpustakaan Buku Anak - Cerita & Belajar",
     description: "Baca buku cerita bergambar dan belajar interaktif anak gratis dan ramah keluarga.",
     url: "https://senakids.web.id/books",
+    images: [socialImage],
   },
 };
 
