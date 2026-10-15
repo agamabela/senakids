@@ -243,8 +243,7 @@ export default function BooksClient({
       {/* Featured Book Hero */}
       <motion.section
         className={styles.heroSection}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={false}
       >
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>
@@ -398,6 +397,7 @@ export default function BooksClient({
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.portalCard}
+                aria-label={`${p.title}: ${tx("Buka situs lain", "Opens an external site")}`}
               >
                 <div className={styles.portalThumbBox}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -415,8 +415,8 @@ export default function BooksClient({
                   <div className={styles.portalSubtitle}>{p.subtitle}</div>
                   <p className={styles.portalDesc}>{p.description}</p>
                   <div className={styles.portalActionRow}>
-                    <span>{tx("Buka Perpustakaan", "Open Library")}</span>
-                    <ExternalLink size={14} />
+                    <span>{tx("Buka situs lain", "Opens an external site")}</span>
+                    <ExternalLink size={14} aria-hidden="true" />
                   </div>
                 </div>
               </a>

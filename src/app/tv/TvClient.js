@@ -156,6 +156,7 @@ export default function TvClient({ videos = [] }) {
   const [selectedDuration, setSelectedDuration] = useState("all");
   const [visibleCount, setVisibleCount] = useState(18); // Render 18 cards initially
   const [blacklistMap, setBlacklistMap] = useState({});
+  const [showAllChannels, setShowAllChannels] = useState(false);
   const stageRef = useRef(null);
 
   // Load blacklist from localStorage & listen for changes
@@ -300,6 +301,8 @@ export default function TvClient({ videos = [] }) {
     return filteredVideos.slice(0, visibleCount);
   }, [filteredVideos, visibleCount]);
 
+  const visibleChannels = showAllChannels ? channelsList : channelsList.slice(0, 9);
+
   const activeYouTubeId = getYouTubeId(active?.url);
   const activeKey = active?.url || active?.id;
 
@@ -366,7 +369,7 @@ export default function TvClient({ videos = [] }) {
             </Link>
           </div>
           <div className={styles.channelList}>
-            {channelsList.map((ch) => {
+            {visibleChannels.map((ch) => {
               const isSelected = selectedChannel === ch.id;
               return (
                 <button
@@ -385,6 +388,18 @@ export default function TvClient({ videos = [] }) {
               );
             })}
           </div>
+          {channelsList.length > 9 && (
+            <button
+              type="button"
+              className={styles.showAllChannelsBtn}
+              onClick={() => setShowAllChannels((current) => !current)}
+              aria-expanded={showAllChannels}
+            >
+              {showAllChannels
+                ? tx("Tampilkan channel pilihan", "Show featured channels")
+                : tx("Tampilkan semua channel", "Show all channels")}
+            </button>
+          )}
         </aside>
 
         {/* Right Main Content */}

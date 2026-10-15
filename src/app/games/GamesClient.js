@@ -143,6 +143,9 @@ function CompactGameCard({ game, language }) {
 export default function GamesClient({ zones = [] }) {
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState("sena-games");
+  const [showAllSenaGames, setShowAllSenaGames] = useState(false);
+  const [showAllExercises, setShowAllExercises] = useState(false);
+  const [showAllToyTheater, setShowAllToyTheater] = useState(false);
 
   const tx = (id, en) => (language === "id" ? id : en);
 
@@ -207,10 +210,22 @@ export default function GamesClient({ zones = [] }) {
         </div>
 
         <div className={styles.squareGrid}>
-          {senaKidsGames.map((game) => (
+          {(showAllSenaGames ? senaKidsGames : senaKidsGames.slice(0, 12)).map((game) => (
             <CompactGameCard key={game.href} game={game} language={language} />
           ))}
         </div>
+        {senaKidsGames.length > 12 && (
+          <button
+            type="button"
+            className={styles.showMoreBtn}
+            onClick={() => setShowAllSenaGames((current) => !current)}
+            aria-expanded={showAllSenaGames}
+          >
+            {showAllSenaGames
+              ? tx("Tampilkan lebih sedikit", "Show fewer games")
+              : tx("Lihat lebih banyak permainan", "See more games")}
+          </button>
+        )}
       </section>
 
       {/* Section 2: Sena Kids Exercises */}
@@ -228,10 +243,22 @@ export default function GamesClient({ zones = [] }) {
         </div>
 
         <div className={styles.squareGrid}>
-          {senaKidsExercises.map((game) => (
+          {(showAllExercises ? senaKidsExercises : senaKidsExercises.slice(0, 12)).map((game) => (
             <CompactGameCard key={game.href} game={game} language={language} />
           ))}
         </div>
+        {senaKidsExercises.length > 12 && (
+          <button
+            type="button"
+            className={styles.showMoreBtn}
+            onClick={() => setShowAllExercises((current) => !current)}
+            aria-expanded={showAllExercises}
+          >
+            {showAllExercises
+              ? tx("Tampilkan lebih sedikit", "Show fewer exercises")
+              : tx("Lihat lebih banyak latihan", "See more exercises")}
+          </button>
+        )}
       </section>
 
       {/* Section 3: Games Lainnya */}
@@ -270,10 +297,22 @@ export default function GamesClient({ zones = [] }) {
         </div>
 
         <div className={styles.squareGrid}>
-          {toyTheaterGames.map((game) => (
+          {(showAllToyTheater ? toyTheaterGames : toyTheaterGames.slice(0, 12)).map((game) => (
             <CompactGameCard key={game.href} game={game} language={language} />
           ))}
         </div>
+        {toyTheaterGames.length > 12 && (
+          <button
+            type="button"
+            className={styles.showMoreBtn}
+            onClick={() => setShowAllToyTheater((current) => !current)}
+            aria-expanded={showAllToyTheater}
+          >
+            {showAllToyTheater
+              ? tx("Tampilkan lebih sedikit", "Show fewer games")
+              : tx("Lihat lebih banyak permainan", "See more games")}
+          </button>
+        )}
       </section>
 
       {/* Custom Database Zones (if any created in Admin) */}

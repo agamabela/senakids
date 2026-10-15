@@ -122,6 +122,29 @@
   gap: 4px;
 }
 
+.showAllChannelsBtn {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-text-heading);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.showAllChannelsBtn:hover {
+  border-style: solid;
+  border-color: var(--color-primary);
+}
+
+.showAllChannelsBtn:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
 .channelBtn {
   display: flex;
   align-items: center;

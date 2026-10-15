@@ -61,7 +61,7 @@
   gap: 8px;
   text-decoration: none;
   background-color: var(--color-amber);
-  color: white;
+  color: var(--color-amber-text);
   border: none;
   height: 44px;
   padding: 0 var(--space-xl);
