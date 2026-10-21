@@ -1,253 +1,136 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/components/LanguageProvider';
+import { commitDrawing, undoDrawing, redoDrawing } from '@/lib/drawing-history.mjs';
 import styles from './DrawingCanvas.module.css';
 
-/* ──────────────────────────────────────────────
-   Preset palette — 8 bright, kid-friendly colors
-   ────────────────────────────────────────────── */
 const COLORS = [
-  { key: 'red',    name: { id: 'Merah', en: 'Red' },       hex: '#EF4444' },
-  { key: 'orange', name: { id: 'Oranye', en: 'Orange' },   hex: '#F97316' },
-  { key: 'yellow', name: { id: 'Kuning', en: 'Yellow' },   hex: '#F59E0B' },
-  { key: 'green',  name: { id: 'Hijau', en: 'Green' },     hex: '#10B981' },
-  { key: 'blue',   name: { id: 'Biru', en: 'Blue' },       hex: '#3B82F6' },
-  { key: 'purple', name: { id: 'Ungu', en: 'Purple' },     hex: '#8B5CF6' },
-  { key: 'pink',   name: { id: 'Merah Muda', en: 'Pink' }, hex: '#EC4899' },
-  { key: 'black',  name: { id: 'Hitam', en: 'Black' },     hex: '#1E1B4B' },
+  ['Merah', 'Red', '#EF4444'], ['Oranye', 'Orange', '#F97316'],
+  ['Kuning', 'Yellow', '#F59E0B'], ['Hijau', 'Green', '#10B981'],
+  ['Biru', 'Blue', '#3B82F6'], ['Ungu', 'Purple', '#8B5CF6'],
+  ['Merah Muda', 'Pink', '#EC4899'], ['Hitam', 'Black', '#1E1B4B'],
 ];
+const TOOLS = [['brush', 'Kuas', 'Brush'], ['eraser', 'Penghapus', 'Eraser'],
+  ['★', 'Stempel bintang', 'Star stamp'], ['●', 'Stempel lingkaran', 'Circle stamp'], ['♥', 'Stempel hati', 'Heart stamp']];
 
-/* Three brush sizes — value is the lineWidth in px */
-const SIZES = [
-  { key: 'small',  label: { id: 'Kecil', en: 'Small' },   value: 4  },
-  { key: 'medium', label: { id: 'Sedang', en: 'Medium' }, value: 8  },
-  { key: 'large',  label: { id: 'Besar', en: 'Large' },   value: 16 },
-];
-
-/* Background / eraser colour must match the canvas fill */
-const CANVAS_BG = '#FFFFFF';
+function paint(ctx, action) {
+  if (action.tool === 'clear') {
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 900, 500); return;
+  }
+  ctx.fillStyle = ctx.strokeStyle = action.tool === 'eraser' ? '#fff' : action.color;
+  const first = action.points[0];
+  if (!['brush', 'eraser'].includes(action.tool)) {
+    ctx.font = `${action.size * 5}px sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(action.tool, first.x, first.y); return;
+  }
+  ctx.lineWidth = action.tool === 'eraser' ? action.size * 2 : action.size;
+  ctx.lineCap = ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.arc(first.x, first.y, ctx.lineWidth / 2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(first.x, first.y);
+  action.points.slice(1).forEach((point) => ctx.lineTo(point.x, point.y)); ctx.stroke();
+}
 
 export default function DrawingCanvas() {
-  const { lang, t } = useLanguage();
-
-  /* ── refs ── */
-  const canvasRef   = useRef(null);
-  const wrapRef     = useRef(null);
-  const ctxRef      = useRef(null);
-  const isDrawing   = useRef(false);
-
-  /* ── state ── */
-  const [activeColor, setActiveColor] = useState(COLORS[0].hex);
-  const [brushSize, setBrushSize]     = useState(SIZES[1].value);
-  const [isEraser, setIsEraser]       = useState(false);
-
-  /* ─────────────────────────────────
-     Initialise / resize canvas
-     ───────────────────────────────── */
-  const setupCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    const wrap   = wrapRef.current;
-    if (!canvas || !wrap) return;
-
-    /* Match the internal pixel buffer to the displayed size */
-    const rect = wrap.getBoundingClientRect();
-    const dpr  = window.devicePixelRatio || 1;
-
-    canvas.width  = rect.width * dpr;
-    canvas.height = canvas.offsetHeight * dpr;
-
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    ctx.lineCap   = 'round';
-    ctx.lineJoin  = 'round';
-    ctx.fillStyle = CANVAS_BG;
-    ctx.fillRect(0, 0, rect.width, canvas.offsetHeight);
-
-    ctxRef.current = ctx;
-  }, []);
+  const { tx } = useLanguage();
+  const canvasRef = useRef(null);
+  const strokeRef = useRef(null);
+  const [history, setHistory] = useState({ actions: [], future: [] });
+  const [draft, setDraft] = useState(null);
+  const [color, setColor] = useState(COLORS[0][2]);
+  const [size, setSize] = useState(8);
+  const [tool, setTool] = useState('brush');
+  const [cursor, setCursor] = useState({ x: 450, y: 250 });
+  const [focused, setFocused] = useState(false);
+  const [message, setMessage] = useState('');
+  const [exportUrl, setExportUrl] = useState('');
 
   useEffect(() => {
-    setupCanvas();
-
-    /* Re-setup on window resize so the canvas stays sharp */
-    const handleResize = () => setupCanvas();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [setupCanvas]);
-
-  /* ─────────────────────────────────
-     Drawing helpers
-     ───────────────────────────────── */
-  const getPos = (e) => {
-    const canvas = canvasRef.current;
-    const rect   = canvas.getBoundingClientRect();
-
-    const source = e.touches ? e.touches[0] : e;
-    return {
-      x: source.clientX - rect.left,
-      y: source.clientY - rect.top,
-    };
-  };
-
-  const startDrawing = (e) => {
-    e.preventDefault();
-    const ctx = ctxRef.current;
+    const ctx = canvasRef.current?.getContext('2d');
     if (!ctx) return;
+    paint(ctx, { tool: 'clear' });
+    history.actions.forEach((action) => paint(ctx, action));
+    if (draft) paint(ctx, draft);
+    if (focused) {
+      ctx.strokeStyle = '#111'; ctx.lineWidth = 2;
+      ctx.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
+    }
+  }, [history, draft, focused, cursor]);
 
-    isDrawing.current = true;
-    const { x, y } = getPos(e);
-
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.strokeStyle = isEraser ? CANVAS_BG : activeColor;
-    ctx.lineWidth   = isEraser ? brushSize * 2 : brushSize;
+  const pointAt = (event) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    return { x: (event.clientX - rect.left) * 900 / rect.width, y: (event.clientY - rect.top) * 500 / rect.height };
   };
-
-  const draw = (e) => {
-    if (!isDrawing.current) return;
-    e.preventDefault();
-    const ctx = ctxRef.current;
-    if (!ctx) return;
-
-    const { x, y } = getPos(e);
-    ctx.lineTo(x, y);
-    ctx.stroke();
+  const start = (event) => {
+    if (event.button !== 0) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setFocused(false);
+    strokeRef.current = { tool, color, size, points: [pointAt(event)] };
+    setDraft(strokeRef.current);
   };
-
-  const stopDrawing = () => {
-    if (!isDrawing.current) return;
-    const ctx = ctxRef.current;
-    if (ctx) ctx.closePath();
-    isDrawing.current = false;
+  const move = (event) => {
+    if (!strokeRef.current || !['brush', 'eraser'].includes(strokeRef.current.tool)) return;
+    strokeRef.current = { ...strokeRef.current, points: [...strokeRef.current.points, pointAt(event)] };
+    setDraft(strokeRef.current);
   };
-
-  /* ─────────────────────────────────
-     Toolbar actions
-     ───────────────────────────────── */
-  const handleColorPick = (hex) => {
-    setIsEraser(false);
-    setActiveColor(hex);
+  const finish = () => {
+    if (!strokeRef.current) return;
+    const action = strokeRef.current;
+    setHistory((current) => commitDrawing(current, action));
+    strokeRef.current = null; setDraft(null);
   };
-
-  const handleSizePick = (val) => {
-    setBrushSize(val);
-  };
-
-  const toggleEraser = () => {
-    setIsEraser((prev) => !prev);
-  };
-
-  const clearCanvas = () => {
-    const canvas = canvasRef.current;
-    const ctx    = ctxRef.current;
-    if (!canvas || !ctx) return;
-
-    const confirmMsg = t("create.clearConfirm") || (lang === 'en' ? 'Clear the canvas?' : 'Hapus seluruh gambar?');
-    if (window.confirm(confirmMsg)) {
-      ctx.fillStyle = CANVAS_BG;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const keyboard = (event) => {
+    const shifts = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] };
+    if (shifts[event.key]) {
+      event.preventDefault(); const [x, y] = shifts[event.key];
+      setCursor((p) => ({ x: Math.max(10, Math.min(890, p.x + x)), y: Math.max(10, Math.min(490, p.y + y)) }));
+    } else if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault();
+      setHistory((current) => commitDrawing(current, { tool, color, size, points: [cursor] }));
     }
   };
+  const save = () => {
+    const image = document.createElement('canvas'); image.width = 900; image.height = 500;
+    const ctx = image.getContext('2d'); paint(ctx, { tool: 'clear' });
+    history.actions.forEach((action) => paint(ctx, action));
+    setExportUrl(image.toDataURL('image/png'));
+    setMessage(tx('Gambar PNG siap diunduh. Simpan sebelum meninggalkan halaman.', 'Your PNG is ready to download. Save before leaving this page.'));
+  };
 
-  /* ─────────────────────────────────
-     Render
-     ───────────────────────────────── */
   return (
     <div className={styles.wrapper}>
-      {/* Title */}
-      <h2 className={styles.heading}>🎨 {t("create.canvasHeading") || (lang === 'en' ? "Let's Draw!" : "Ayo Menggambar!")}</h2>
-
-      {/* ── Toolbar ── */}
-      <div className={styles.toolbar} role="toolbar" aria-label={lang === 'en' ? "Drawing tools" : "Alat menggambar"}>
-        {/* Color picker */}
-        <div className={styles.colorGroup} role="radiogroup" aria-label={t("create.brushColor") || (lang === 'en' ? "Brush color" : "Warna kuas")}>
-          {COLORS.map((c) => {
-            const colorLabel = c.name[lang] || c.name.id;
-            return (
-              <button
-                key={c.hex}
-                aria-label={colorLabel}
-                title={colorLabel}
-                aria-pressed={activeColor === c.hex && !isEraser}
-                className={`${styles.colorBtn} ${
-                  activeColor === c.hex && !isEraser ? styles.colorBtnSelected : ''
-                }`}
-                style={{ backgroundColor: c.hex }}
-                onClick={() => handleColorPick(c.hex)}
-              />
-            );
-          })}
+      <div className={styles.toolbar} role="group" aria-label={tx('Alat menggambar', 'Drawing tools')}>
+        <div className={styles.colorGroup} role="group" aria-label={tx('Warna kuas', 'Brush color')}>
+          {COLORS.map(([id, en, hex]) => <button key={hex} type="button" aria-label={tx(id, en)} title={tx(id, en)}
+            aria-pressed={color === hex} className={`${styles.colorBtn} ${color === hex ? styles.colorBtnSelected : ''}`}
+            style={{ backgroundColor: hex }} onClick={() => setColor(hex)} />)}
         </div>
-
-        <span className={styles.divider} aria-hidden="true" />
-
-        {/* Brush size */}
-        <div className={styles.sizeGroup} role="radiogroup" aria-label={t("create.brushSize") || (lang === 'en' ? "Brush size" : "Ukuran kuas")}>
-          {SIZES.map((s) => {
-            const sizeLabel = s.label[lang] || s.label.id;
-            return (
-              <button
-                key={s.value}
-                aria-label={`${sizeLabel} (${s.value}px)`}
-                title={sizeLabel}
-                aria-pressed={brushSize === s.value}
-                className={`${styles.sizeBtn} ${
-                  brushSize === s.value ? styles.sizeBtnSelected : ''
-                }`}
-                onClick={() => handleSizePick(s.value)}
-              >
-                <span
-                  className={styles.sizeDot}
-                  style={{ width: s.value, height: s.value }}
-                />
-              </button>
-            );
-          })}
+        <div className={styles.sizeGroup} role="group" aria-label={tx('Ukuran kuas', 'Brush size')}>
+          {[4, 8, 16].map((value, index) => <button key={value} type="button" aria-label={`${tx(['Kecil', 'Sedang', 'Besar'][index], ['Small', 'Medium', 'Large'][index])} (${value}px)`}
+            aria-pressed={size === value} className={`${styles.sizeBtn} ${size === value ? styles.sizeBtnSelected : ''}`} onClick={() => setSize(value)}>
+            <span className={styles.sizeDot} style={{ width: value, height: value }} /></button>)}
         </div>
-
-        <span className={styles.divider} aria-hidden="true" />
-
-        {/* Eraser & Clear */}
         <div className={styles.actionGroup}>
-          <button
-            aria-label={t("create.eraser") || (lang === 'en' ? "Eraser" : "Penghapus")}
-            title={t("create.eraser") || (lang === 'en' ? "Eraser" : "Penghapus")}
-            aria-pressed={isEraser}
-            className={`${styles.eraserBtn} ${isEraser ? styles.eraserBtnSelected : ''}`}
-            onClick={toggleEraser}
-          >
-            🧹
-          </button>
-
-          <button
-            aria-label={t("create.clearCanvas") || (lang === 'en' ? "Clear canvas" : "Hapus gambar")}
-            title={t("create.clearCanvas") || (lang === 'en' ? "Clear canvas" : "Hapus gambar")}
-            className={styles.clearBtn}
-            onClick={clearCanvas}
-          >
-            🗑️ {lang === 'en' ? "Clear" : "Hapus"}
-          </button>
+          {TOOLS.map(([value, id, en]) => <button key={value} type="button" className={styles.toolBtn} aria-pressed={tool === value}
+            onClick={() => setTool(value)}>{tx(id, en)}</button>)}
+          <button type="button" className={styles.toolBtn} disabled={!history.actions.length} onClick={() => setHistory(undoDrawing)}>{tx('Urungkan', 'Undo')}</button>
+          <button type="button" className={styles.toolBtn} disabled={!history.future.length} onClick={() => setHistory(redoDrawing)}>{tx('Ulangi', 'Redo')}</button>
+          <button type="button" className={styles.toolBtn} disabled={!history.actions.length} onClick={() => setHistory((current) => commitDrawing(current, { tool: 'clear' }))}>{tx('Bersihkan kanvas', 'Clear canvas')}</button>
+          <button type="button" className={styles.toolBtn} onClick={save}>{tx('Simpan gambar', 'Save drawing')}</button>
         </div>
       </div>
-
-      {/* ── Canvas ── */}
-      <div className={styles.canvasWrap} ref={wrapRef}>
-        <canvas
-          ref={canvasRef}
-          className={styles.canvas}
-          /* Mouse events */
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          /* Touch events */
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
-          onTouchCancel={stopDrawing}
-        />
+      <p id="drawing-help" className={styles.help}>{tx('Gambar atau ketuk untuk memberi stempel. Dengan keyboard: panah memindahkan posisi, Spasi atau Enter memberi tanda. Simpan gambar sebelum keluar.', 'Draw or tap to stamp. Keyboard: arrows move the cursor, Space or Enter makes a mark. Save before leaving.')}</p>
+      <div className={styles.canvasWrap}>
+        <canvas ref={canvasRef} width={900} height={500} className={styles.canvas} tabIndex={0}
+          aria-label={tx('Kanvas menggambar', 'Drawing canvas')} aria-describedby="drawing-help"
+          onPointerDown={start} onPointerMove={move} onPointerUp={finish} onPointerCancel={finish}
+          onLostPointerCapture={finish} onKeyDown={keyboard} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}>
+          {tx('Gunakan browser yang mendukung kanvas untuk menggambar.', 'Use a canvas-enabled browser to draw.')}
+        </canvas>
       </div>
+      <p role="status" className={styles.help}>{message}</p>
+      {exportUrl && <a className={styles.toolBtn} href={exportUrl} download="sena-kids-gambarku.png">{tx("Unduh PNG", "Download PNG")}</a>}
     </div>
   );
 }

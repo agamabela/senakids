@@ -257,3 +257,14 @@
     display: none;
   }
 }
+
+/* Flexible tools keep every action reachable on narrow screens. */
+.colorGroup, .actionGroup { flex-wrap: wrap; justify-content: center; }
+.colorBtn, .sizeBtn { width: 44px; height: 44px; }
+.sizeBtn { background: var(--color-surface-muted); }
+.canvas { height: auto; aspect-ratio: 9 / 5; touch-action: none; }
+.toolBtn { min-height: 44px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font: inherit; cursor: pointer; }
+.toolBtn[aria-pressed="true"] { border-color: var(--color-primary); background: var(--color-primary-light); }
+.toolBtn:disabled { opacity: .5; cursor: not-allowed; }
+.help { color: var(--color-text-muted); margin: 12px 0; font-size: .875rem; line-height: 1.5; }
+.wrapper button:focus-visible, .canvas:focus-visible { outline: 3px solid var(--color-focus-ring); outline-offset: 3px; }
