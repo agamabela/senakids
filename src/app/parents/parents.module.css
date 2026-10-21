@@ -253,3 +253,5 @@
   background: #FFE4E6;
   transform: translateY(-1px);
 }
+
+.card { scroll-margin-top: 100px; }

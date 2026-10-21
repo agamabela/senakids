@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { SessionProvider } from "@/components/SessionProvider";
 import AmbientSound from "@/components/AmbientSound";
+import ScreenTimeReminder from "@/components/ScreenTimeReminder";
 import JourneyTracker from "@/components/JourneyTracker";
 import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
@@ -30,14 +31,14 @@ export const metadata = {
     default: "Sena Kids - Platform Belajar & Bermain Ceria Ramah Anak",
     template: "%s | Sena Kids",
   },
-  description: "Platform belajar ramah anak: buku cerita bergambar Let's Read, video edukasi aman, ensiklopedia cilik, dan game logika interaktif tanpa iklan pengganggu.",
+  description: "Platform belajar ramah anak: buku cerita bergambar Let's Read, video edukasi aman, ensiklopedia cilik, dan game logika interaktif untuk dijelajahi bersama keluarga.",
   icons: {
     icon: "/sena-logo.svg",
     apple: "/sena-logo.svg",
   },
   openGraph: {
     title: "Sena Kids - Belajar & Bermain Ramah Anak",
-    description: "Buku cerita bergambar anak, video edukasi aman, dan game logika interaktif tanpa iklan pengganggu.",
+    description: "Buku cerita bergambar anak, video edukasi aman, dan game logika interaktif untuk dijelajahi bersama keluarga.",
     url: siteUrl,
     siteName: "Sena Kids",
     images: [
@@ -81,7 +82,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id" className={`${fredoka.variable} ${nunito.variable}`} suppressHydrationWarning>
+    <html lang="id" data-scroll-behavior="smooth" className={`${fredoka.variable} ${nunito.variable}`} suppressHydrationWarning>
       <body className={`${fredoka.variable} ${nunito.variable}`} suppressHydrationWarning>
         <a href="#main-content" className="skip-to-content">
           Lewati ke konten utama (Skip to main content)
@@ -96,6 +97,7 @@ export default function RootLayout({ children }) {
               </main>
               <Footer />
               <AmbientSound />
+              <ScreenTimeReminder />
             </LanguageProvider>
           </div>
         </SessionProvider>

@@ -33,6 +33,7 @@ export default function ParentsPage() {
     setTimerMinutes(val);
     try {
       localStorage.setItem("senakids_screen_timer", val.toString());
+      window.dispatchEvent(new Event("senakids:timer"));
       setSavedNotification(tx("Pengaturan timer disimpan!", "Timer settings saved!"));
       setTimeout(() => setSavedNotification(""), 3000);
     } catch {}
@@ -43,6 +44,7 @@ export default function ParentsPage() {
     setQuietMode(next);
     try {
       localStorage.setItem("senakids_quiet_mode", next ? "true" : "false");
+      window.dispatchEvent(new Event("senakids:quiet-mode"));
       setSavedNotification(tx("Pengaturan mode tenang disimpan!", "Quiet mode setting saved!"));
       setTimeout(() => setSavedNotification(""), 3000);
     } catch {}
@@ -65,7 +67,7 @@ export default function ParentsPage() {
       </div>
 
       {savedNotification && (
-        <div className={styles.savedBanner}>
+        <div className={styles.savedBanner} role="status">
           <CheckCircle2 size={18} />
           <span>{savedNotification}</span>
         </div>
@@ -73,7 +75,7 @@ export default function ParentsPage() {
 
       <div className={styles.grid}>
         {/* Screen Time Timer */}
-        <section className={styles.card}>
+        <section id="timer" className={styles.card}>
           <div className={styles.cardHead}>
             <div className={styles.iconCircle} style={{ background: "var(--color-primary-light)", color: "var(--color-primary)" }}>
               <Clock size={24} />
@@ -89,6 +91,7 @@ export default function ParentsPage() {
                 key={opt.value}
                 type="button"
                 className={`${styles.timerBtn} ${timerMinutes === opt.value ? styles.timerBtnActive : ""}`}
+                aria-pressed={timerMinutes === opt.value}
                 onClick={() => handleTimerChange(opt.value)}
               >
                 {t(opt.labelKey)}
@@ -97,7 +100,7 @@ export default function ParentsPage() {
           </div>
           {timerMinutes > 0 && (
             <p className={styles.activeHint}>
-              ⏱️ {tx(`Batas waktu harian diatur ke ${timerMinutes} menit.`, `Daily limit configured for ${timerMinutes} minutes.`)}
+              ⏱️ {tx(`Pengingat setelah ${timerMinutes} menit waktu aktif di browser ini hari ini.`, `Reminder after ${timerMinutes} active minutes in this browser today.`)}
             </p>
           )}
         </section>
@@ -117,6 +120,7 @@ export default function ParentsPage() {
             <button
               type="button"
               className={`${styles.toggleBtn} ${quietMode ? styles.toggleActive : ""}`}
+              aria-pressed={quietMode}
               onClick={handleQuietToggle}
             >
               {quietMode ? tx("Mode Tenang Aktif (Musik Hening)", "Quiet Mode Active (Muted)") : tx("Mode Standar (Musik Latar Tersedia)", "Standard Mode (Music Allowed)")}
@@ -160,11 +164,11 @@ export default function ParentsPage() {
             </div>
           </div>
           <div className={styles.controlButtons}>
-            <Link href="/contact" className={styles.reportBtn}>
+            <Link href="/contact?category=broken" className={styles.reportBtn}>
               <AlertTriangle size={18} />
               <span>{t("parents.reportContentBtn")}</span>
             </Link>
-            <Link href="/contact" className={styles.deleteBtn}>
+            <Link href="/contact?category=data" className={styles.deleteBtn}>
               <Trash2 size={18} />
               <span>{t("parents.requestDeletionBtn")}</span>
             </Link>
