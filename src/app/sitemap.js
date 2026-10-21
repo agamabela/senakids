@@ -1,31 +1,32 @@
 import { LETS_READ_STORIES } from "@/lib/content-registry";
 import { BLOG_POSTS } from "@/lib/blog-posts.mjs";
+import { getSiteUrl } from "@/lib/site-url";
 
-// Stable truthful modification date for release snapshot
-const RELEASE_DATE = new Date("2026-10-01T00:00:00.000Z");
 
 export default function sitemap() {
   // Use explicit public site URL - never leak localhost into public sitemaps
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://senakids.web.id";
+  const baseUrl = getSiteUrl();
 
   const staticRoutes = [
-    { url: `${baseUrl}/`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 1.0 },
-    { url: `${baseUrl}/books`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
-    { url: `${baseUrl}/buku-cerita`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/tv`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
-    { url: `${baseUrl}/channels`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/games`, lastModified: RELEASE_DATE, changeFrequency: "daily", priority: 0.9 },
-    { url: `${baseUrl}/games/maze`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/create`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/owly`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/belajar-membaca`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/sejarah-sepeda`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/petualangan-tetes-air`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/mengenal-hujan`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/privacy`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/terms`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/parents`, lastModified: RELEASE_DATE, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/contact`, lastModified: RELEASE_DATE, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/learning-journeys`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/games/ski-free`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/`, changeFrequency: "daily", priority: 1.0 },
+    { url: `${baseUrl}/books`, changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/buku-cerita`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/tv`, changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/channels`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/games`, changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/games/maze`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/create`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/owly`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/belajar-membaca`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/sejarah-sepeda`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/petualangan-tetes-air`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/mengenal-hujan`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/privacy`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/terms`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/parents`, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${baseUrl}/contact`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/blog`, lastModified: new Date(BLOG_POSTS[0].datePublished), changeFrequency: "weekly", priority: 0.8 },
   ];
 
@@ -38,7 +39,6 @@ export default function sitemap() {
 
   const storyRoutes = LETS_READ_STORIES.map((story) => ({
     url: `${baseUrl}/books/stories/${story.slug}`,
-    lastModified: RELEASE_DATE,
     changeFrequency: "monthly",
     priority: 0.8,
   }));
@@ -95,7 +95,6 @@ export default function sitemap() {
 
   const gameRoutes = builtInGameSlugs.map((slug) => ({
     url: `${baseUrl}/games/built/${slug}`,
-    lastModified: RELEASE_DATE,
     changeFrequency: "monthly",
     priority: 0.7,
   }));

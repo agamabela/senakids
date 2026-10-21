@@ -220,8 +220,8 @@ test("Canonical URLs are self-referencing and use the root homepage globally", a
                            html.match(/<link[^>]*href="([^"]+)"[^>]+rel="canonical"/i);
     assert.ok(canonicalMatch, `Route ${item.path} must have a canonical tag`);
     assert.equal(
-      canonicalMatch[1],
-      item.expected,
+      new URL(canonicalMatch[1]).href,
+      new URL(item.expected).href,
       `Canonical on ${item.path} should be ${item.expected}, got ${canonicalMatch[1]}`
     );
   }
@@ -293,7 +293,7 @@ test("Books and TV filters expose accessible aria-pressed state", async () => {
   );
 });
 
-test("Sitemap.xml contains public site URLs with stable lastModified", async () => {
+test("Sitemap.xml contains canonical public URLs and truthful article dates", async () => {
   const res = await fetch(`${BASE_URL}/sitemap.xml`);
   assert.equal(res.status, 200);
   const xml = await res.text();
@@ -301,5 +301,7 @@ test("Sitemap.xml contains public site URLs with stable lastModified", async () 
   assert.ok(!xml.includes("localhost"), "Sitemap must not contain localhost URLs");
   assert.ok(xml.includes("https://senakids.web.id/</loc>"), "Sitemap must contain the canonical root URL");
   assert.ok(xml.includes("https://senakids.web.id/blog"), "Sitemap must contain the public blog URL");
-  assert.ok(xml.includes("<lastmod>2026-10-01"), "Sitemap must contain stable release date");
+  assert.ok(xml.includes("<lastmod>2026-10-16"), "Sitemap must preserve actual article publication dates");
+  assert.ok(xml.includes("/learning-journeys</loc>"), "Sitemap must include learning journeys");
+  assert.ok(!xml.includes("<lastmod>2026-10-01"), "Do not claim an unverified modification date for every route");
 });

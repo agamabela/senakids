@@ -21,7 +21,7 @@ export default function Footer() {
             <p className={styles.tagline}>{t("footer.tagline")}</p>
             <div className={styles.safetyBadge}>
               <Shield size={16} />
-              <span>{tx("Aman & Tanpa Iklan Perilaku", "Safe & Free from Behavioral Ads")}</span>
+              <span>{tx("Dampingi anak saat menjelajah", "Explore together with your child")}</span>
             </div>
           </div>
 
@@ -50,8 +50,8 @@ export default function Footer() {
           <div className={styles.linksCol}>
             <h3 className={styles.colTitle}>{tx("Untuk orang tua", "For grown-ups")}</h3>
             <ul className={styles.linkList}>
-              <li><Link href="/parents">{t("footer.parents")}</Link></li>
-              <li><Link href="/blog">{tx("Panduan keluarga", "Family guides")}</Link></li>
+              <li><Link href="/parents">{tx("Pengaturan Orang Tua", "Parent Settings")}</Link></li>
+              <li><Link href="/blog">{tx("Artikel & Panduan", "Articles & Guides")}</Link></li>
               <li><Link href="/parents#timer">{t("footer.parentControls")}</Link></li>
               <li><Link href="/contact?category=data">{t("footer.deletionRequest")}</Link></li>
               <li><Link href="/contact?category=broken">{t("footer.reportContent")}</Link></li>

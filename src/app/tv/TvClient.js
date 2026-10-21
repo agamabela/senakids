@@ -349,8 +349,8 @@ export default function TvClient({ videos = [] }) {
             <h1 className={styles.headerTitle}>{tx("TV Edukasi Ramah Anak", "Safe Kids TV")}</h1>
             <p className={styles.headerSubtitle}>
               {tx(
-                "Tonton video edukasi, dongeng budi pekerti, dan lagu anak aman tanpa pelacak iklan.",
-                "Watch educational videos, character stories, and nursery rhymes safely without behavioral ads."
+                "Pilih video edukasi, dongeng, dan lagu bersama orang tua. Video diputar melalui YouTube.",
+                "Choose educational videos, stories, and songs with a grown-up. Videos play through YouTube."
               )}
             </p>
           </div>
@@ -446,7 +446,7 @@ export default function TvClient({ videos = [] }) {
                     </button>
                     <div className={styles.privacyBadge}>
                       <ShieldCheck size={14} />
-                      <span>{tx("Mode Terlindungi (Bebas Iklan Perilaku)", "Enhanced Privacy Mode")}</span>
+                      <span>{tx("Pemutar YouTube (Mode Privasi Ditingkatkan)", "Enhanced Privacy Mode")}</span>
                     </div>
                   </div>
                 </div>

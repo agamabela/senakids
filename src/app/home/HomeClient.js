@@ -18,10 +18,12 @@ import { useActivityHistory } from "@/lib/activity-history";
 import ContinueShelf from "@/components/ContinueShelf";
 import { useLanguage } from "@/components/LanguageProvider";
 import styles from "./page.module.css";
+import { BLOG_POSTS } from "@/lib/blog-posts.mjs";
 
-const iconByKind = { book: BookOpen, game: Gamepad2, lesson: GraduationCap, tv: Tv, music: Music };
+const iconByKind = { book: BookOpen, game: Gamepad2, lesson: GraduationCap, tv: Tv, music: Music, create: Palette };
 
 const pathways = [
+  { key: "create", label: { id: "Gambar & Warnai", en: "Draw & Color" }, detail: { id: "Kuas, stempel, dan gambar buatanmu sendiri", en: "Brushes, stamps, and your own pictures" }, action: { id: "Mulai Gambar", en: "Start Drawing" }, href: "/create", kind: "create", category: "create" },
   {
     key: "books",
     label: { id: "Baca Cerita", en: "Read Stories" },
@@ -233,6 +235,9 @@ export default function HomeClient() {
                 <Sparkles size={18} aria-hidden="true" />
                 <span>{lang === "en" ? "Start today's adventure" : "Mulai petualangan hari ini"}</span>
               </a>
+              <Link href="/blog" className={styles.articleShortcut}>
+                {lang === "en" ? "For grown-ups: Articles & Guides" : "Untuk orang tua: Artikel & Panduan"}
+              </Link>
             </div>
           </div>
           <div className={styles.welcomeArt} aria-hidden="true">
@@ -375,6 +380,20 @@ export default function HomeClient() {
         </div>
       </section>
 
+      <section className={styles.articleSection} aria-labelledby="home-articles-title">
+        <div className={styles.sectionHeading}>
+          <div><p className={styles.kicker}>{lang === "en" ? "For grown-ups" : "Untuk orang tua"}</p>
+            <h2 id="home-articles-title">{lang === "en" ? "Articles & Guides" : "Artikel & Panduan"}</h2></div>
+          <Link href="/blog" className={styles.heroSecondaryCta}>{lang === "en" ? "See all articles" : "Lihat semua artikel"}</Link>
+        </div>
+        <div className={styles.articleList}>
+          {BLOG_POSTS.slice(0, 3).map((post) => <article key={post.slug} lang="id">
+            <p>{post.category}</p><h3><Link href={`/blog/${post.slug}`}>{post.title}</Link></h3>
+            <p>{post.description}</p><Link href={`/blog/${post.slug}`}>Baca artikel</Link>
+          </article>)}
+        </div>
+      </section>
+
       {/* 7. CHILD CLOSING WRAP-UP BANNER */}
       <section className={styles.wrapUpBanner} aria-label={lang === "en" ? "Safe learning note" : "Catatan belajar aman"}>
         <div className={styles.wrapUpContent}>
@@ -386,8 +405,8 @@ export default function HomeClient() {
           <h3>{lang === "en" ? "Learn, Play & Smile Every Day!" : "Belajar, Bermain & Tersenyum Ceria!"}</h3>
           <p>
             {lang === "en"
-              ? "All stories, videos, and games on Sena Kids are 100% ad-free and safe for children. Remember to take a break and drink water!"
-              : "Semua cerita, video, dan game di Sena Kids aman serta bebas dari iklan pelacak. Ingat istirahat sejenak dan minum air putih ya!"}
+              ? "Choose activities with a grown-up. Videos and games from other sites follow their providers’ policies. Remember to take a break and drink water!"
+              : "Pilih kegiatan bersama orang tua. Video dan game dari situs lain mengikuti kebijakan penyedianya. Ingat istirahat sejenak dan minum air putih ya!"}
           </p>
         </div>
       </section>

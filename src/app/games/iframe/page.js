@@ -71,8 +71,8 @@ function IframePlayerContent() {
       <div className={styles.embedNotice}>
         <span>
           {lang === "en"
-            ? `Hosted safely by ${origin}. If the game doesn't load or displays a black screen:`
-            : `Dihosting aman oleh ${origin}. Jika game tidak tampil atau layar hitam:`}
+            ? `Provided by ${origin}. Its own data and advertising policies apply. If the game doesn't load or displays a black screen:`
+            : `Disediakan oleh ${origin}. Kebijakan data dan iklan penyedia berlaku. Jika game tidak tampil atau layar hitam:`}
         </span>
         <a href={safeUrl} target="_blank" rel="noopener noreferrer" className={styles.directLink}>
           {lang === "en" ? "Play directly" : "Mainkan langsung"} ↗

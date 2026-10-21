@@ -15,7 +15,7 @@ const senaKidsGames = [
   { title: { id: "Pesawat Cilik 3D", en: "The Aviator 3D" }, href: "/games/built/the-aviator", image: "/images/games/thumbnails/the-aviator-3d.svg", color: "blue" },
   { title: { id: "Mobil Mainan 3D", en: "Toy Car 3D" }, href: "/games/built/toy-car", image: "/images/games/thumbnails/toy-car-3d.svg", color: "orange" },
   { title: { id: "Ski Free", en: "Ski Free" }, href: "/games/ski-free", image: "/images/ski-pagi-key-art-v2.png", emoji: "⛷️", color: "blue" },
-  { title: { id: "Ular Tangga", en: "Snakes & Ladders" }, href: "/games/built/ular-tangga", image: "https://data.cabocil.com/assets/images/others/board-snake-and-ladder-v1.png", emoji: "🪜", color: "teal" },
+  { title: { id: "Ular Tangga", en: "Snakes & Ladders" }, href: "/games/built/ular-tangga", image: "/images/games/thumbnails/board.svg", emoji: "🪜", color: "teal" },
   { title: { id: "Petualangan Labirin", en: "Maze Adventure" }, href: "/games/maze", image: "/images/games/maze/thumbnail.png", emoji: "💎", color: "blue" },
   { title: { id: "Block Blast", en: "Block Blast" }, href: "/games/built/block-blast", emoji: "🧱", color: "purple" },
   { title: { id: "Cari Kata", en: "Word Search" }, href: "/games/built/cari-kata", image: "/images/games/thumbnails/search-word.png", emoji: "🔍", color: "blue" },
@@ -31,9 +31,9 @@ const senaKidsGames = [
   { title: { id: "Pukul Tikus", en: "Whack-a-Mole" }, href: "/games/built/pukul-tikus", emoji: "🔨", color: "pink" },
   { title: { id: "Simon Bilang", en: "Simon Says" }, href: "/games/built/simon-bilang", emoji: "🎨", color: "purple" },
   { title: { id: "Letuskan Balon", en: "Pop the Balloons" }, href: "/games/built/letuskan-balon", emoji: "🎈", color: "teal" },
-  { title: { id: "Drum", en: "Drum" }, href: "/games/built/drum", image: "https://data.cabocil.com/admin_uploads/admin/drum-game.png", emoji: "🥁", color: "purple" },
-  { title: { id: "Piano", en: "Piano" }, href: "/games/built/piano", image: "https://data.cabocil.com/assets/game-thumbnails/simple_piano_v1.png", emoji: "🎹", color: "purple" },
-  { title: { id: "Puzzle Gambar", en: "Jigsaw Puzzle" }, href: "/games/built/puzzle-gambar", image: "https://data.cabocil.com/assets/game-thumbnails/puzzle.png", emoji: "🧩", color: "orange" },
+  { title: { id: "Drum", en: "Drum" }, href: "/games/built/drum", image: "/images/games/thumbnails/drum.svg", emoji: "🥁", color: "purple" },
+  { title: { id: "Piano", en: "Piano" }, href: "/games/built/piano", image: "/images/games/thumbnails/piano.svg", emoji: "🎹", color: "purple" },
+  { title: { id: "Puzzle Gambar", en: "Jigsaw Puzzle" }, href: "/games/built/puzzle-gambar", image: "/images/games/thumbnails/logic.svg", emoji: "🧩", color: "orange" },
   { title: { id: "Menggambar Bebas", en: "Free Drawing" }, href: "/games/built/warna", emoji: "🎨", color: "orange" },
   { title: { id: "Mewarnai", en: "Coloring" }, href: "/games/built/mewarnai", emoji: "🖌️", color: "pink" },
 ];
@@ -49,29 +49,29 @@ const senaKidsExercises = [
   { title: { id: "Perkalian Dasar", en: "Multiplication" }, href: "/games/built/perkalian", image: "/images/games/thumbnails/perkalian.png", emoji: "✖️", color: "yellow" },
   { title: { id: "Kode Morse Memori", en: "Morse Memory" }, href: "/games/built/morse", image: "/images/games/thumbnails/morse.png", emoji: "📻", color: "purple" },
   { title: { id: "Memahami Koordinat", en: "Understand Coordinates" }, href: "/games/built/memahami-koordinat", emoji: "📍", color: "purple" },
-  { title: { id: "Matematika Dasar", en: "Basic Math" }, href: "/games/built/berhitung", image: "https://data.cabocil.com/assets/game-thumbnails/mastermath.png", emoji: "🔢", color: "blue" },
+  { title: { id: "Matematika Dasar", en: "Basic Math" }, href: "/games/built/berhitung", image: "/images/games/thumbnails/math.svg", emoji: "🔢", color: "blue" },
   { title: { id: "Huruf ABC", en: "ABC Letters" }, href: "/games/built/huruf-abc", emoji: "🔤", color: "green" },
   { title: { id: "Lacak Huruf", en: "Trace Letters" }, href: "/games/built/lacak-huruf", emoji: "✏️", color: "blue" },
   { title: { id: "Lacak Angka", en: "Trace Numbers" }, href: "/games/built/lacak-angka", emoji: "🔢", color: "green" },
-  { title: { id: "Membuat Jalur", en: "Build the Path" }, href: "/games/built/membuat-jalur", image: "https://data.cabocil.com/assets/game-thumbnails/flowchart.png", emoji: "🧭", color: "blue" },
-  { title: { id: "Learn English 1", en: "Learn English 1" }, href: "/games/built/learn-english-1", image: "https://data.cabocil.com/assets/game-thumbnails/flashcard.png", emoji: "📘", color: "green" },
-  { title: { id: "Flashcard Simple", en: "Simple Flashcards" }, href: "/games/built/flashcard-simple", image: "https://data.cabocil.com/assets/game-thumbnails/flashcard.png", emoji: "🃏", color: "orange" },
-  { title: { id: "Tebak Gambar", en: "Guess the Picture" }, href: "/games/built/tebak-gambar", image: "https://data.cabocil.com/assets/game-thumbnails/flashcard.png", emoji: "🖼️", color: "pink" },
-  { title: { id: "Mencocokkan Gambar", en: "Match Pictures" }, href: "/games/built/mencocokkan-gambar", image: "https://data.cabocil.com/assets/game-thumbnails/memmorycard.png", emoji: "🧠", color: "teal" },
-  { title: { id: "Menyambung Pipa", en: "Connect the Pipes" }, href: "/games/built/menyabung-pipa", image: "https://data.cabocil.com/assets/game-thumbnails/waterpipe.png", emoji: "🔧", color: "yellow" },
-  { title: { id: "Menyusun Gambar", en: "Picture Align" }, href: "/games/built/menyusun-gambar", image: "https://data.cabocil.com/assets/game-thumbnails/memmoryaligncard.png", emoji: "🧩", color: "blue" },
-  { title: { id: "Mengurutkan Balok", en: "Order Blocks" }, href: "/games/built/mengurutkan-balok", image: "https://data.cabocil.com/assets/game-thumbnails/mengurutkanbalok.png", emoji: "🟦", color: "green" },
-  { title: { id: "Urutkan Bola Angka", en: "Number Ball Order" }, href: "/games/built/urutkan-bola-angka", image: "https://data.cabocil.com/assets/game-thumbnails/numbersorting.png", emoji: "⚽", color: "orange" },
+  { title: { id: "Membuat Jalur", en: "Build the Path" }, href: "/games/built/membuat-jalur", image: "/images/games/thumbnails/code.svg", emoji: "🧭", color: "blue" },
+  { title: { id: "Learn English 1", en: "Learn English 1" }, href: "/games/built/learn-english-1", image: "/images/games/thumbnails/cards.svg", emoji: "📘", color: "green" },
+  { title: { id: "Flashcard Simple", en: "Simple Flashcards" }, href: "/games/built/flashcard-simple", image: "/images/games/thumbnails/cards.svg", emoji: "🃏", color: "orange" },
+  { title: { id: "Tebak Gambar", en: "Guess the Picture" }, href: "/games/built/tebak-gambar", image: "/images/games/thumbnails/cards.svg", emoji: "🖼️", color: "pink" },
+  { title: { id: "Mencocokkan Gambar", en: "Match Pictures" }, href: "/games/built/mencocokkan-gambar", image: "/images/games/thumbnails/cards.svg", emoji: "🧠", color: "teal" },
+  { title: { id: "Menyambung Pipa", en: "Connect the Pipes" }, href: "/games/built/menyabung-pipa", image: "/images/games/thumbnails/logic.svg", emoji: "🔧", color: "yellow" },
+  { title: { id: "Menyusun Gambar", en: "Picture Align" }, href: "/games/built/menyusun-gambar", image: "/images/games/thumbnails/logic.svg", emoji: "🧩", color: "blue" },
+  { title: { id: "Mengurutkan Balok", en: "Order Blocks" }, href: "/games/built/mengurutkan-balok", image: "/images/games/thumbnails/math.svg", emoji: "🟦", color: "green" },
+  { title: { id: "Urutkan Bola Angka", en: "Number Ball Order" }, href: "/games/built/urutkan-bola-angka", image: "/images/games/thumbnails/math.svg", emoji: "⚽", color: "orange" },
   { title: { id: "Quiz Pintar", en: "Smart Quiz" }, href: "/games/built/quiz", emoji: "🧠", color: "purple" },
 ];
 
 // Category 3: Games Lainnya (Pilihan Game Edukasi Luar)
 const gamesLainnya = [
-  { title: { id: "Golf", en: "Golf" }, href: "/games/iframe?gameurl=https://kindahardgolf.com&title=Golf", image: "https://data.cabocil.com/assets/game-thumbnails/golf.png", color: "green" },
-  { title: { id: "Menyeberangkan Manusia & Monster", en: "Pass the River: Humans & Monsters" }, href: "/games/iframe?gameurl=https://plastelina.net/cannibals-missionaries-fullscreen&title=Menyeberangkan+Manusia+dan+Monster", image: "https://data.cabocil.com/assets/game-thumbnails/humanandmonsterpassthesea.png", color: "blue" },
-  { title: { id: "Serigala, Domba dan Kubis", en: "Wolf, Sheep and Cabbage" }, href: "/games/iframe?gameurl=https://plastelina.net/wolf-sheep-cabbage-fullscreen&title=Serigala+Domba+dan+Kubis", image: "https://data.cabocil.com/assets/game-thumbnails/wolfsheepcabbage.png", color: "orange" },
-  { title: { id: "Hour Of Code", en: "Hour Of Code" }, href: "/games/iframe?gameurl=https://game.rodocodo.com/hour-of-code&title=Hour+Of+Code", image: "https://data.cabocil.com/assets/game-thumbnails/rodocodo-hour-of-code.png", color: "purple" },
-  { title: { id: "Genshin Music", en: "Genshin Music" }, href: "/games/iframe?gameurl=https://genshin-music.specy.app/zen-keyboard&title=Genshin+Music", image: "https://data.cabocil.com/assets/game-thumbnails/genshin_piano.png", color: "yellow" },
+  { title: { id: "Golf", en: "Golf" }, href: "/games/iframe?gameurl=https://kindahardgolf.com&title=Golf", image: "/images/games/thumbnails/golf.svg", color: "green" },
+  { title: { id: "Menyeberangkan Manusia & Monster", en: "Pass the River: Humans & Monsters" }, href: "/games/iframe?gameurl=https://plastelina.net/cannibals-missionaries-fullscreen&title=Menyeberangkan+Manusia+dan+Monster", image: "/images/games/thumbnails/river.svg", color: "blue" },
+  { title: { id: "Serigala, Domba dan Kubis", en: "Wolf, Sheep and Cabbage" }, href: "/games/iframe?gameurl=https://plastelina.net/wolf-sheep-cabbage-fullscreen&title=Serigala+Domba+dan+Kubis", image: "/images/games/thumbnails/logic.svg", color: "orange" },
+  { title: { id: "Hour Of Code", en: "Hour Of Code" }, href: "/games/iframe?gameurl=https://game.rodocodo.com/hour-of-code&title=Hour+Of+Code", image: "/images/games/thumbnails/code.svg", color: "purple" },
+  { title: { id: "Genshin Music", en: "Genshin Music" }, href: "/games/iframe?gameurl=https://genshin-music.specy.app/zen-keyboard&title=Genshin+Music", image: "/images/games/thumbnails/piano.svg", color: "yellow" },
   { title: { id: "Scratch", en: "Scratch MIT" }, href: "https://scratch.mit.edu/", image: "https://images.seeklogo.com/logo-png/43/2/scratch-cat-logo-png_seeklogo-431721.png", isExternal: true, color: "orange" },
 ];
 
@@ -79,6 +79,13 @@ const gamesLainnya = [
 const toyTheaterGames = TOY_THEATER_CATALOG;
 
 function CompactGameCard({ game, language }) {
+  const slug = game.href?.split("/").at(-1);
+  const complex = ["angka-negatif", "perkalian", "pecahan-lingkaran", "morse", "memahami-koordinat"];
+  const early = ["huruf-abc", "lacak-huruf", "lacak-angka", "warna", "mewarnai", "piano", "drum", "letuskan-balon"];
+  const ownGame = game.href?.startsWith("/games/built/") || game.href === "/games/maze" || game.href === "/games/ski-free";
+  const age = complex.includes(slug) ? "8+" : early.includes(slug) ? "4+" : "6+";
+  const keyboardGames = ["toy-car", "the-aviator", "ski-free", "labirin-3d", "bomberman", "petualangan-lompat"];
+  const input = keyboardGames.includes(slug) ? (language === "id" ? "Sentuh / keyboard" : "Touch / keyboard") : (language === "id" ? "Kontrol di halaman game" : "Controls on game page");
   const [imgError, setImgError] = useState(false);
   const title = typeof game.title === "object" ? (game.title[language] || game.title.id) : game.title;
   const isExternal = game.isExternal || false;
@@ -115,6 +122,7 @@ function CompactGameCard({ game, language }) {
       </div>
       <div className={styles.gameCardBottom}>
         <h3 className={styles.gameCardTitle}>{title}</h3>
+        <small className={styles.gameMeta}>{ownGame ? `${language === "id" ? "Saran" : "Suggested"} ${age} · ${input}` : (language === "id" ? "Penyedia lain · Dampingi anak" : "External provider · Join your child")}</small>
       </div>
     </div>
   );
@@ -168,7 +176,7 @@ export default function GamesClient({ zones = [] }) {
           <div>
             <h1 className={styles.headerTitle}>{tx("Games & Latihan Sena Kids", "Sena Kids Games & Exercises")}</h1>
             <p className={styles.headerSubtitle}>
-              {tx("Mainkan game seru atau pilih latihan untuk mengasah kemampuanmu.", "Play fun games or choose exercises to sharpen your skills.")}
+              {tx("Pilih keterampilan yang ingin dilatih. Usia adalah saran awal; sesuaikan dengan kesiapan anak.", "Choose a skill to practise. Ages are suggested starting points; adjust to your child.")}
             </p>
           </div>
         </div>
@@ -270,7 +278,7 @@ export default function GamesClient({ zones = [] }) {
           <div>
             <h2 className={styles.sectionTitle}>{tx("Games Lainnya", "Other Games")}</h2>
             <p className={styles.sectionDesc}>
-              {tx("Pilihan game edukasi interaktif dari situs lain.", "Curated interactive educational games from external sources.")}
+              {tx("Game dari penyedia lain dengan kebijakan data, iklan, dan kontrol masing-masing. Dampingi anak saat bermain.", "Games from other providers with their own data, advertising, and control policies. Accompany your child.")}
             </p>
           </div>
         </div>
@@ -291,7 +299,7 @@ export default function GamesClient({ zones = [] }) {
           <div>
             <h2 className={styles.sectionTitle}>Toy Theater</h2>
             <p className={styles.sectionDesc}>
-              {tx("Koleksi game edukasi mini seru dari Toy Theater.", "Collection of fun mini educational games from Toy Theater.")}
+              {tx("Game dari Toy Theater. Kebijakan penyedia berlaku; dampingi anak saat bermain.", "Games from Toy Theater. Provider policies apply; accompany your child.")}
             </p>
           </div>
         </div>

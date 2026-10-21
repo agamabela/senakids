@@ -33,6 +33,7 @@ const navLinks = [
   { key: "nav.tv", href: "/tv", icon: Tv, category: "tv" },
   { key: "nav.games", href: "/games", icon: Gamepad2, category: "games" },
   { key: "nav.create", href: "/create", icon: Palette, category: "create" },
+  { key: "nav.articles", href: "/blog", icon: BookOpen, category: "articles" },
 ];
 
 export default function Navbar() {
@@ -107,7 +108,7 @@ export default function Navbar() {
                     className={`${styles.navLink} ${styles[`navLink_${link.category}`] || ""} ${isActive ? styles.navLinkActive : ""}`}
                   >
                     <Icon size={18} strokeWidth={isActive ? 2.5 : 2} className={styles.navIcon} />
-                    <span>{t(link.key)}</span>
+                    <span>{link.href === "/blog" ? tx("Artikel", "Articles") : t(link.key)}</span>
                   </Link>
                 );
               })}

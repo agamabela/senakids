@@ -32,8 +32,8 @@ const primaryMenuItems = [
 ];
 
 const parentMenuItems = [
-  { nameKey: "menuModal.parents", href: "/parents", icon: Shield },
-  { nameKey: "menuModal.parents", label: { id: "Panduan keluarga", en: "Family guides" }, href: "/blog", icon: BookOpen },
+  { nameKey: "menuModal.parents", label: { id: "Pengaturan Orang Tua", en: "Parent Settings" }, href: "/parents", icon: Shield },
+  { nameKey: "menuModal.parents", label: { id: "Artikel & Panduan", en: "Articles & Guides" }, href: "/blog", icon: BookOpen },
   { nameKey: "menuModal.privacy", href: "/privacy", icon: Shield },
   { nameKey: "menuModal.terms", href: "/terms", icon: FileText },
   { nameKey: "menuModal.contact", href: "/contact", icon: MessageSquare },
