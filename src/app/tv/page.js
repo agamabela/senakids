@@ -6,16 +6,16 @@ import TvClient from "./TvClient";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Video Edukasi & Animasi Anak Aman Tanpa Iklan",
+  title: "Video Edukasi Anak Pilihan",
   description:
-    "Tonton video edukasi pilihan, dongeng, lagu anak-anak, dan animasi sains ramah anak di Sena TV dengan pemutar aman bebas iklan perilaku.",
+    "Koleksi video belajar anak pilihan: lagu anak, dongeng animasi, eksperimen sains sederhana, dan wawasan dunia tanpa iklan pelacak.",
   alternates: {
     canonical: "/tv",
   },
   openGraph: {
-    title: "Video Edukasi & Animasi Anak Aman Tanpa Iklan",
+    title: "Video Edukasi Anak Pilihan | Sena Kids",
     description:
-      "Tonton video edukasi pilihan, dongeng, lagu anak-anak, dan animasi sains ramah anak di Sena TV dengan pemutar aman bebas iklan perilaku.",
+      "Koleksi video belajar anak pilihan: lagu anak, dongeng animasi, eksperimen sains sederhana, dan wawasan dunia tanpa iklan pelacak.",
     url: "https://senakids.web.id/tv",
     images: [socialImage],
     type: "website",
@@ -43,8 +43,8 @@ export default async function TvPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Sena TV - Video Edukasi Anak",
-    description: "Koleksi video edukasi dan animasi aman tanpa iklan untuk anak.",
+    name: "Video Edukasi Anak Sena TV",
+    description: "Koleksi video belajar dan animasi edukatif anak yang aman untuk disaksikan bersama keluarga.",
     url: `${siteUrl}/tv`,
   };
 

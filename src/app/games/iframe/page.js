@@ -104,7 +104,7 @@ export default function IframeGamePage() {
     <Suspense
       fallback={
         <div className={styles.loading}>
-          {lang === "en" ? "Loading safe game..." : "Memuat permainan ramah anak..."}
+          {lang === "en" ? "Loading game..." : "Memuat permainan..."}
         </div>
       }
     >

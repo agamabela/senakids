@@ -81,7 +81,7 @@ export default function OwlyClient() {
         <div>
           <h1 className={styles.title}>Owly</h1>
           <p className={styles.tagline}>
-            {t("Belajar, Bermain, Tumbuh — satu hoot dalam satu waktu!", "Learn, Play, Grow — one hoot at a time!")}
+            {t("Belajar, bermain, dan tumbuh langkah demi langkah!", "Learn, play, and grow step by step!")}
           </p>
         </div>
       </div>

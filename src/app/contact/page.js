@@ -2,16 +2,16 @@ import ContactClient from "./ContactClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Hubungi Kami & Layanan Moderasi Konten",
+  title: "Hubungi Kami",
   description:
-    "Formulir laporan konten rusak, permohonan hapus data pribadi, pertanyaan lisensi, dan masukan orang tua untuk Sena Kids.",
+    "Kirimkan masukan, saran, atau pertanyaan seputar kegiatan dan konten belajar di Sena Kids.",
   alternates: {
     canonical: "/contact",
   },
   openGraph: {
-    title: "Hubungi Kami & Layanan Moderasi Konten",
+    title: "Hubungi Kami | Sena Kids",
     description:
-      "Formulir laporan konten rusak, permohonan hapus data pribadi, pertanyaan lisensi, dan masukan orang tua untuk Sena Kids.",
+      "Kirimkan masukan, saran, atau pertanyaan seputar kegiatan dan konten belajar di Sena Kids.",
     url: "https://senakids.web.id/contact",
     images: [socialImage],
     type: "website",

@@ -68,7 +68,7 @@ export const builtGameDetails = {
   "learn-english-1": {
     title: "Learn English 1",
     seoTitle: "Game Belajar Bahasa Inggris Anak Pemula",
-    seoDescription: "Belajar kosakata bahasa Inggris sederhana dengan bantuan gambar visual dan suara interaktif ramah anak di Sena Kids.",
+    seoDescription: "Belajar kosakata bahasa Inggris sederhana dengan gambar visual dan panduan suara interaktif di Sena Kids.",
     description: "Belajar kata sederhana dan gambar.",
     note: "This built-in game is implemented directly in Sena Kids."
   },
@@ -124,21 +124,21 @@ export const builtGameDetails = {
   quiz: {
     title: "Quiz",
     seoTitle: "Kuis Pintar Interaktif Anak Online",
-    seoDescription: "Jawab kuis pengetahuan umum cilik yang seru dan menantang untuk anak-anak dengan tampilan ramah anak di Sena Kids.",
+    seoDescription: "Jawab kuis pengetahuan umum cilik yang seru dan menantang untuk mengasah wawasan anak di Sena Kids.",
     description: "Jawab kuis seru dan menantang.",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   berhitung: {
     title: "Berhitung",
     seoTitle: "Game Belajar Berhitung & Matematika Anak TK/SD",
-    seoDescription: "Selesaikan soal penjumlahan dan berhitung matematika dasar dengan panduan visual ceria. Game belajar matematika ramah anak gratis.",
+    seoDescription: "Selesaikan soal penjumlahan dan latihan berhitung matematika dasar dengan panduan visual interaktif di Sena Kids.",
     description: "Selesaikan soal matematika seru!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   mewarnai: {
     title: "Mewarnai",
     seoTitle: "Game Mewarnai Gambar Anak Online Gratis",
-    seoDescription: "Game mewarnai gambar online gratis untuk anak TK dan PAUD. Pilihan sketsa lucu, mudah dimainkan di HP dan laptop, aman tanpa install aplikasi.",
+    seoDescription: "Permainan mewarnai gambar online untuk anak TK dan PAUD. Pilihan sketsa menarik, mudah dimainkan di layar sentuh maupun laptop.",
     description: "Warnai gambar yang indah!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
@@ -152,14 +152,14 @@ export const builtGameDetails = {
   warna: {
     title: "Menggambar Bebas",
     seoTitle: "Game Menggambar & Melukis Kanvas Anak Online",
-    seoDescription: "Kanvas menggambar dan melukis bebas untuk menuangkan kreativitas anak dengan aneka pilihan warna kuas ceria.",
+    seoDescription: "Kanvas menggambar dan mewarnai bebas untuk melatih kreativitas anak dengan aneka pilihan kuas warna-warni.",
     description: "Gambar bebas dengan warna-warni!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   piano: {
     title: "Piano",
     seoTitle: "Game Piano Virtual Interaktif Musik Anak Online",
-    seoDescription: "Mainkan tuts piano virtual berbunyi nada ceria. Kenalkan tangga nada musik kepada anak dengan cara interaktif dan menyenangkan.",
+    seoDescription: "Mainkan tuts piano virtual interaktif. Kenalkan tangga nada musik kepada anak dengan cara yang menyenangkan.",
     description: "Main piano interaktif!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
@@ -180,7 +180,7 @@ export const builtGameDetails = {
   bomberman: {
     title: "Si Bom Pintar",
     seoTitle: "Game Si Bom Pintar Arkade Logika Anak",
-    seoDescription: "Letakkan bom cerdas, hancurkan peti kayu, dan selesaikan tantangan labirin tanpa bahaya dalam game aksi ramah anak.",
+    seoDescription: "Letakkan bom cerdas, buka jalur peti kayu, dan selesaikan tantangan labirin dalam permainan logika arkade anak.",
     description: "Letakkan bom, hancurkan peti, kalahkan monster!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
@@ -193,21 +193,21 @@ export const builtGameDetails = {
   },
   "ular-pintar": {
     title: "Ular Pintar",
-    seoTitle: "Game Ular Pintar (Snake) Klasik Ramah Anak",
-    seoDescription: "Mainkan game ular klasik versi ramah anak. Makan buah lezat, tumbuh makin panjang, dan latih ketangkasan refleks bermain.",
+    seoTitle: "Permainan Ular Pintar (Snake) Klasik Anak",
+    seoDescription: "Mainkan permainan ular klasik untuk melatih ketangkasan dan refleks. Ambil buah, tumbuh panjang, dan hindari menabrak dinding.",
     description: "Makan buah, tumbuh panjang, jangan menabrak!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   ludo: {
     title: "Ludo",
     seoTitle: "Game Ludo Online Anak & Keluarga Gratis",
-    seoDescription: "Permainan papan Ludo klasik online ramah anak. Balapan bidak menuju rumah kemenangan bersama keluarga tanpa unduh aplikasi.",
+    seoDescription: "Permainan papan Ludo klasik online untuk dimainkan bersama keluarga atau komputer langsung di peramban.",
     description: "Balapan bidak mengelilingi papan, capai pusat lebih dulu!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   "ular-tangga": {
     title: "Ular Tangga",
-    seoTitle: "Game Papan Ular Tangga Online Ramah Anak",
+    seoTitle: "Permainan Papan Ular Tangga Online Anak",
     seoDescription: "Main papan permainan ular tangga online gratis. Lempar dadu, panjat tangga, dan hindari ular bersama teman atau komputer.",
     description: "Naik tangga, hindari ular: versi klasik atau buat papanmu sendiri!",
     note: "This built-in game is implemented directly in Sena Kids."
@@ -250,28 +250,28 @@ export const builtGameDetails = {
   "letuskan-balon": {
     title: "Letuskan Balon",
     seoTitle: "Game Letuskan Balon Berhitung & Warna Anak",
-    seoDescription: "Letuskan balon udara warna-warni sesuai instruksi angka berhitung untuk anak usia dini. Ceria, interaktif, dan mendidik.",
+    seoDescription: "Letuskan balon udara warna-warni sesuai instruksi angka berhitung untuk melatih fokus dan kemampuan berhitung anak usia dini.",
     description: "Letuskan balon sesuai jumlah untuk belajar berhitung!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   "petualangan-lompat": {
     title: "Petualangan Lompat",
-    seoTitle: "Game Petualangan Lompat Platformer Ramah Anak",
-    seoDescription: "Lari, melompat rintangan, kumpulkan bintang berkilau, dan capai bendera finis dalam game platformer seru ramah anak.",
+    seoTitle: "Permainan Petualangan Lompat Platformer Anak",
+    seoDescription: "Berlari, melompati rintangan, mengumpulkan bintang, dan capai bendera finis dalam permainan platformer petualangan anak.",
     description: "Lari, lompat, kumpulkan bintang, dan capai bendera!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   "ski-pagi": {
     title: "Ski Pagi",
-    seoTitle: "Game Ski Pagi - Meluncur di Lereng Salju Anak",
-    seoDescription: "Meluncur di lereng salju bersalju, lewati pohon dan batu, lewati pos slalom, dan raih skor tertinggi di Sena Kids.",
+    seoTitle: "Permainan Ski Pagi Meluncur di Salju Anak",
+    seoDescription: "Meluncur di lereng salju, lewati pohon dan batu, lewati pos slalom, dan raih skor tertinggi di Sena Kids.",
     description: "Meluncur di lereng salju, hindari rintangan, dan kumpulkan koin.",
     note: "Downhill ski arcade game for Sena Kids."
   },
   "ski-free": {
     title: "Ski Free",
-    seoTitle: "Game Ski Free Online Ramah Anak",
-    seoDescription: "Meluncur di lereng salju bersalju, hindari rintangan, dan kumpulkan koin di game arkade salju ramah anak.",
+    seoTitle: "Permainan Ski Free Online Anak",
+    seoDescription: "Meluncur di lereng bersalju, hindari rintangan pepohonan dan bebatuan, serta kumpulkan koin di permainan arkade salju.",
     description: "Meluncur di lereng salju, hindari rintangan, dan kumpulkan koin.",
     note: "Downhill ski arcade game for Sena Kids."
   },
@@ -313,14 +313,14 @@ export const builtGameDetails = {
   "sambung-warna": {
     title: "Sambung Warna",
     seoTitle: "Game Sambung Warna (Color Connect) Garis Titik Anak",
-    seoDescription: "Hubungkan titik-titik warna yang sama tanpa garis yang saling bertabrakan! Teka-teki logika menghubungkan warna ramah anak.",
+    seoDescription: "Hubungkan titik-titik warna yang sama tanpa garis yang saling bertabrakan untuk melatih pemikiran logika anak.",
     description: "Hubungkan titik-titik warna yang sama tanpa garis bertabrakan!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
   "color-connect": {
     title: "Sambung Warna",
     seoTitle: "Game Sambung Warna (Color Connect) Garis Titik Anak",
-    seoDescription: "Hubungkan titik-titik warna yang sama tanpa garis yang saling bertabrakan! Teka-teki logika menghubungkan warna ramah anak.",
+    seoDescription: "Hubungkan titik-titik warna yang sama tanpa garis yang saling bertabrakan untuk melatih pemikiran logika anak.",
     description: "Hubungkan titik-titik warna yang sama tanpa garis bertabrakan!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
@@ -334,7 +334,7 @@ export const builtGameDetails = {
   "topple-party": {
     title: "Topple Party",
     seoTitle: "Game Keseimbangan Jungkat-Jungkit Topple Party",
-    seoDescription: "Jaga keseimbangan papan jungkat-jungkit agar tidak terjungkal! Eksperimen fisika dasar gravitasi dan beban angka ramah anak.",
+    seoDescription: "Jaga keseimbangan papan jungkat-jungkit agar tidak terjungkal dalam eksperimen fisika dasar gravitasi dan beban angka.",
     description: "Jaga keseimbangan jungkat-jungkit agar tidak terjungkal!",
     note: "This built-in game is implemented directly in Sena Kids."
   },
@@ -562,10 +562,10 @@ export async function generateMetadata({ params }) {
 
   const baseUrl = getSiteUrl();
   const canonicalUrl = `${baseUrl}/games/built/${slug}`;
-  const pageTitle = game.seoTitle || `Game ${game.title} Anak Online Gratis`;
+  const pageTitle = game.seoTitle || `Permainan ${game.title} Anak Online`;
   const pageDescription =
     game.seoDescription ||
-    `${game.description} Mainkan game edukasi ramah anak gratis tanpa install aplikasi di Sena Kids.`;
+    `${game.description} Mainkan permainan edukatif anak langsung di peramban tanpa instalasi di Sena Kids.`;
 
   return {
     title: pageTitle,

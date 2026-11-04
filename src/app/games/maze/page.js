@@ -3,9 +3,9 @@ import { ArrowLeft, Compass, Play, Star, Gem, Skull, Flame } from "lucide-react"
 import styles from "./page.module.css";
 
 export const metadata = {
-  title: "Game Petualangan Labirin - Jelajah Harta Karun",
+  title: "Permainan Labirin Anak",
   description:
-    "Game petualangan labirin interaktif anak. Jelajahi jalur labirin berliku, pecahkan rintangan, dan temukan harta karun untuk mengasah konsentrasi dan strategi spasial.",
+    "Permainan labirin interaktif untuk anak. Temukan jalan keluar dan kumpulkan harta karun untuk melatih konsentrasi serta pemikiran spasial.",
   alternates: {
     canonical: "/games/maze",
   },

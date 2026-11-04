@@ -2,16 +2,16 @@ import BukuCeritaClient from "./BukuCeritaClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Buku Cerita Bergambar Anak Let's Read Online",
+  title: "Buku Cerita Bergambar Let's Read",
   description:
-    "Koleksi dongeng dan cerita bergambar anak Let's Read Asia berlisensi Creative Commons secara gratis dan interaktif untuk dibaca bersama anak.",
+    "Koleksi cerita bergambar anak dari Let's Read Asia berlisensi Creative Commons untuk dibaca langsung bersama anak di rumah maupun di sekolah.",
   alternates: {
     canonical: "/buku-cerita",
   },
   openGraph: {
-    title: "Buku Cerita Bergambar Anak Let's Read Online",
+    title: "Buku Cerita Bergambar Let's Read | Sena Kids",
     description:
-      "Baca cerita bergambar anak Let's Read Asia berlisensi Creative Commons CC BY 4.0 secara gratis dan interaktif.",
+      "Koleksi cerita bergambar anak dari Let's Read Asia berlisensi Creative Commons untuk dibaca langsung bersama anak di rumah maupun di sekolah.",
     url: "https://senakids.web.id/buku-cerita",
     images: [socialImage],
     type: "website",
@@ -26,7 +26,7 @@ export default function BukuCeritaPage() {
     "@type": "CollectionPage",
     name: "Koleksi Cerita Bergambar Let's Read",
     description:
-      "Buku cerita bergambar anak untuk menumbuhkan minat baca sejak dini.",
+      "Buku cerita bergambar anak dari Let's Read Asia untuk melatih kebiasaan membaca sejak dini.",
     url: `${siteUrl}/buku-cerita`,
   };
 

@@ -28,21 +28,20 @@ const siteUrl = getSiteUrl();
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Sena Kids - Platform Belajar & Bermain Ceria Ramah Anak",
+    default: "Sena Kids - Aktivitas Belajar dan Bermain Anak",
     template: "%s | Sena Kids",
   },
-  description: "Platform belajar ramah anak: buku cerita bergambar Let's Read, video edukasi aman, ensiklopedia cilik, dan 40+ game logika & edukasi interaktif untuk dijelajahi bersama keluarga.",
+  description: "Temukan aktivitas belajar dan bermain anak di Sena Kids: permainan edukatif interaktif, buku cerita bergambar, dan video belajar yang aman untuk keluarga.",
   keywords: [
     "Sena Kids",
-    "senakids",
+    "aktivitas anak",
+    "belajar anak",
+    "permainan edukatif anak",
     "game edukasi anak",
-    "game anak online gratis",
     "buku cerita anak bergambar",
     "belajar membaca anak tk",
-    "game mewarnai online",
-    "game matematika anak tk",
-    "permainan anak paud",
-    "dongeng anak indonesia",
+    "latihan berhitung anak",
+    "media belajar anak usia dini",
     "lets read indonesia",
   ],
   icons: {
@@ -50,8 +49,8 @@ export const metadata = {
     apple: "/sena-logo.svg",
   },
   openGraph: {
-    title: "Sena Kids - Belajar & Bermain Ramah Anak",
-    description: "Buku cerita bergambar anak, video edukasi aman, dan game logika interaktif untuk dijelajahi bersama keluarga.",
+    title: "Sena Kids - Aktivitas Belajar dan Bermain Anak",
+    description: "Temukan aktivitas belajar dan bermain anak di Sena Kids: permainan edukatif interaktif, buku cerita bergambar, dan video belajar yang aman.",
     url: siteUrl,
     siteName: "Sena Kids",
     images: [
@@ -59,7 +58,7 @@ export const metadata = {
         url: "/asset.png",
         width: 1200,
         height: 630,
-        alt: "Sena Kids - Dunia Belajar & Bermain Ramah Anak",
+        alt: "Sena Kids - Aktivitas Belajar dan Bermain Anak",
       },
     ],
     locale: "id_ID",
@@ -67,8 +66,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sena Kids - Belajar & Bermain Ceria",
-    description: "Platform belajar ramah anak: cerita bergambar, video edukasi, dan game logika.",
+    title: "Sena Kids - Aktivitas Belajar dan Bermain Anak",
+    description: "Aktivitas belajar dan bermain anak di Sena Kids: buku cerita bergambar, video edukasi aman, dan aneka permainan edukatif.",
     images: ["/asset.png"],
   },
   robots: {

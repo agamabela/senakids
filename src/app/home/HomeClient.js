@@ -23,11 +23,11 @@ import { BLOG_POSTS } from "@/lib/blog-posts.mjs";
 const iconByKind = { book: BookOpen, game: Gamepad2, lesson: GraduationCap, tv: Tv, music: Music, create: Palette };
 
 const pathways = [
-  { key: "create", label: { id: "Gambar & Warnai", en: "Draw & Color" }, detail: { id: "Kuas, stempel, dan gambar buatanmu sendiri", en: "Brushes, stamps, and your own pictures" }, action: { id: "Mulai Gambar", en: "Start Drawing" }, href: "/create", kind: "create", category: "create" },
+  { key: "create", label: { id: "Gambar & Warnai", en: "Draw & Color" }, detail: { id: "Kuas, stempel, dan kanvas gambar buatanmu sendiri", en: "Brushes, stamps, and your own drawings" }, action: { id: "Mulai Gambar", en: "Start Drawing" }, href: "/create", kind: "create", category: "create" },
   {
     key: "books",
     label: { id: "Baca Cerita", en: "Read Stories" },
-    detail: { id: "Buku bergambar penuh dongeng & pengetahuan seru", en: "Picture books with tales & learning" },
+    detail: { id: "Buku bergambar penuh cerita seru dan wawasan baru", en: "Picture books with tales and learning" },
     action: { id: "Buka Buku", en: "Open Books" },
     href: "/books",
     kind: "book",
@@ -36,7 +36,7 @@ const pathways = [
   {
     key: "tv",
     label: { id: "Nonton Pilihan", en: "Watch Picks" },
-    detail: { id: "Video edukasi ramah anak, lagu, & eksplorasi", en: "Kid-friendly learning videos & songs" },
+    detail: { id: "Video edukasi anak, lagu anak, dan eksplorasi seru", en: "Educational videos and songs for children" },
     action: { id: "Tonton Video", en: "Watch Videos" },
     href: "/tv",
     kind: "tv",
@@ -45,7 +45,7 @@ const pathways = [
   {
     key: "games",
     label: { id: "Main & Belajar", en: "Play & Learn" },
-    detail: { id: "Game logika, piano nada, labirin, & teka-teki", en: "Logic games, piano notes, & puzzles" },
+    detail: { id: "Permainan logika, nada piano, labirin, dan teka-teki", en: "Logic games, piano notes, and puzzles" },
     action: { id: "Mulai Main", en: "Start Playing" },
     href: "/games",
     kind: "game",
@@ -64,15 +64,15 @@ const recommendations = [
   },
   {
     title: { id: "Piano Interaktif", en: "Interactive Piano" },
-    detail: { id: "Coba bunyi tuts ceria dan susun melodimu sendiri.", en: "Try cheerful keys and create your melody." },
+    detail: { id: "Coba tuts piano dan mainkan lagu favoritmu.", en: "Play piano keys and create simple melodies." },
     href: "/games/built/piano",
     kind: "game",
-    badge: { id: "Musik Ceria", en: "Fun Music" },
+    badge: { id: "Alat Musik", en: "Musical Keys" },
     category: "games",
   },
   {
     title: { id: "Sena TV Edukasi", en: "Sena Learning TV" },
-    detail: { id: "Jelajahi video animasi, sains cilik, dan lagu anak aman.", en: "Explore animations, science, and safe songs." },
+    detail: { id: "Pilihan video animasi, sains cilik, dan lagu anak yang aman.", en: "Explore animations, science, and safe songs." },
     href: "/tv",
     kind: "tv",
     badge: { id: "Video Pilihan", en: "Top Videos" },
@@ -222,22 +222,22 @@ export default function HomeClient() {
           <div className={styles.welcomeCopy}>
             <div className={styles.kickerBadge}>
               <Sparkles size={16} aria-hidden="true" />
-              <span>{lang === "en" ? "Sena Kids - Digital Learning & Play" : "Sena Kids - Platform Belajar & Bermain"}</span>
+              <span>{lang === "en" ? "Sena Kids - Learning & Play Activities" : "Sena Kids - Aktivitas Belajar dan Bermain"}</span>
             </div>
             <h1 id="welcome-title">
               {name
                 ? (lang === "en" ? `Welcome back, ${name}!` : `Halo lagi, ${name}!`)
-                : (lang === "en" ? "Sena Kids: Fun Learning & Play for Children" : "Sena Kids: Belajar & Bermain Ceria Ramah Anak")}
+                : (lang === "en" ? "Learn and Play with Sena Kids" : "Belajar dan Bermain Bersama Sena Kids")}
             </h1>
             <p className={styles.welcomeSubtitle}>
               {lang === "en"
-                ? "What would you like to explore today? Discover 40+ free educational games, illustrated children's storybooks, and safe ad-free learning videos for kids and families."
-                : "Mau berpetualang apa hari ini? Jelajahi 40+ game edukasi interaktif gratis tanpa install, buku cerita bergambar Let's Read, dan video belajar aman untuk anak dan keluarga."}
+                ? "Discover educational activities for children at Sena Kids: interactive learning games, illustrated storybooks, and safe videos to explore together."
+                : "Temukan aktivitas belajar dan bermain anak di Sena Kids. Jelajahi kegiatan edukatif yang membantu anak mengembangkan kreativitas dan keterampilan."}
             </p>
             <div className={styles.welcomeActions}>
               <a href="#pathways" className={styles.heroCta}>
                 <Sparkles size={18} aria-hidden="true" />
-                <span>{lang === "en" ? "Start today's adventure" : "Mulai petualangan hari ini"}</span>
+                <span>{lang === "en" ? "Start today's activities" : "Mulai kegiatan hari ini"}</span>
               </a>
               <Link href="/blog" className={styles.articleShortcut}>
                 {lang === "en" ? "For grown-ups: Articles & Guides" : "Untuk orang tua: Artikel & Panduan"}
@@ -367,12 +367,12 @@ export default function HomeClient() {
           <div className={styles.creativeCopy}>
             <p className={styles.creativeKicker}>{lang === "en" ? "Creative Studio" : "Studio Kreasi"}</p>
             <h2 id="creative-title">
-              {lang === "en" ? "Draw & Color: Unleash Your Imagination" : "Ayo Menggambar & Mewarnai"}
+              {lang === "en" ? "Drawing and Coloring Studio" : "Studio Menggambar & Mewarnai"}
             </h2>
             <p>
               {lang === "en"
-                ? "Pick colorful brushes, bright stamps, and a blank canvas to bring your wildest ideas to life."
-                : "Gunakan kuas warna-warni, stempel bentuk ceria, dan kanvas digital untuk menuangkan ide hebatmu."}
+                ? "Use colorful brushes, stamps, and a blank digital canvas to create your own pictures."
+                : "Gunakan kuas warna-warni, stempel bentuk, dan kanvas digital untuk membuat gambarmu sendiri."}
             </p>
           </div>
           <div className={styles.creativeActionCol}>
@@ -404,33 +404,33 @@ export default function HomeClient() {
           <div>
             <p className={styles.kicker}>{lang === "en" ? "About the Platform" : "Tentang Platform"}</p>
             <h2 id="about-senakids-title">
-              {lang === "en" ? "Sena Kids - Digital Learning & Play for Children" : "Sena Kids: Platform Belajar & Bermain Ramah Anak"}
+              {lang === "en" ? "Activities and Educational Resources for Children" : "Media Belajar dan Permainan Edukatif Anak"}
             </h2>
           </div>
         </div>
         <div className={styles.seoGrid}>
           <div className={styles.seoCard}>
-            <h3>{lang === "en" ? "🎮 40+ Free Educational Games" : "🎮 40+ Game Edukasi Interaktif Gratis"}</h3>
+            <h3>{lang === "en" ? "🎮 40+ Interactive Educational Games" : "🎮 40+ Permainan Edukatif Interaktif"}</h3>
             <p>
               {lang === "en"
-                ? "Play learning games directly in the browser with no installation needed: coloring, math counting, ABC tracing, block puzzles, logic mazes, and classic family board games."
-                : "Mainkan puluhan permainan edukasi anak langsung di browser HP, tablet, maupun laptop tanpa perlu download: game mewarnai, berhitung matematika, lacak huruf & angka, puzzle logika, hingga ular tangga dan ludo."}
+                ? "Play learning games directly in your browser without installation: coloring, counting, letter and number tracing, logic puzzles, and classic board games."
+                : "Mainkan permainan edukatif langsung di peramban tanpa perlu instalasi: latihan berhitung, mewarnai gambar, teka-teki logika, melacak huruf dan angka, hingga permainan papan klasik."}
             </p>
           </div>
           <div className={styles.seoCard}>
-            <h3>{lang === "en" ? "📚 Illustrated Children's Books" : "📚 Koleksi Buku Cerita Bergambar"}</h3>
+            <h3>{lang === "en" ? "📚 Illustrated Storybooks" : "📚 Koleksi Buku Cerita Bergambar"}</h3>
             <p>
               {lang === "en"
-                ? "Access open-licensed digital storybooks from Let's Read Asia and Kemendikdasmen with colorful illustrations to cultivate early reading habits and family bonding."
-                : "Akses ratusan buku cerita anak bergambar dari Let's Read Asia dan Kemendikdasmen. Dongeng dan cerita bermakna berlisensi terbuka untuk menumbuhkan minat literasi dan kedekatan keluarga."}
+                ? "Read open-access digital storybooks from Let's Read Asia and Kemendikdasmen to support early literacy and family reading routines."
+                : "Akses ratusan buku cerita anak bergambar dari Let's Read Asia dan Kemendikdasmen untuk membiasakan gemar membaca dan mempererat waktu bersama anak."}
             </p>
           </div>
           <div className={styles.seoCard}>
-            <h3>{lang === "en" ? "🛡️ 100% Safe & Ad-Free Experience" : "🛡️ Aman, Gratis & Ramah Anak"}</h3>
+            <h3>{lang === "en" ? "🛡️ Safe Learning Environment" : "🛡️ Aman dan Bebas Iklan Perilaku"}</h3>
             <p>
               {lang === "en"
-                ? "Designed specially for toddlers, preschool, kindergarten (TK/PAUD), and elementary students with zero behavioral ads and kid-friendly navigation."
-                : "Dirancang khusus untuk balita, anak usia dini (PAUD), TK, hingga SD. Lingkungan digital yang bersih, tanpa iklan perilaku yang mengganggu, dan aman dijelajahi bersama keluarga."}
+                ? "Designed for toddlers, preschool, and elementary students with a clear layout and no tracking ads."
+                : "Dirancang untuk anak usia dini (PAUD/TK) hingga sekolah dasar dengan tampilan yang bersih, bebas iklan pelacak, dan aman digunakan bersama keluarga."}
             </p>
           </div>
         </div>
@@ -444,11 +444,11 @@ export default function HomeClient() {
             <Star size={24} fill="#FFD166" color="#FFB800" aria-hidden="true" />
             <Star size={20} fill="#FFD166" color="#FFB800" aria-hidden="true" />
           </div>
-          <h3>{lang === "en" ? "Learn, Play & Smile Every Day!" : "Belajar, Bermain & Tersenyum Ceria!"}</h3>
+          <h3>{lang === "en" ? "Learn and Play Every Day" : "Belajar dan Bermain Setiap Hari"}</h3>
           <p>
             {lang === "en"
-              ? "Choose activities with a grown-up. Videos and games from other sites follow their providers’ policies. Remember to take a break and drink water!"
-              : "Pilih kegiatan bersama orang tua. Video dan game dari situs lain mengikuti kebijakan penyedianya. Ingat istirahat sejenak dan minum air putih ya!"}
+              ? "Choose activities together with parents or teachers. External videos and games follow their providers' policies. Remember to rest your eyes and drink water."
+              : "Pilih kegiatan bersama orang tua atau guru. Video dan permainan dari penyedia luar mengikuti kebijakan masing-masing. Luangkan waktu untuk mengistirahatkan mata dan minum air putih."}
           </p>
         </div>
       </section>

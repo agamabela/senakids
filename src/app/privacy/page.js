@@ -2,16 +2,16 @@ import PrivacyClient from "./PrivacyClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Kebijakan Privasi & Perlindungan Anak",
+  title: "Kebijakan Privasi dan Perlindungan Anak",
   description:
-    "Kebijakan privasi Sena Kids: komitmen perlindungan data anak, pengaturan browser, konten pihak ketiga, dan permintaan penghapusan akun.",
+    "Kebijakan privasi Sena Kids: perlindungan data anak, tanpa pelacakan iklan perilaku, dan informasi keamanan bagi keluarga.",
   alternates: {
     canonical: "/privacy",
   },
   openGraph: {
-    title: "Kebijakan Privasi & Perlindungan Anak",
+    title: "Kebijakan Privasi dan Perlindungan Anak | Sena Kids",
     description:
-      "Kebijakan privasi Sena Kids: komitmen perlindungan data anak, pengaturan browser, konten pihak ketiga, dan permintaan penghapusan akun.",
+      "Kebijakan privasi Sena Kids: perlindungan data anak, tanpa pelacakan iklan perilaku, dan informasi keamanan bagi keluarga.",
     url: "https://senakids.web.id/privacy",
     images: [socialImage],
     type: "website",

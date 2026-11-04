@@ -2,16 +2,16 @@ import CreateClient from "./CreateClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Studio Kreasi & Kanvas Menggambar Anak",
+  title: "Kanvas Gambar dan Mewarnai Anak Online",
   description:
-    "Kanvas menggambar digital interaktif untuk anak mengekspresikan imajinasi dan kreativitas dengan berbagai warna dan kuas.",
+    "Kanvas digital interaktif untuk anak menggambar, mewarnai, dan membuat karya visual dengan kuas warna-warni dan aneka stempel.",
   alternates: {
     canonical: "/create",
   },
   openGraph: {
-    title: "Studio Kreasi & Kanvas Menggambar Anak",
+    title: "Kanvas Gambar dan Mewarnai Anak Online | Sena Kids",
     description:
-      "Kanvas menggambar digital interaktif untuk anak mengekspresikan imajinasi dan kreativitas dengan berbagai warna dan kuas.",
+      "Kanvas digital interaktif untuk anak menggambar, mewarnai, dan membuat karya visual dengan kuas warna-warni dan aneka stempel.",
     url: "https://senakids.web.id/create",
     images: [socialImage],
     type: "website",

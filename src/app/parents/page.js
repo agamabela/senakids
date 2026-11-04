@@ -2,16 +2,16 @@ import ParentsClient from "./ParentsClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Panduan & Pengaturan Orang Tua",
+  title: "Pengaturan dan Panduan Orang Tua",
   description:
-    "Informasi privasi anak, timer pembatas waktu layar, kontrol suara, dan panduan keamanan digital untuk orang tua.",
+    "Pengaturan waktu layar, kontrol audio, informasi privasi anak, dan panduan mendampingi anak beraktivitas digital.",
   alternates: {
     canonical: "/parents",
   },
   openGraph: {
-    title: "Panduan & Pengaturan Orang Tua",
+    title: "Pengaturan dan Panduan Orang Tua | Sena Kids",
     description:
-      "Informasi privasi anak, timer pembatas waktu layar, kontrol suara, dan panduan keamanan digital untuk orang tua.",
+      "Pengaturan waktu layar, kontrol audio, informasi privasi anak, dan panduan mendampingi anak beraktivitas digital.",
     url: "https://senakids.web.id/parents",
     images: [socialImage],
     type: "website",

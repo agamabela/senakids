@@ -346,7 +346,7 @@ export default function TvClient({ videos = [] }) {
             <Tv size={28} className={styles.headerIcon} aria-hidden="true" />
           </div>
           <div>
-            <h1 className={styles.headerTitle}>{tx("TV Edukasi Ramah Anak", "Safe Kids TV")}</h1>
+            <h1 className={styles.headerTitle}>{tx("TV Edukasi Anak", "Kids Learning TV")}</h1>
             <p className={styles.headerSubtitle}>
               {tx(
                 "Pilih video edukasi, dongeng, dan lagu bersama orang tua. Video diputar melalui YouTube.",

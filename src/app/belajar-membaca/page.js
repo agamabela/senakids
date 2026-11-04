@@ -2,16 +2,16 @@ import BelajarMembacaClient from "./BelajarMembacaClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Belajar Membaca Suku Kata & Huruf Anak TK/PAUD Online",
+  title: "Belajar Membaca Suku Kata dan Huruf Anak",
   description:
-    "Latihan interaktif belajar membaca suku kata dan kata sederhana dengan bantuan audio suara dan gambar visual ramah anak di Sena Kids.",
+    "Latihan interaktif belajar membaca suku kata dan kata sederhana dengan panduan audio dan gambar visual untuk anak TK dan PAUD.",
   alternates: {
     canonical: "/belajar-membaca",
   },
   openGraph: {
-    title: "Belajar Membaca Suku Kata & Huruf Anak TK/PAUD Online",
+    title: "Belajar Membaca Suku Kata dan Huruf Anak | Sena Kids",
     description:
-      "Latihan interaktif membaca suku kata dan kata sederhana dengan bantuan suara dan gambar ramah anak.",
+      "Latihan interaktif belajar membaca suku kata dan kata sederhana dengan panduan audio dan gambar visual untuk anak TK dan PAUD.",
     url: "https://senakids.web.id/belajar-membaca",
     images: [socialImage],
     type: "website",

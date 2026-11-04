@@ -5,17 +5,17 @@ const siteUrl = getSiteUrl();
 
 export const metadata = {
   title: {
-    absolute: "Sena Kids - Platform Belajar & Bermain Anak | Game Edukasi & Cerita",
+    absolute: "Sena Kids - Aktivitas Belajar dan Bermain Anak",
   },
   description:
-    "Sena Kids adalah platform belajar dan bermain anak ramah keluarga: 40+ game edukasi interaktif gratis (mewarnai, berhitung, logika), buku cerita bergambar Let's Read, dan video aman tanpa iklan.",
+    "Temukan aktivitas belajar dan bermain anak di Sena Kids. Jelajahi kegiatan edukatif yang membantu anak mengembangkan kreativitas dan keterampilan.",
   alternates: { canonical: `${siteUrl}/` },
   openGraph: {
-    title: "Sena Kids - Platform Belajar & Bermain Ramah Anak",
+    title: "Sena Kids - Aktivitas Belajar dan Bermain Anak",
     description:
-      "Buku cerita bergambar anak, video edukasi aman, dan game logika interaktif gratis untuk dijelajahi bersama keluarga.",
+      "Temukan aktivitas belajar dan bermain anak di Sena Kids. Jelajahi kegiatan edukatif yang membantu anak mengembangkan kreativitas dan keterampilan.",
     url: siteUrl,
-    images: [{ url: "/asset.png", width: 1200, height: 630, alt: "Sena Kids - Dunia Belajar & Bermain Ramah Anak" }],
+    images: [{ url: "/asset.png", width: 1200, height: 630, alt: "Sena Kids - Aktivitas Belajar dan Bermain Anak" }],
     type: "website",
   },
 };
@@ -27,7 +27,7 @@ export default function RootPage() {
     name: "Sena Kids",
     alternateName: ["SenaKids", "Sena Kids Indonesia"],
     url: siteUrl,
-    description: "Platform belajar ramah anak dengan buku cerita bergambar, video edukasi aman, dan game interaktif gratis.",
+    description: "Platform aktivitas belajar dan bermain anak dengan buku cerita bergambar, video edukasi aman, dan aneka permainan edukatif interaktif.",
     publisher: { "@type": "Organization", name: "Sena Kids", logo: `${siteUrl}/sena-logo.svg` },
     potentialAction: {
       "@type": "SearchAction",

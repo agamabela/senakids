@@ -2,16 +2,16 @@ import OwlyClient from "./OwlyClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Owly - Program Belajar Gamifikasi Anak Usia 5-7 Tahun",
+  title: "Belajar Konsep Dasar Bersama Owly",
   description:
-    "Program pembelajaran gamifikasi interaktif untuk anak usia dini (5-7 tahun). Belajar konsep dasar dengan misi seru dan penuh motivasi di Sena Kids.",
+    "Latihan mengenal huruf, angka, dan konsep dasar untuk anak usia dini bersama maskot burung hantu Owly.",
   alternates: {
     canonical: "/owly",
   },
   openGraph: {
-    title: "Owly - Program Belajar Gamifikasi Anak Usia 5-7 Tahun",
+    title: "Belajar Konsep Dasar Bersama Owly | Sena Kids",
     description:
-      "Program pembelajaran gamifikasi interaktif untuk anak usia dini (5-7 tahun). Belajar konsep dasar dengan misi seru dan penuh motivasi di Sena Kids.",
+      "Latihan mengenal huruf, angka, dan konsep dasar untuk anak usia dini bersama maskot burung hantu Owly.",
     url: "https://senakids.web.id/owly",
     images: [socialImage],
     type: "website",

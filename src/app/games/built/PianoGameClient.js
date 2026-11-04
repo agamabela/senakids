@@ -274,8 +274,8 @@ export default function PianoGameClient() {
       {!started && (
         <div className={styles.hintBox} role="status">
           {tx(
-            "Klik tuts atau tekan keyboard untuk mulai bermain musik ceria! 🎶",
-            "Click keys or press keyboard keys to start playing playful music! 🎶"
+            "Klik tuts atau gunakan papan ketik untuk mulai memainkan musik! 🎶",
+            "Click keys or press keyboard keys to start playing music! 🎶"
           )}
         </div>
       )}

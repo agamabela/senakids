@@ -263,7 +263,7 @@ export default function BooksClient({
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             role="img"
-            aria-label="Tumpukan buku cerita ramah anak"
+            aria-label="Tumpukan buku cerita anak"
           >
             <ellipse cx="100" cy="176" rx="68" ry="12" fill="#000" opacity="0.08" />
             <rect x="40" y="132" width="120" height="26" rx="6" fill="#C87A65" />

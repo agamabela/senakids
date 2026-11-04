@@ -5,16 +5,16 @@ import GamesClient from "./GamesClient";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Game Edukasi Anak Online Gratis & Interaktif",
+  title: "Permainan Edukatif Anak Online",
   description:
-    "Koleksi 40+ game edukasi anak online gratis dan ramah anak: game mewarnai, berhitung matematika, puzzle logika, huruf ABC, dan ular tangga tanpa install aplikasi.",
+    "Koleksi permainan edukatif interaktif untuk anak: latihan berhitung matematika, mewarnai gambar, teka-teki logika, dan melacak huruf tanpa perlu instalasi.",
   alternates: {
     canonical: "/games",
   },
   openGraph: {
-    title: "Game Edukasi Anak Online Gratis & Interaktif",
+    title: "Permainan Edukatif Anak Online | Sena Kids",
     description:
-      "Koleksi 40+ game edukasi anak online gratis dan ramah anak: game mewarnai, berhitung matematika, puzzle logika, huruf ABC, dan ular tangga tanpa install aplikasi.",
+      "Koleksi permainan edukatif interaktif untuk anak: latihan berhitung matematika, mewarnai gambar, teka-teki logika, dan melacak huruf tanpa perlu instalasi.",
     url: "https://senakids.web.id/games",
     images: [socialImage],
     type: "website",
@@ -45,9 +45,9 @@ export default async function GamesPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Game & Latihan Interaktif Sena Kids",
+    name: "Permainan Edukatif Interaktif Anak Sena Kids",
     description:
-      "Koleksi permainan logika, matematika, memori, musik, dan teka-teki edukatif anak.",
+      "Koleksi permainan edukatif anak untuk melatih logika, berhitung matematika, daya ingat, dan kreativitas.",
     url: `${siteUrl}/games`,
   };
 

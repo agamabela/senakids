@@ -5,16 +5,16 @@ import ChannelsClient from "./ChannelsClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Channel Pilihan - Kelola Channel Edukasi Anak",
+  title: "Daftar Saluran Video Edukasi Anak",
   description:
-    "Atur dan pilih channel YouTube ramah anak yang boleh ditonton di Sena TV. Nonaktifkan channel sesuai kebutuhan orang tua.",
+    "Kelola saluran YouTube edukasi yang dapat ditonton anak di Sena TV sesuai pilihan orang tua.",
   alternates: {
     canonical: "/channels",
   },
   openGraph: {
-    title: "Channel Pilihan - Kelola Channel Edukasi Anak",
+    title: "Daftar Saluran Video Edukasi Anak | Sena Kids",
     description:
-      "Atur dan pilih channel YouTube ramah anak yang boleh ditonton di Sena TV.",
+      "Kelola saluran YouTube edukasi yang dapat ditonton anak di Sena TV sesuai pilihan orang tua.",
     url: "https://senakids.web.id/channels",
     images: [socialImage],
     type: "website",
@@ -33,8 +33,8 @@ export default async function ChannelsPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Channel Pilihan Sena TV",
-    description: "Daftar channel YouTube pilihan ramah anak.",
+    name: "Daftar Saluran Video Edukasi Anak Sena TV",
+    description: "Daftar saluran video pilihan untuk pembelajaran anak di Sena TV.",
     url: `${siteUrl}/channels`,
   };
 

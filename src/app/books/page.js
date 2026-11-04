@@ -8,15 +8,16 @@ import BooksClient from "./BooksClient";
 export const revalidate = 3600; // Auto revalidate page every 1 hour
 
 export const metadata = {
-  title: "Perpustakaan Buku Cerita Anak Bergambar Online Gratis",
+  title: "Buku Cerita Anak Bergambar Online",
   description:
-    "Baca ratusan buku cerita anak bergambar gratis dari Let's Read Asia dan Kemendikdasmen. Dongeng dan cerita edukasi ramah anak untuk menumbuhkan minat literasi keluarga.",
+    "Baca ratusan buku cerita anak bergambar dari Let's Read Asia dan Kemendikdasmen untuk melatih literasi dini dan menemani waktu membaca bersama keluarga.",
   alternates: {
     canonical: "/books",
   },
   openGraph: {
-    title: "Perpustakaan Buku Cerita Anak Bergambar Online Gratis",
-    description: "Baca buku cerita bergambar dan belajar interaktif anak gratis dan ramah keluarga.",
+    title: "Buku Cerita Anak Bergambar Online | Sena Kids",
+    description:
+      "Baca ratusan buku cerita anak bergambar dari Let's Read Asia dan Kemendikdasmen untuk melatih literasi dini dan menemani waktu membaca bersama keluarga.",
     url: "https://senakids.web.id/books",
     images: [socialImage],
   },
