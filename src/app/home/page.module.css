@@ -793,3 +793,47 @@
 @media (max-width: 520px) { .welcome h1 { font-size: 1.8rem; } .welcome { padding: 16px; gap: 20px; } .welcomeSubtitle { font-size: .9375rem; } }
 
 .articleShortcut { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-primary); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+
+/* SEO About Platform Section */
+.seoAboutSection {
+  margin-top: clamp(40px, 6vw, 64px);
+  padding: clamp(24px, 4vw, 36px);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 4px 0 var(--color-border-strong);
+}
+
+.seoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.seoCard {
+  background: var(--color-surface-muted, #f8fafc);
+  padding: 20px;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid var(--color-border);
+}
+
+.seoCard h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--color-text);
+}
+
+.seoCard p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 768px) {
+  .seoGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

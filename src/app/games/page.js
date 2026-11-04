@@ -2,19 +2,19 @@ import { getGames } from "@/app/admin/actions";
 import { socialImage } from "@/lib/seo-metadata";
 import GamesClient from "./GamesClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata = {
-  title: "Game & Latihan Interaktif Anak",
+  title: "Game Edukasi Anak Online Gratis & Interaktif",
   description:
-    "Koleksi permainan logika, matematika, memori, musik, dan teka-teki edukatif yang aman dan menyenangkan untuk anak-anak.",
+    "Koleksi 40+ game edukasi anak online gratis dan ramah anak: game mewarnai, berhitung matematika, puzzle logika, huruf ABC, dan ular tangga tanpa install aplikasi.",
   alternates: {
     canonical: "/games",
   },
   openGraph: {
-    title: "Game & Latihan Interaktif Anak",
+    title: "Game Edukasi Anak Online Gratis & Interaktif",
     description:
-      "Koleksi permainan logika, matematika, memori, musik, dan teka-teki edukatif yang aman dan menyenangkan untuk anak-anak.",
+      "Koleksi 40+ game edukasi anak online gratis dan ramah anak: game mewarnai, berhitung matematika, puzzle logika, huruf ABC, dan ular tangga tanpa install aplikasi.",
     url: "https://senakids.web.id/games",
     images: [socialImage],
     type: "website",

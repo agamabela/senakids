@@ -222,13 +222,17 @@ export default function HomeClient() {
           <div className={styles.welcomeCopy}>
             <div className={styles.kickerBadge}>
               <Sparkles size={16} aria-hidden="true" />
-              <span>{lang === "en" ? "Sena Kids Adventure" : "Petualangan Sena Kids"}</span>
+              <span>{lang === "en" ? "Sena Kids - Digital Learning & Play" : "Sena Kids - Platform Belajar & Bermain"}</span>
             </div>
-            <h1 id="welcome-title">{greeting}</h1>
+            <h1 id="welcome-title">
+              {name
+                ? (lang === "en" ? `Welcome back, ${name}!` : `Halo lagi, ${name}!`)
+                : (lang === "en" ? "Sena Kids: Fun Learning & Play for Children" : "Sena Kids: Belajar & Bermain Ceria Ramah Anak")}
+            </h1>
             <p className={styles.welcomeSubtitle}>
               {lang === "en"
-                ? "Pick one joyful activity, read exciting stories, play logic games, or watch safe educational videos."
-                : "Pilih satu kegiatan seru, baca dongeng penuh imajinasi, mainkan game logika, atau tonton video edukasi yang aman."}
+                ? "What would you like to explore today? Discover 40+ free educational games, illustrated children's storybooks, and safe ad-free learning videos for kids and families."
+                : "Mau berpetualang apa hari ini? Jelajahi 40+ game edukasi interaktif gratis tanpa install, buku cerita bergambar Let's Read, dan video belajar aman untuk anak dan keluarga."}
             </p>
             <div className={styles.welcomeActions}>
               <a href="#pathways" className={styles.heroCta}>
@@ -394,7 +398,45 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 7. CHILD CLOSING WRAP-UP BANNER */}
+      {/* 7. ABOUT SENA KIDS & LEARNING FEATURES (SEO ENHANCEMENT) */}
+      <section className={styles.seoAboutSection} aria-labelledby="about-senakids-title">
+        <div className={styles.sectionHeading}>
+          <div>
+            <p className={styles.kicker}>{lang === "en" ? "About the Platform" : "Tentang Platform"}</p>
+            <h2 id="about-senakids-title">
+              {lang === "en" ? "Sena Kids - Digital Learning & Play for Children" : "Sena Kids: Platform Belajar & Bermain Ramah Anak"}
+            </h2>
+          </div>
+        </div>
+        <div className={styles.seoGrid}>
+          <div className={styles.seoCard}>
+            <h3>{lang === "en" ? "🎮 40+ Free Educational Games" : "🎮 40+ Game Edukasi Interaktif Gratis"}</h3>
+            <p>
+              {lang === "en"
+                ? "Play learning games directly in the browser with no installation needed: coloring, math counting, ABC tracing, block puzzles, logic mazes, and classic family board games."
+                : "Mainkan puluhan permainan edukasi anak langsung di browser HP, tablet, maupun laptop tanpa perlu download: game mewarnai, berhitung matematika, lacak huruf & angka, puzzle logika, hingga ular tangga dan ludo."}
+            </p>
+          </div>
+          <div className={styles.seoCard}>
+            <h3>{lang === "en" ? "📚 Illustrated Children's Books" : "📚 Koleksi Buku Cerita Bergambar"}</h3>
+            <p>
+              {lang === "en"
+                ? "Access open-licensed digital storybooks from Let's Read Asia and Kemendikdasmen with colorful illustrations to cultivate early reading habits and family bonding."
+                : "Akses ratusan buku cerita anak bergambar dari Let's Read Asia dan Kemendikdasmen. Dongeng dan cerita bermakna berlisensi terbuka untuk menumbuhkan minat literasi dan kedekatan keluarga."}
+            </p>
+          </div>
+          <div className={styles.seoCard}>
+            <h3>{lang === "en" ? "🛡️ 100% Safe & Ad-Free Experience" : "🛡️ Aman, Gratis & Ramah Anak"}</h3>
+            <p>
+              {lang === "en"
+                ? "Designed specially for toddlers, preschool, kindergarten (TK/PAUD), and elementary students with zero behavioral ads and kid-friendly navigation."
+                : "Dirancang khusus untuk balita, anak usia dini (PAUD), TK, hingga SD. Lingkungan digital yang bersih, tanpa iklan perilaku yang mengganggu, dan aman dijelajahi bersama keluarga."}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. CHILD CLOSING WRAP-UP BANNER */}
       <section className={styles.wrapUpBanner} aria-label={lang === "en" ? "Safe learning note" : "Catatan belajar aman"}>
         <div className={styles.wrapUpContent}>
           <div className={styles.wrapUpStars}>

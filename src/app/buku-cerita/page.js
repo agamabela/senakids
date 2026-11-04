@@ -2,14 +2,14 @@ import BukuCeritaClient from "./BukuCeritaClient";
 import { socialImage } from "@/lib/seo-metadata";
 
 export const metadata = {
-  title: "Koleksi Cerita Bergambar Let's Read",
+  title: "Buku Cerita Bergambar Anak Let's Read Online",
   description:
-    "Baca cerita bergambar anak Let's Read Asia berlisensi Creative Commons CC BY 4.0 secara gratis dan interaktif.",
+    "Koleksi dongeng dan cerita bergambar anak Let's Read Asia berlisensi Creative Commons secara gratis dan interaktif untuk dibaca bersama anak.",
   alternates: {
     canonical: "/buku-cerita",
   },
   openGraph: {
-    title: "Koleksi Cerita Bergambar Let's Read",
+    title: "Buku Cerita Bergambar Anak Let's Read Online",
     description:
       "Baca cerita bergambar anak Let's Read Asia berlisensi Creative Commons CC BY 4.0 secara gratis dan interaktif.",
     url: "https://senakids.web.id/buku-cerita",

@@ -6,12 +6,12 @@ import styles from "./page.module.css";
 const siteUrl = getSiteUrl();
 
 export const metadata = {
-  title: "Panduan Orang Tua untuk Belajar & Bermain Anak",
+  title: "Panduan Orang Tua: Tips Belajar, Membaca & Bermain Anak",
   description:
-    "Panduan praktis Sena Kids untuk membaca bersama, aktivitas anak di rumah, permainan edukasi, worksheet, dan waktu layar yang seimbang.",
+    "Kumpulan panduan praktis untuk orang tua: tips mengajarkan anak membaca di rumah, rekomendasi buku cerita gratis, game edukasi aman, dan panduan screen time yang seimbang.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Panduan Orang Tua | Sena Kids",
+    title: "Panduan Orang Tua: Belajar & Bermain Anak",
     description:
       "Ide membaca, bermain, dan belajar bersama anak di rumah.",
     url: `${siteUrl}/blog`,

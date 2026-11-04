@@ -3,19 +3,19 @@ import { getAllTvVideos } from "@/lib/tv-videos-api";
 import { socialImage } from "@/lib/seo-metadata";
 import TvClient from "./TvClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata = {
-  title: "Sena TV - Video Edukasi & Animasi Anak Aman",
+  title: "Video Edukasi & Animasi Anak Aman Tanpa Iklan",
   description:
-    "Tonton video edukasi, lagu anak, dongeng, dan animasi pilihan ramah anak dengan pemutar tanpa iklan perilaku.",
+    "Tonton video edukasi pilihan, dongeng, lagu anak-anak, dan animasi sains ramah anak di Sena TV dengan pemutar aman bebas iklan perilaku.",
   alternates: {
     canonical: "/tv",
   },
   openGraph: {
-    title: "Sena TV - Video Edukasi & Animasi Anak Aman",
+    title: "Video Edukasi & Animasi Anak Aman Tanpa Iklan",
     description:
-      "Tonton video edukasi, lagu anak, dongeng, dan animasi pilihan ramah anak dengan pemutar tanpa iklan perilaku.",
+      "Tonton video edukasi pilihan, dongeng, lagu anak-anak, dan animasi sains ramah anak di Sena TV dengan pemutar aman bebas iklan perilaku.",
     url: "https://senakids.web.id/tv",
     images: [socialImage],
     type: "website",
